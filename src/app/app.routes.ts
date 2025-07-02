@@ -13,15 +13,18 @@ import { SignUpComponent } from './iam/pages/sign-up/sign-up.component'; // Ruta
 import { authenticationGuard } from './iam/services/authentication.guard'; // Guard para proteger rutas
 
 export const routes: Routes = [
-  { path: '', component: PetsGalleryComponent, canActivate: [authenticationGuard] },
-  { path: 'pets', component: PetsGalleryComponent, canActivate: [authenticationGuard] },
-  { path: 'adoptions', component: AdoptionsListComponent, canActivate: [authenticationGuard] },
+  { path: '', component: PetsGalleryComponent, canActivate: [authenticationGuard] }, // 👈 Mantén protegida si solo quieres que usuarios logueados vean mascotas
+
+// 🔓 Rutas públicas para adopciones
+  { path: 'adoptions', component: AdoptionsListComponent }, // ❌ Quita el guard
   {
     path: 'adoptions/:id',
     loadComponent: () => import('./adoptions/pages/adoption-details/adoption-details.component')
-      .then(m => m.AdoptionDetailsComponent),
-    canActivate: [authenticationGuard]
+      .then(m => m.AdoptionDetailsComponent) // ❌ Quita el guard aquí también
   },
+
+// 🔐 Mantén protegidas las que requieren autenticación
+  { path: 'pets', component: PetsGalleryComponent, canActivate: [authenticationGuard] },
   { path: 'donations', component: DonationOptionsComponent, canActivate: [authenticationGuard] },
   { path: 'profile', component: ProfilePageComponent, canActivate: [authenticationGuard] },
   { path: 'publications', component: PublicationsDashboardComponent, canActivate: [authenticationGuard] },
