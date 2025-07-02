@@ -1,16 +1,28 @@
+/* 🟢 app-pet-card host: garantiza buena alineación en el grid */
+app-pet-card {
+  display: block;
+  width: 100%;
+  max-width: 320px;
+  box-sizing: border-box;
+}
+
+/* 🔹 Contenedor general */
 .pets-gallery {
-  padding: 2rem;
+  padding: 0;
+  max-width: 90vw;         /* usa hasta 90% del ancho visible */
+  margin: 0 auto;
   background-color: #fafafa;
 }
 
+/* 🔹 Título */
 .gallery-title {
   font-size: 2.4rem;
-  margin-bottom: 0.5rem;
-  margin-top: -3rem;
+  margin-bottom: 1.5rem;
   text-align: center;
   color: #333;
 }
 
+/* 🔹 Contenedor del filtro */
 .filter-container {
   display: flex;
   flex-direction: column;
@@ -25,11 +37,12 @@
 .status-filter {
   width: 100%;
   padding: 0.8rem;
-  font-size: 1.4rem;
+  font-size: 1rem;
   border-radius: 5px;
   border: 1px solid #ccc;
 }
 
+/* 🔹 Spinner de carga */
 .loading-state {
   text-align: center;
   font-size: 1.6rem;
@@ -53,12 +66,24 @@
   }
 }
 
+/* 🔹 Grid responsive
+.pets-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, auto));
+  justify-content: center;
+  gap: 1rem;
+}
+*/
+
+/* 🟢 Grid flexible alineado a la izquierda */
 .pets-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1.5rem;
+  gap: 2rem;
+  justify-items: center;       /* centra las cards dentro de cada columna */
 }
 
+/* 🔹 Estado vacío */
 .empty-state {
   text-align: center;
   color: #999;

@@ -1,73 +1,137 @@
-/* Estilo general de la página de inicio de sesión */
+/* Contenedor principal: centrado vertical y horizontal */
 .sign-in-content {
+  height: 80vh;
   display: flex;
   justify-content: center;
-  align-items: center;
-  height: 100vh;
-  background-color: #f4f4f9;
+  align-items: center; /* O center si quieres centrar verticalmente */
+  padding-top: 40px; /* Espacio extra si usas align-items: start */
 }
 
-mat-card {
+/* Card estilizado */
+.sign-in-card {
   width: 100%;
-  max-width: 400px;
-  padding: 1.5em;
-  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
-  border-radius: 8px;
+  max-width: 420px;
+  padding: 24px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  background-color: #ffffff;
 }
 
-/* Estilos para el encabezado del card */
-mat-card-header {
-  display: flex;
-  justify-content: center;
-  padding-bottom: 0;
+/* Logo centrado arriba */
+.logo-container {
+  text-align: center;
+  margin-bottom: 16px;
 }
 
-mat-card-title {
-  font-size: 1.5rem;
-  font-weight: bold;
+.logo {
+  height: 60px;
+}
+
+/* Texto de bienvenida */
+.welcome-text {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.welcome-text h2 {
+  margin: 0;
+  font-size: 1.8rem;
   color: #333;
 }
 
-/* Estilos para los campos de formulario */
-mat-form-field {
-  width: 100%;
-  margin-bottom: 1.2em;
-}
-
-mat-form-field input {
-  padding: 0.5em;
-}
-
-mat-error {
-  font-size: 0.9rem;
-  color: #f44336; /* Color rojo para el mensaje de error */
-}
-
-/* Estilos para el botón de inicio de sesión */
-button {
-  width: 100%;
-  padding: 0.7em 0;
+.welcome-text p {
+  margin: 4px 0 0;
   font-size: 1rem;
-  font-weight: bold;
-  background-color: #1976d2;
-  color: #fff;
-  text-transform: uppercase;
-  border-radius: 5px;
-}
-
-button:hover {
-  background-color: #1565c0;
-}
-
-button:disabled {
-  background-color: #ccc;
   color: #777;
 }
 
-/* Responsive: ajuste del tamaño del card en pantallas pequeñas */
+/* Línea divisora */
+mat-divider {
+  margin: 16px 0;
+}
+
+/* Campos de formulario */
+mat-form-field {
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+mat-error {
+  font-size: 0.85rem;
+  color: #f44336;
+}
+
+/* Botón principal */
+button.mat-raised-button {
+  width: 100%;
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 12px 0;
+  border-radius: 6px;
+  margin-top: 8px;
+}
+
+button.mat-raised-button:hover {
+  background-color: #1565c0;
+}
+
+/* Enlaces secundarios */
+.secondary-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 16px;
+  gap: 4px;
+}
+
+.secondary-actions button {
+  font-size: 0.9rem;
+  color: #3f51b5;
+  text-transform: none;
+}
+
+/* Estilo claro y bien definido para el botón principal */
+.login-button {
+  width: 50%;
+  margin: 16px auto 0 auto; /* auto en los costados centra el elemento */
+  display: block; /* importante para que margin auto funcione como bloque */
+  padding: 12px 0;
+  font-size: 1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  background-color: #1976d2;
+  color: white;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  transition: background-color 0.2s ease;
+}
+
+.login-button:hover {
+  background-color: #1565c0;
+}
+
+.login-button:disabled {
+  background-color: #ccc;
+  color: #666;
+  cursor: not-allowed;
+}
+
+/* Responsive */
 @media (max-width: 600px) {
-  mat-card {
-    width: 90%;
-    max-width: 300px;
+  .sign-in-card {
+    max-width: 90%;
+    padding: 16px;
+  }
+
+  .logo {
+    height: 48px;
+  }
+
+  .welcome-text h2 {
+    font-size: 1.5rem;
+  }
+
+  .welcome-text p {
+    font-size: 0.9rem;
   }
 }

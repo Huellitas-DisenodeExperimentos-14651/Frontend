@@ -1,73 +1,181 @@
-/* Estilo general de la página de inicio de sesión */
-.sign-up-content {
+.auth-wrapper {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  min-height: calc(100vh - 65px); /* Altura total menos la toolbar */
   background-color: #f4f4f9;
+  box-sizing: border-box;
 }
 
-mat-card {
-  width: 100%;
-  max-width: 400px;
-  padding: 1.5em;
-  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
-  border-radius: 8px;
+/* Contenedor principal del formulario */
+mat-card.auth-card {
+  max-width: 1000px;
+  padding: 0px;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  background-color: #ffffff;
 }
 
-/* Estilos para el encabezado del card */
-mat-card-header {
-  display: flex;
-  justify-content: center;
-  padding-bottom: 0;
+.logo-container {
+  text-align: center;
+  margin: 16px 0;
 }
 
-mat-card-title {
-  font-size: 1.5rem;
-  font-weight: bold;
+.logo {
+  height: 60px;
+}
+
+/* Texto de bienvenida */
+.welcome-text {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.welcome-text h2 {
+  margin: 0;
+  font-size: 1.8rem;
   color: #333;
 }
 
-/* Estilos para los campos de formulario */
-mat-form-field {
-  width: 100%;
-  margin-bottom: 1.2em;
-}
-
-mat-form-field input {
-  padding: 0.5em;
-}
-
-mat-error {
-  font-size: 0.9rem;
-  color: #f44336; /* Color rojo para el mensaje de error */
-}
-
-/* Estilos para el botón de inicio de sesión */
-button {
-  width: 100%;
-  padding: 0.7em 0;
+.welcome-text p {
+  margin: 4px 0 0;
   font-size: 1rem;
-  font-weight: bold;
-  background-color: #1976d2;
-  color: #fff;
-  text-transform: uppercase;
-  border-radius: 5px;
-}
-
-button:hover {
-  background-color: #1565c0;
-}
-
-button:disabled {
-  background-color: #ccc;
   color: #777;
 }
 
-/* Responsive: ajuste del tamaño del card en pantallas pequeñas */
-@media (max-width: 600px) {
-  mat-card {
-    width: 90%;
-    max-width: 300px;
+/* Estilo del stepper */
+mat-horizontal-stepper {
+  background: transparent;
+  margin-bottom: 24px;
+}
+
+.mat-step-header {
+  flex-wrap: nowrap;
+  justify-content: space-between;
+}
+
+.mat-step-label {
+  font-weight: 500;
+  font-size: 14px;
+  color: #333;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Campos del formulario */
+/* Agrupar campos dentro del formulario */
+.form-field-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+/* Campos centrados y de ancho limitado */
+mat-form-field {
+  width: 100%;
+  max-width: 480px;
+}
+
+mat-form-field textarea {
+  resize: vertical;
+}
+
+/* Contenedor de botones del stepper */
+.step-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+  margin-top: 100px; /* Aumenta separación respecto a los campos */
+}
+
+/* Botones */
+.step-actions button {
+  text-transform: uppercase;
+  font-weight: 600;
+  padding: 10px 20px;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+}
+
+/* Botón primario */
+.step-actions button[mat-raised-button][color="primary"] {
+  background-color: #ff9800;
+  color: #fff;
+  transition: background-color 0.3s ease;
+}
+
+.step-actions button[mat-raised-button][color="primary"]:hover {
+  background-color: #fb8c00;
+}
+
+/* Botón delineado */
+.step-actions button[mat-stroked-button] {
+  border-color: #ff9800;
+  color: #ff9800;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.step-actions button[mat-stroked-button]:hover {
+  background-color: rgba(255, 152, 0, 0.1);
+}
+
+
+/* Cambiar apariencia de las etiquetas activas */
+.active-label {
+  font-weight: bold;
+  font-size: 1rem;
+  color: #1976d2;
+}
+
+/* Las demás etiquetas se verán más pequeñas y apagadas */
+.mat-step-label {
+  font-size: 0.85rem;
+  color: #999;
+}
+
+/* Puedes ajustar el ancho de cada paso si quieres que sea dinámico */
+.mat-step-header {
+  flex: 1 1 auto;
+  text-align: center;
+  transition: all 0.2s ease-in-out;
+}
+
+.active-step .mat-step-label {
+  font-size: 1.05rem;
+  color: #1976d2;
+}
+
+/* Aplica estilo al paso activo */
+.active-label {
+  font-weight: 600;
+  font-size: 1rem;
+  color: #1976d2;
+  transition: all 0.3s ease-in-out;
+}
+
+/* Títulos apagados por defecto */
+.mat-step-label {
+  font-size: 0.85rem;
+  color: #888;
+}
+
+/* Opcional: estiliza cada encabezado del step */
+.mat-step-header {
+  flex: 1 1 auto;
+  justify-content: center;
+}
+
+
+/* Responsive */
+@media (max-width: 768px) {
+  mat-card.auth-card {
+    margin: 16px;
+    padding: 24px;
+  }
+
+  .step-actions {
+    flex-direction: column;
+    align-items: stretch;
   }
 }

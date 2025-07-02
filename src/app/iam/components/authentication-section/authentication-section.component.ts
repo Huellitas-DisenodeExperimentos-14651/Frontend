@@ -3,16 +3,18 @@ import { Router } from '@angular/router';
 import { AuthenticationService } from '../../services/authentication.service';
 import { NgIf } from '@angular/common';
 import { MatButton } from '@angular/material/button';
+import {TranslatePipe} from '@ngx-translate/core';
 
 @Component({
   selector: 'app-authentication-section',
   standalone: true,
   imports: [
     NgIf,
-    MatButton
+    MatButton,
+    TranslatePipe
   ],
   templateUrl: './authentication-section.component.html',
-  styleUrls: ['./authentication-section.component.css']  // Corregido a styleUrls
+  styleUrls: ['./authentication-section.component.css']
 })
 export class AuthenticationSectionComponent {
 

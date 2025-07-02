@@ -2,7 +2,9 @@
   border: 1px solid #ddd;
   border-radius: 8px;
   padding: 1.6rem;
+  width: 100%;           /* <--- Asegura que ocupe el espacio del grid */
   max-width: 320px;
+  box-sizing: border-box;
   background-color: #fff;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   position: relative;
@@ -106,13 +108,25 @@ button:hover:not(:disabled) {
 
 /* Estilos de contenido del modal */
 .modal-content {
-  background-color: #fff;
+  max-height: 90vh;           /* No más del 90% del alto visible */
+  overflow-y: auto;           /* Scroll si se necesita */
   padding: 20px;
   border-radius: 8px;
   width: 80%;
   max-width: 500px;
   text-align: center;
-  z-index: 1001; /* Asegura que el contenido del modal esté encima del fondo */
+  background-color: #fff;
+  scroll-behavior: smooth;
+  scrollbar-width: thin; /* Firefox */
+}
+
+.modal-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
 }
 
 .pet-modal-image {

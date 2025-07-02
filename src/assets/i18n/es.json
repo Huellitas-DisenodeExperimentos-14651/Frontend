@@ -4,6 +4,40 @@
     "ES": "Español"
   },
 
+  "HEADER": {
+    "home": "Patita Solidaria",
+    "sign_in": "Iniciar sesión",
+    "sign_up": "Registrarse",
+    "sign_out": "Cerrar sesión",
+    "welcome": "Bienvenido",
+    "pets": "Mascotas",
+    "adoptions": "Adopciones",
+    "donations": "Donaciones",
+    "profile": "Perfil",
+    "publications": "Publicaciones",
+    "manage_adoptions": "Gestión de Adopciones",
+    "authentication": "Autenticación"
+  },
+
+  "SIGN_IN": {
+    "title": "Bienvenido",
+    "subtitle": "Inicia sesión para continuar",
+    "username": "Nombre de usuario",
+    "password": "Contraseña",
+    "login_button": "Iniciar sesión",
+    "forgot_password": "¿Olvidaste tu contraseña?",
+    "login_google": "Iniciar con Google"
+  },
+
+  "SIGN_UP": {
+    "title": "Crear cuenta",
+    "subtitle": "Regístrate para comenzar",
+    "username": "Nombre de usuario",
+    "password": "Contraseña",
+    "register_button": "Registrarse",
+    "login_redirect": "¿Ya tienes cuenta? Inicia sesión"
+  },
+
   "ADOPTION_CARD": {
     "SPECIES": "Especie",
     "BREED": "Raza",
@@ -12,6 +46,30 @@
     "GENDER": "Género",
     "LOCATION": "Ubicación",
     "ADOPT_BUTTON": "Solicitar adopción"
+  },
+
+  "DETAILS": {
+    "LOADING": "Cargando información de la mascota...",
+    "BACK": "Volver a adopciones",
+    "SPECIES": "Especie",
+    "BREED": "Raza",
+    "AGE": "Edad",
+    "YEARS": "años",
+    "GENDER": "Género",
+    "SIZE": "Tamaño",
+    "WEIGHT": "Peso",
+    "HAIR": "Largo de pelo",
+    "ACTIVITY": "Nivel de actividad",
+    "LOCATION": "Ubicación",
+    "DESCRIPTION": "Descripción",
+    "RESCUE_STORY": "Historia de rescate",
+    "RESCUED_BY": "Rescatado por",
+    "HEALTH": "Estado de salud",
+    "VACCINATION_TITLE": "Historial de Vacunación",
+    "DOSE": "Dosis",
+    "VACCINES": "Vacunas",
+    "ADOPT_BUTTON": "Solicitar adopción",
+    "NOT_FOUND": "Mascota no encontrada."
   },
 
   "FILTERS": {
@@ -40,30 +98,6 @@
     "CLEAR": "Limpiar filtros"
   },
 
-  "DETAILS": {
-    "LOADING": "Cargando información de la mascota...",
-    "BACK": "Volver a adopciones",
-    "SPECIES": "Especie",
-    "BREED": "Raza",
-    "AGE": "Edad",
-    "YEARS": "años",
-    "GENDER": "Género",
-    "SIZE": "Tamaño",
-    "WEIGHT": "Peso",
-    "HAIR": "Largo de pelo",
-    "ACTIVITY": "Nivel de actividad",
-    "LOCATION": "Ubicación",
-    "DESCRIPTION": "Descripción",
-    "RESCUE_STORY": "Historia de rescate",
-    "RESCUED_BY": "Rescatado por",
-    "HEALTH": "Estado de salud",
-    "VACCINATION_TITLE": "Historial de Vacunación",
-    "DOSE": "Dosis",
-    "VACCINES": "Vacunas",
-    "ADOPT_BUTTON": "Solicitar adopción",
-    "NOT_FOUND": "Mascota no encontrada."
-  },
-
   "LIST": {
     "SEARCH_PLACEHOLDER": "Buscar por nombre...",
     "SORT_BY": "Ordenar por:",
@@ -86,17 +120,49 @@
       "accepted": "Aceptada",
       "rejected": "Rechazada"
     },
-
+    "actions": {
+      "accept": "Aceptar",
+      "reject": "Rechazar",
+      "details": "Detalles",
+      "close": "Cerrar",
+      "cancel": "Cancelar"
+    },
+    "labels": {
+      "status": "Estado",
+      "reason": "Motivo",
+      "pet": "Mascota",
+      "age": "Edad",
+      "name": "Nombre",
+      "birthDate": "Fecha de nacimiento",
+      "email": "Correo",
+      "dni": "DNI",
+      "location": "Ubicación",
+      "maritalStatus": "Situación sentimental",
+      "hasChildren": "¿Tiene hijos?",
+      "livesWithParents": "¿Vive con sus padres?",
+      "economicStatus": "Situación económica",
+      "phone": "Número de contacto",
+      "petExperience": "¿Ha tenido o tiene mascotas?"
+    },
+    "status": {
+      "pendiente": "Pendiente",
+      "aceptada": "Aceptada",
+      "rechazada": "Rechazada"
+    },
+    "confirm": {
+      "acceptTitle": "Confirmar Adopción",
+      "acceptMsg": "¿Estás seguro de aceptar a este adoptante?",
+      "rejectTitle": "Confirmar Rechazo",
+      "rejectMsg": "¿Estás seguro de rechazar a este adoptante?"
+    },
     "pet": {
       "buttons": {
         "details": "Ver detalles"
       },
-
       "photoAlt": "Foto de {{name}}",
       "yearsOld": "años",
       "descriptionEmpty": "No hay descripción adicional"
     },
-
     "pets": {
       "title": "Adopta un amigo",
       "filter": {
@@ -107,7 +173,6 @@
         "adopted": "Adoptado",
         "pending": "Pendiente"
       },
-
       "loading": "Cargando mascotas...",
       "empty": "No se encontraron mascotas."
     }
@@ -146,47 +211,6 @@
     "supportGoods": "Apoyar con donaciones físicas"
   },
 
-  "MANAGE_ADOPTIONS": {
-    "actions": {
-      "accept": "Aceptar",
-      "reject": "Rechazar",
-      "details": "Detalles",
-      "close": "Cerrar",
-      "cancel": "Cancelar"
-    },
-
-    "labels": {
-      "status": "Estado",
-      "reason": "Motivo",
-      "pet": "Mascota",
-      "age": "Edad",
-      "name": "Nombre",
-      "birthDate": "Fecha de nacimiento",
-      "email": "Correo",
-      "dni": "DNI",
-      "location": "Ubicación",
-      "maritalStatus": "Situación sentimental",
-      "hasChildren": "¿Tiene hijos?",
-      "livesWithParents": "¿Vive con sus padres?",
-      "economicStatus": "Situación económica",
-      "phone": "Número de contacto",
-      "petExperience": "¿Ha tenido o tiene mascotas?"
-    },
-
-    "status": {
-      "pendiente": "Pendiente",
-      "aceptada": "Aceptada",
-      "rechazada": "Rechazada"
-    },
-
-    "confirm": {
-      "acceptTitle": "Confirmar Adopción",
-      "acceptMsg": "¿Estás seguro de aceptar a este adoptante?",
-      "rejectTitle": "Confirmar Rechazo",
-      "rejectMsg": "¿Estás seguro de rechazar a este adoptante?"
-    }
-  },
-
   "USER_PROFILE": {
     "title": "Perfiles de Usuarios",
     "location": "Ubicación",
@@ -201,7 +225,16 @@
     "paymentMethods": "Acepta"
   },
 
-  "HEADER": {
-    "home": "Inicio"
+  "PET_SIZE": {
+    "small": "Pequeño",
+    "medium": "Mediano",
+    "large": "Grande"
+  },
+
+  "AUTH": {
+    "GUARD_MESSAGE": "Debes iniciar sesión para acceder a esta sección."
+  },
+  "COMMON": {
+    "CLOSE": "Cerrar"
   }
 }

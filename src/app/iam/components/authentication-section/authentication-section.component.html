@@ -1,13 +1,14 @@
-<!-- Authentication Section information content depends on signed-in status -->
-<div *ngIf="isSignedIn; else anonymous"></div>
-<!-- Authenticated Scenario Information and Available Actions -->
+<!-- Lógica condicional para mostrar secciones -->
+<ng-container *ngIf="isSignedIn; then authenticated; else anonymous"></ng-container>
+
+<!-- Escenario autenticado -->
 <ng-template #authenticated>
-  <span class="mat-body">Welcome, {{ currentUserName }}</span> |
-  <button mat-button (click)="onSignOut()">Sign Out</button>
+  <span class="mat-body">{{ 'HEADER.welcome' | translate }}, {{ currentUserName }}</span> |
+  <button mat-button (click)="onSignOut()">{{ 'HEADER.sign_out' | translate }}</button>
 </ng-template>
 
-<!-- Anonymous Scenario Available Actions -->
+<!-- Escenario anónimo -->
 <ng-template #anonymous>
-  <button mat-button (click)="onSignIn()" style="color: white">Sign In</button> |
-  <button mat-button (click)="onSignUp()" style="color: white">Sign Up</button>
+  <button mat-button (click)="onSignIn()">{{ 'HEADER.sign_in' | translate }}</button> |
+  <button mat-button (click)="onSignUp()">{{ 'HEADER.sign_up' | translate }}</button>
 </ng-template>

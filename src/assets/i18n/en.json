@@ -4,6 +4,40 @@
     "ES": "Spanish"
   },
 
+  "HEADER": {
+    "home": "Patita Solidaria",
+    "sign_in": "Sign In",
+    "sign_up": "Sign Up",
+    "sign_out": "Sign Out",
+    "welcome": "Welcome",
+    "pets": "Pets",
+    "adoptions": "Adoptions",
+    "donations": "Donations",
+    "profile": "Profile",
+    "publications": "Publications",
+    "manage_adoptions": "Manage Adoptions",
+    "authentication": "Authentication"
+  },
+
+  "SIGN_IN": {
+    "title": "Welcome",
+    "subtitle": "Sign in to continue",
+    "username": "Username",
+    "password": "Password",
+    "login_button": "Sign In",
+    "forgot_password": "Forgot your password?",
+    "login_google": "Sign in with Google"
+  },
+
+  "SIGN_UP": {
+    "title": "Create Account",
+    "subtitle": "Register to get started",
+    "username": "Username",
+    "password": "Password",
+    "register_button": "Sign Up",
+    "login_redirect": "Already have an account? Sign in"
+  },
+
   "ADOPTION_CARD": {
     "SPECIES": "Species",
     "BREED": "Breed",
@@ -40,6 +74,18 @@
     "CLEAR": "Clear filters"
   },
 
+  "LIST": {
+    "SEARCH_PLACEHOLDER": "Search by name...",
+    "SORT_BY": "Sort by:",
+    "SORT_SELECT": "-- Select --",
+    "SORT_NAME_ASC": "Name (A-Z)",
+    "SORT_NAME_DESC": "Name (Z-A)",
+    "SORT_AGE_ASC": "Age (youngest first)",
+    "SORT_AGE_DESC": "Age (oldest first)",
+    "NO_PETS": "No pets available.",
+    "LOADING": "Loading pets..."
+  },
+
   "DETAILS": {
     "LOADING": "Loading pet information...",
     "BACK": "Back to adoptions",
@@ -64,18 +110,6 @@
     "NOT_FOUND": "Pet not found."
   },
 
-  "LIST": {
-    "SEARCH_PLACEHOLDER": "Search by name...",
-    "SORT_BY": "Sort by:",
-    "SORT_SELECT": "-- Select --",
-    "SORT_NAME_ASC": "Name (A-Z)",
-    "SORT_NAME_DESC": "Name (Z-A)",
-    "SORT_AGE_ASC": "Age (youngest first)",
-    "SORT_AGE_DESC": "Age (oldest first)",
-    "NO_PETS": "No pets available.",
-    "LOADING": "Loading pets..."
-  },
-
   "ADOPTION_MANAGEMENT": {
     "title": "Adoption Requests",
     "loading": "Loading requests...",
@@ -86,7 +120,6 @@
       "accepted": "Accepted",
       "rejected": "Rejected"
     },
-
     "actions": {
       "accept": "Accept",
       "reject": "Reject",
@@ -94,7 +127,6 @@
       "close": "Close",
       "cancel": "Cancel"
     },
-
     "labels": {
       "status": "Status",
       "reason": "Reason",
@@ -103,39 +135,34 @@
       "name": "Name",
       "birthDate": "Birth Date",
       "email": "Email",
-      "dni": "DNI",
+      "dni": "ID Number",
       "location": "Location",
       "maritalStatus": "Marital Status",
-      "hasChildren": "Has children?",
-      "livesWithParents": "Lives with parents?",
-      "economicStatus": "Economic status",
-      "phone": "Phone number",
-      "petExperience": "Has or had pets?"
+      "hasChildren": "Has Children?",
+      "livesWithParents": "Lives with Parents?",
+      "economicStatus": "Economic Status",
+      "phone": "Phone Number",
+      "petExperience": "Pet Experience"
     },
-
     "status": {
       "pendiente": "Pending",
       "aceptada": "Accepted",
       "rechazada": "Rejected"
     },
-
     "confirm": {
       "acceptTitle": "Confirm Adoption",
       "acceptMsg": "Are you sure you want to accept this adopter?",
       "rejectTitle": "Confirm Rejection",
       "rejectMsg": "Are you sure you want to reject this adopter?"
     },
-
     "pet": {
       "buttons": {
         "details": "View details"
       },
-
       "photoAlt": "Photo of {{name}}",
       "yearsOld": "years old",
       "descriptionEmpty": "No additional description available"
     },
-
     "pets": {
       "title": "Adopt a friend",
       "filter": {
@@ -146,7 +173,6 @@
         "adopted": "Adopted",
         "pending": "Pending"
       },
-
       "loading": "Loading pets...",
       "empty": "No pets found."
     }
@@ -199,7 +225,16 @@
     "paymentMethods": "Accepts"
   },
 
-  "HEADER": {
-    "home": "Home"
+  "PET_SIZE": {
+    "small": "Small",
+    "medium": "Medium",
+    "large": "Large"
+  },
+
+  "AUTH": {
+    "GUARD_MESSAGE": "You must sign in to access this section."
+  },
+  "COMMON": {
+    "CLOSE": "Close"
   }
 }

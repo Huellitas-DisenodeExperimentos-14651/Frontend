@@ -1,14 +1,16 @@
-
-<div class="pet-card" [ngClass]="{'processing': isProcessing}">
-  <div class="status-indicator" [class]="getStatusBadgeClass()">
+<div class="pet-card" [ngClass]="{ 'processing': isProcessing }">
+  <div class="status-indicator" [ngClass]="getStatusBadgeClass()">
     {{ ('ADOPTION_MANAGEMENT.pets.filter.' + pet.status) | translate }}
   </div>
 
-  <img [src]="pet.photo" [alt]="'ADOPTION_MANAGEMENT.pet.photoAlt' | translate: {name: pet.name}" class="pet-image">
+  <img [src]="pet.photo" [alt]="'ADOPTION_MANAGEMENT.pet.photoAlt' | translate:{ name: pet.name }" class="pet-image" />
 
   <div class="pet-info">
     <h3>{{ pet.name }}</h3>
     <p>{{ pet.breed }} • {{ pet.age }} {{ 'ADOPTION_MANAGEMENT.pet.yearsOld' | translate }}</p>
+    <p><strong>{{ 'DETAILS.SIZE' | translate }}:</strong> {{ ('PET_SIZE.' + pet.size) | translate }}</p>
+    <p><strong>{{ 'DETAILS.HEALTH' | translate }}:</strong> {{ pet.healthStatus }}</p>
+    <p><strong>{{ 'DETAILS.VACCINATION_TITLE' | translate }}:</strong> {{ pet.vaccinationStatus }}</p>
   </div>
 
   <button (click)="openDetails()" [disabled]="isProcessing">
@@ -16,29 +18,26 @@
   </button>
 
   <!-- Modal de detalles -->
-  <div *ngIf="showModal" class="modal" [ngClass]="{'show': showModal}">
+  <div *ngIf="showModal" class="modal" [ngClass]="{ 'show': showModal }">
     <div class="modal-content">
       <h2>{{ pet.name }}</h2>
-      <img [src]="pet.photo" [alt]="pet.name" class="pet-modal-image">
-      <p><strong>Raza:</strong> {{ pet.breed }}</p>
-      <p><strong>Edad:</strong> {{ pet.age }} años</p>
-      <p><strong>Descripción:</strong> {{ pet.description || 'ADOPTION_MANAGEMENT.pet.descriptionEmpty' | translate }}</p>
+      <img [src]="pet.photo" [alt]="pet.name" class="pet-modal-image" />
+      <p><strong>{{ 'DETAILS.BREED' | translate }}:</strong> {{ pet.breed }}</p>
+      <p><strong>{{ 'DETAILS.AGE' | translate }}:</strong> {{ pet.age }} {{ 'DETAILS.YEARS' | translate }}</p>
+      <p><strong>{{ 'DETAILS.SIZE' | translate }}:</strong> {{ ('PET_SIZE.' + pet.size) | translate }}</p>
+      <p><strong>{{ 'DETAILS.HEALTH' | translate }}:</strong> {{ pet.healthStatus }}</p>
+      <p><strong>{{ 'DETAILS.VACCINATION_TITLE' | translate }}:</strong> {{ pet.vaccinationStatus }}</p>
+      <p><strong>{{ 'DETAILS.DESCRIPTION' | translate }}:</strong> {{ pet.description || ('ADOPTION_MANAGEMENT.pet.descriptionEmpty' | translate) }}</p>
+      <p><strong>{{ 'DETAILS.RESCUE_STORY' | translate }}:</strong> {{ pet.specialNeeds }}</p>
 
       <div class="modal-buttons">
-        <!-- Botón "{{ 'ADOPTION_MANAGEMENT.actions.accept' | translate }}" -->
         <button [routerLink]="'/adoptions'" class="adopt-link">
           {{ 'ADOPTION_MANAGEMENT.actions.accept' | translate }}
         </button>
-        <!-- Botón "{{ 'ADOPTION_MANAGEMENT.actions.close' | translate }}" -->
         <button (click)="closeDetails()" class="btn-close">
           {{ 'ADOPTION_MANAGEMENT.actions.close' | translate }}
         </button>
       </div>
     </div>
-  </div>
-
-  <!-- Modal de confirmación -->
-  <div *ngIf="showConfirmation" class="confirmation-modal" [class]="modalAnimation">
-    <!-- Contenido de confirmación -->
   </div>
 </div>

@@ -1,43 +1,77 @@
+<!-- Barra superior (Toolbar) -->
 <mat-toolbar [style.background-color]="'black'" color="primary">
+
+  <!-- Botón para abrir/cerrar el sidenav -->
   <button mat-icon-button (click)="sidenav.toggle()">
+    <!-- Ícono cambia según si el sidenav está abierto o cerrado -->
     <mat-icon *ngIf="sidenav.opened" style="color: white;">close</mat-icon>
     <mat-icon *ngIf="!sidenav.opened" style="color: white;">apps</mat-icon>
   </button>
 
-  <!-- Imagen en lugar del texto -->
+  <!-- Logo de la aplicación -->
   <img src="https://i.imgur.com/iVe94bK.png" alt="PatitaSolidaria Logo" style="height: 50px; margin-left: 20px;">
 
-  <a mat-button [routerLink]="['/pets']" style="margin-left: 20px; color: white;">
-    {{ 'HEADER.home' | translate }}
+  <!-- Botón de navegación a la vista principal de mascotas -->
+  <a style="margin-left: 20px; color: white;">
+    {{ 'HEADER.home' | translate }} <!-- Texto traducido dinámicamente -->
   </a>
 
+  <!-- Espaciador para alinear elementos a la derecha -->
   <span class="mat-spacer"></span>
 
+  <!-- Sección de autenticación (login/logout, usuario) -->
   <app-authentication-section></app-authentication-section>
+
+  <!-- Selector de idioma -->
   <app-language-switcher style="color: white;"></app-language-switcher>
 </mat-toolbar>
 
+
+<!-- Contenedor principal que incluye el sidenav y el contenido -->
 <mat-sidenav-container>
+
+  <!-- Menú lateral (sidenav) -->
   <mat-sidenav #sidenav style="background-color: #FF8C00;">
     <mat-nav-list>
-      <!-- Opciones del sidenav según PatitaSolidaria -->
       <ng-container *ngFor="let option of secondaryOptions">
         <mat-list-item (click)="sidenav.mode === 'over' && sidenav.toggle()" [routerLink]="option.path">
-          <ng-container *ngIf="option.icon.startsWith('http'); else materialIcon">
-            <img [src]="option.icon" alt="{{ option.title }} icon" width="24px" height="24px">
-          </ng-container>
-          <ng-template #materialIcon>
-            <mat-icon matListItemIcon>{{ option.icon }}</mat-icon>
-          </ng-template>
-          {{ option.title }}
+
+          <!-- Contenedor visual personalizado -->
+          <div
+            class="sidenav-item-content"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+          >
+            <!-- Ícono: URL externa -->
+            <ng-container *ngIf="option.icon.startsWith('http'); else materialIcon">
+              <img
+                [src]="option.icon"
+                [alt]="option.titleKey | translate"
+              />
+            </ng-container>
+
+            <!-- Ícono: Material -->
+            <ng-template #materialIcon>
+              <mat-icon>{{ option.icon }}</mat-icon>
+            </ng-template>
+
+            <!-- Título traducido -->
+            <span class="sidenav-label">
+            {{ option.titleKey | translate }}
+          </span>
+          </div>
+
         </mat-list-item>
       </ng-container>
     </mat-nav-list>
   </mat-sidenav>
 
+  <!-- Área principal de contenido -->
   <mat-sidenav-content>
     <div class="content">
-      <router-outlet></router-outlet> <!-- Aquí se mostrarán las rutas según la navegación -->
+      <!-- Aquí se cargan las vistas según la ruta seleccionada -->
+      <router-outlet></router-outlet>
     </div>
   </mat-sidenav-content>
+
 </mat-sidenav-container>

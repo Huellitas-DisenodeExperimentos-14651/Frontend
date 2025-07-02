@@ -1,21 +1,203 @@
-<div class="sign-up-content">
+<div class="auth-wrapper">
 
-  <mat-card>
-    <mat-card-header>
-      <mat-card-title>Sign Up</mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-      <form [formGroup]="form" (submit)="onSubmit()">
-        <mat-form-field>
-          <input matInput placeholder="Username" id="username" name="username" required formControlName="username">
-          <mat-error *ngIf="isInvalidControl(form,'username')">{{ errorMessagesForControl(form,'username')}}</mat-error>
+  <mat-card class="auth-card">
+
+
+    <!-- Logo de la app -->
+    <div class="logo-container">
+      <img src="https://i.imgur.com/iVe94bK.png" alt="Logo" class="logo">
+    </div>
+
+    <!-- Bienvenida -->
+    <div class="welcome-text">
+      <h2>Create Account</h2>
+      <p>Register to get started</p>
+    </div>
+
+  <mat-horizontal-stepper [linear]="true" #stepper>
+
+
+    <!-- Paso 1: Cuenta -->
+    <mat-step [stepControl]="accountFormGroup">
+      <form [formGroup]="accountFormGroup">
+        <ng-template matStepLabel>
+          <span [ngClass]="{ 'active-label': stepper.selectedIndex === 0 }">Cuenta</span>
+        </ng-template>
+
+        <!-- Campos -->
+        <div class="form-field-wrapper">
+        <mat-form-field appearance="fill">
+          <mat-label>Nombre de usuario</mat-label>
+          <input matInput formControlName="username" required />
         </mat-form-field>
-        <mat-form-field>
-          <input matInput type="password" placeholder="Password" id="password" name="password" formControlName="password">
-          <mat-error *ngIf="isInvalidControl(form,'password')">{{ errorMessagesForControl(form,'password')}}</mat-error>
+        </div>
+
+        <div class="form-field-wrapper">
+        <mat-form-field appearance="fill">
+          <mat-label>Contraseña</mat-label>
+          <input matInput type="password" formControlName="password" required />
         </mat-form-field>
-        <button mat-raised-button color="primary">Sign Up</button>
+        </div>
+
+        <div class="step-actions">
+          <button mat-raised-button color="primary" matStepperNext [disabled]="accountFormGroup.invalid">
+            Siguiente
+            <mat-icon style="margin-left: 8px;">arrow_forward</mat-icon>
+          </button>
+        </div>
       </form>
-    </mat-card-content>
-  </mat-card>
+    </mat-step>
+
+    <!-- Paso 2: Datos personales -->
+    <mat-step [stepControl]="personalFormGroup">
+      <form [formGroup]="personalFormGroup">
+        <ng-template matStepLabel>
+          <span [ngClass]="{ 'active-label': stepper.selectedIndex === 1 }">Datos personales</span>
+        </ng-template>
+
+        <div class="form-field-wrapper">
+        <mat-form-field appearance="fill">
+          <mat-label>Nombre completo</mat-label>
+          <input matInput formControlName="name" required />
+        </mat-form-field>
+        </div>
+
+        <div class="form-field-wrapper">
+        <mat-form-field appearance="fill">
+          <mat-label>Correo electrónico</mat-label>
+          <input matInput type="email" formControlName="email" required />
+        </mat-form-field>
+        </div>
+
+        <div class="form-field-wrapper">
+        <mat-form-field appearance="fill">
+          <mat-label>Dirección</mat-label>
+          <input matInput formControlName="address" required />
+        </mat-form-field>
+        </div>
+
+        <div class="form-field-wrapper">
+        <mat-form-field appearance="fill">
+          <mat-label>Rol</mat-label>
+          <mat-select formControlName="role" required>
+            <mat-option value="ADOPTER">Adoptante</mat-option>
+            <mat-option value="SHELTER">Refugio</mat-option>
+          </mat-select>
+        </mat-form-field>
+        </div>
+
+        <div class="step-actions">
+          <button mat-stroked-button color="primary" matStepperPrevious>
+            <mat-icon style="margin-right: 8px;">arrow_back</mat-icon>
+            Anterior
+          </button>
+
+          <button mat-raised-button color="primary" matStepperNext [disabled]="personalFormGroup.invalid">
+            Siguiente
+            <mat-icon style="margin-left: 8px;">arrow_forward</mat-icon>
+          </button>
+        </div>
+      </form>
+    </mat-step>
+
+    <!-- Paso 3: Preferencias -->
+    <mat-step [stepControl]="preferencesFormGroup">
+      <form [formGroup]="preferencesFormGroup">
+        <ng-template matStepLabel>
+          <span [ngClass]="{ 'active-label': stepper.selectedIndex === 2 }">Preferencias</span>
+        </ng-template>
+
+        <div class="form-field-wrapper">
+        <mat-form-field appearance="fill">
+          <mat-label>Métodos de pago disponibles</mat-label>
+          <input matInput formControlName="paymentMethods" placeholder="Ej. Yape, Plin" />
+        </mat-form-field>
+        </div>
+
+        <div class="form-field-wrapper">
+        <mat-form-field appearance="fill">
+          <mat-label>Preferencias de mascotas</mat-label>
+          <input matInput formControlName="preferences" placeholder="Ej. Perros, Gatos" />
+        </mat-form-field>
+        </div>
+
+        <div class="step-actions">
+          <button mat-stroked-button color="primary" matStepperPrevious>
+            <mat-icon style="margin-right: 8px;">arrow_back</mat-icon>
+            Anterior
+          </button>
+
+          <button mat-raised-button color="primary" matStepperNext [disabled]="preferencesFormGroup.invalid">
+            Siguiente
+            <mat-icon style="margin-left: 8px;">arrow_forward</mat-icon>
+          </button>
+        </div>
+      </form>
+    </mat-step>
+
+    <!-- Paso 4: Hogar y experiencia -->
+    <mat-step [stepControl]="homeFormGroup">
+      <form [formGroup]="homeFormGroup" (ngSubmit)="onSubmit()">
+        <ng-template matStepLabel>
+          <span [ngClass]="{ 'active-label': stepper.selectedIndex === 3 }">Hogar y experiencia</span>
+        </ng-template>
+
+        <div class="form-field-wrapper">
+        <mat-form-field appearance="fill">
+          <mat-label>Tipo de hogar</mat-label>
+          <input matInput formControlName="homeType" placeholder="Ej. Casa con patio" />
+        </mat-form-field>
+        </div>
+
+        <div class="form-field-wrapper">
+        <mat-form-field appearance="fill">
+          <mat-label>Capacidad máxima de mascotas</mat-label>
+          <input matInput type="number" formControlName="capacity" min="1" />
+        </mat-form-field>
+        </div>
+
+        <div class="form-field-wrapper">
+        <mat-form-field appearance="fill">
+          <mat-label>Animales actualmente disponibles</mat-label>
+          <input matInput type="number" formControlName="animalsAvailable" min="0" />
+        </mat-form-field>
+        </div>
+
+        <div class="form-field-wrapper">
+        <mat-form-field appearance="fill">
+          <mat-label>Foto de perfil (URL)</mat-label>
+          <input matInput type="url" formControlName="profilePic" />
+        </mat-form-field>
+        </div>
+
+        <div class="form-field-wrapper">
+        <mat-form-field appearance="fill">
+          <mat-label>Biografía</mat-label>
+          <textarea matInput formControlName="bio" rows="3"></textarea>
+        </mat-form-field>
+        </div>
+
+        <div class="form-field-wrapper">
+        <mat-form-field appearance="fill">
+          <mat-label>Experiencia previa</mat-label>
+          <textarea matInput formControlName="previousExperience" rows="3"></textarea>
+        </mat-form-field>
+        </div>
+
+        <div class="step-actions">
+          <button mat-stroked-button color="primary" matStepperPrevious>
+            <mat-icon style="margin-right: 8px;">arrow_back</mat-icon>
+            Anterior
+          </button>
+
+          <button mat-raised-button color="primary" type="submit" [disabled]="homeFormGroup.invalid">
+            Registrarme
+            <mat-icon style="margin-left: 8px;">check_circle</mat-icon>
+          </button>
+        </div>
+      </form>
+    </mat-step>
+
+  </mat-horizontal-stepper>
+</mat-card>
 </div>

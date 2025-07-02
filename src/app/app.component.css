@@ -1,21 +1,13 @@
+/* Layout general */
 .mat-spacer {
   flex: 1 1 auto;
 }
 
 mat-sidenav {
-  width: 200px;
+  width: 240px;
   border-right: none;
   padding: 16px 0;
-}
-
-.content {
-  height: calc(100svh - 98px);
-  border-radius: 10px;
-  padding: 16px;
-  max-width: 1520px;
-  margin: 0 auto;
-  font-size: 16px;
-  background: #fff;
+  border-radius: 0;
 }
 
 mat-sidenav-container {
@@ -23,74 +15,75 @@ mat-sidenav-container {
 }
 
 mat-toolbar {
-  background-color: #FF8C00 !important; /* Color de fondo de la barra */
+  background-color: #FF8C00 !important;
 }
 
-mat-icon {
-  color: white !important; /* Asegura que todos los íconos dentro del toolbar sean blancos */
-}
-
-a[mat-button] {
-  margin-left: 20px;
-  color: white !important; /* Color blanco para el botón "Mascotas", etc. */
-}
-
-app-language-switcher {
-  color: white !important; /* Asegura que el selector de idioma también esté en blanco */
-}
-
-button[mat-icon-button] {
-  color: white !important; /* Asegura que el ícono del menú (hamburguesa) sea blanco */
-}
-
-/* Estilo de las opciones dentro del sidenav */
-.mat-list-item {
-  color: white; /* Texto blanco para las opciones del sidenav */
-  padding: 10px 20px; /* Espaciado en las opciones */
-  display: flex;
-  align-items: center;
-  border-radius: 5px; /* Bordes suaves en las opciones */
-}
-
-/* Efecto hover para las opciones */
-.mat-list-item:hover {
-  background-color: rgba(255, 255, 255, 0.1); /* Ligera variación al pasar el mouse */
-}
-
-/* Estilo de los iconos dentro del sidenav */
-.mat-list-item mat-icon {
-  color: white; /* Asegura que los iconos sean blancos */
-  margin-right: 10px; /* Separación entre el icono y el texto */
-}
-
-/* Iconos dentro del sidenav (cuando la opción tiene imagen en lugar de icono) */
-.mat-list-item img {
-  margin-right: 10px;
-  width: 24px;
-  height: 24px;
-}
-
-/* Efecto hover cuando el item tiene una imagen como ícono */
-.mat-list-item:hover img {
-  opacity: 0.7;
-}
-
-/* Estilo para el logo */
 mat-toolbar img {
   height: 40px;
   margin-left: 10px;
 }
 
-mat-sidenav-content {
-  padding: 16px;
+.content {
+  min-height: 100%;
+  display: block; /* ❌ No uses flex aquí */
+  background: #f4f4f9;
 }
 
-/* Iconos dentro del sidenav */
-.mat-list-item mat-icon {
-  color: white; /* Aseguramos que los iconos sean blancos */
+a[mat-button] {
+  margin-left: 20px;
+  color: white !important;
 }
 
-/* Asegurarse que el sidenav no tenga bordes */
-mat-sidenav {
-  border-radius: 0; /* Eliminar bordes curvados */
+app-language-switcher {
+  color: white !important;
+}
+
+button[mat-icon-button] {
+  color: white !important;
+}
+
+mat-icon {
+  color: white !important;
+}
+
+/* --- NUEVO: Estilo unificado para ítem personalizado del sidenav --- */
+.mat-list-item {
+  padding: 0; /* Eliminamos padding interno de mat-list-item */
+  background: transparent;
+}
+
+.sidenav-item-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 20px 0;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+  color: white;
+}
+
+.sidenav-item-content:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+}
+
+.sidenav-item-content img,
+.sidenav-item-content mat-icon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  display: inline-block;
+}
+
+.sidenav-label {
+  font-size: 16px;
+  line-height: 1;
+  color: white;
+}
+
+/* Estilo opcional para el ítem activo */
+.sidenav-item-content.active {
+  background-color: rgba(255, 255, 255, 0.25);
+  font-weight: 600;
 }

@@ -9,13 +9,16 @@ import { HttpClient, provideHttpClient } from "@angular/common/http";
 import { importProvidersFrom } from '@angular/core';
 import { TranslateLoader, TranslateModule } from "@ngx-translate/core";
 import { TranslateHttpLoader } from "@ngx-translate/http-loader";
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+
 
 export function HttpLoaderFactory(http: HttpClient) {
-  return new TranslateHttpLoader(http, './assets/locales/', '.json');
+  return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
 }
 
 export const appConfig: ApplicationConfig = {
   providers: [
+    importProvidersFrom(MatSnackBarModule),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideAnimationsAsync(),

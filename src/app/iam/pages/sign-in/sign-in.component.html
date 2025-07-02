@@ -1,21 +1,46 @@
-  <div class="sign-in-content">
+<div class="sign-in-content">
+  <mat-card class="sign-in-card">
 
-    <mat-card>
-      <mat-card-header>
-        <mat-card-title>Sign In</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <form [formGroup]="form" (submit)="onSubmit()">
-          <mat-form-field>
-            <input matInput placeholder="Username" id="username" name="username" required formControlName="username">
-            <mat-error *ngIf="isInvalidControl(form,'username')">{{ errorMessagesForControl(form,'username')}}</mat-error>
-          </mat-form-field>
-          <mat-form-field>
-            <input matInput type="password" placeholder="Password" id="password" name="password" required formControlName="password">
-            <mat-error *ngIf="isInvalidControl(form,'password')">{{ errorMessagesForControl(form,'password')}}</mat-error>
-          </mat-form-field>
-          <button mat-raised-button color="primary">Sign In</button>
-        </form>
-      </mat-card-content>
-    </mat-card>
-  </div>
+    <!-- Logo de la app -->
+    <div class="logo-container">
+      <img src="https://i.imgur.com/iVe94bK.png" alt="Logo" class="logo">
+    </div>
+
+    <!-- Bienvenida -->
+    <div class="welcome-text">
+      <h2>{{ 'SIGN_IN.title' | translate }}</h2>
+      <p>{{ 'SIGN_IN.subtitle' | translate }}</p>
+    </div>
+
+
+    <mat-card-content>
+      <form [formGroup]="form" (submit)="onSubmit()">
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>{{ 'SIGN_IN.username' | translate }}</mat-label>
+          <input matInput id="username" name="username" required formControlName="username">
+          <mat-error *ngIf="isInvalidControl(form,'username')">
+            {{ errorMessagesForControl(form,'username') }}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>{{ 'SIGN_IN.password' | translate }}</mat-label>
+          <input matInput type="password" id="password" name="password" required formControlName="password">
+          <mat-error *ngIf="isInvalidControl(form,'password')">
+            {{ errorMessagesForControl(form,'password') }}
+          </mat-error>
+        </mat-form-field>
+
+        <button mat-raised-button color="primary" class="login-button">
+          {{ 'SIGN_IN.login_button' | translate }}
+        </button>
+
+        <!-- Enlaces secundarios -->
+        <div class="secondary-actions">
+          <button mat-button disabled>{{ 'SIGN_IN.forgot_password' | translate }}</button>
+          <button mat-button disabled>{{ 'SIGN_IN.login_google' | translate }}</button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

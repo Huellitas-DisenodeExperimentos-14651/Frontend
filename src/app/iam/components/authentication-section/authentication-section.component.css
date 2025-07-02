@@ -1,9 +1,9 @@
-/* Establece el color del texto a blanco */
 .mat-body {
   color: white;
+  margin-right: 8px;
 }
 
-/* También puedes aplicar el color blanco a los botones si lo deseas */
 button.mat-button {
   color: white;
+  text-transform: none; /* Opcional: desactiva mayúsculas automáticas */
 }
