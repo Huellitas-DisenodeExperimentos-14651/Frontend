@@ -72,7 +72,7 @@ export class AuthenticationService {
   /**
    * Get the current authenticated user info from JWT token.
    */
-  getCurrentUser(): { username: string; role: string } | null {
+  getCurrentUser(): { username: string; role: string; profileId: number } | null {
     const token = localStorage.getItem('token');
     if (!token) return null;
 
@@ -80,7 +80,8 @@ export class AuthenticationService {
       const payload = JSON.parse(atob(token.split('.')[1]));
       return {
         username: payload.sub,
-        role: payload.role
+        role: payload.role,
+        profileId: payload.profileId
       };
     } catch (error) {
       console.error('Error decoding token payload:', error);
@@ -98,5 +99,18 @@ export class AuthenticationService {
     this.signedIn.next(isSignedIn);
     this.signedInUserId.next(userId);
     this.signedInUsername.next(username);
+  }
+
+  getCurrentUserId(): number | null {
+    const token = localStorage.getItem('token');
+    if (!token) return null;
+
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return payload.userId;
+    } catch (error) {
+      console.error('Error decoding token:', error);
+      return null;
+    }
   }
 }
