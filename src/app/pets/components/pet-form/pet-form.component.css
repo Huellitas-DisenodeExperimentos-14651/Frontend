@@ -1,0 +1,42 @@
+/* 🐾 Estilo general del formulario */
+form {
+  max-width: 600px;
+  margin: 0 auto 3rem auto;
+  padding: 1rem 2rem;
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  overflow: visible; /* ✅ clave para overlays */
+}
+
+/* 🧩 Todos los mat-form-fields ocupan 100% */
+mat-form-field {
+  width: 100%;
+}
+
+/* 🧵 Botón genérico */
+button {
+  margin: 2rem auto 0 auto;
+  padding: 0.8rem 2rem;
+  font-weight: bold;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+}
+
+/* ✅ Botón de envío del formulario */
+button[type="submit"] {
+  align-self: flex-end;
+  background-color: #4caf50;
+  color: white;
+}
+
+button[type="submit"]:hover {
+  background-color: #3e8e41;
+}
+
+button[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

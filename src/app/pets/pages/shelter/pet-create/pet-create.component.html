@@ -1,0 +1,12 @@
+<div class="form-header">
+  <button mat-button class="back-button" (click)="goBack()">
+    ← Volver
+  </button>
+  <h2>Registrar Nueva Mascota</h2>
+</div>
+<!-- Formulario -->
+<app-pet-form
+  [form]="form"
+  [submitLabel]="'Registrar Mascota'"
+  (submitPet)="onCreatePet()"
+></app-pet-form>

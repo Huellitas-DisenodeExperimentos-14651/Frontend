@@ -1,7 +1,5 @@
-// src/environments/environment.development.ts
-
-export const environment = {production: false,
-                            // Server Base Path for Spring Boot REST API
-                            serverBasePath: "http://localhost:8080/api/v1"
-                            // serverBasePath: "https://patita-solidaria-backend.onrender.com/api/v1"
-                            };
+// src/environments/environment.prod.ts <-- para producción en Render
+export const environment = {
+  production: true,
+  serverBasePath: "https://patita-solidaria-backend.onrender.com/api/v1"
+};
