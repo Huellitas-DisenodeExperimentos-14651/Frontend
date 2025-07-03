@@ -1,0 +1,53 @@
+<section class="pets-gallery">
+  <!-- Título descriptivo -->
+  <h1 class="gallery-title">Listado de mascotas del refugio</h1>
+
+  <!-- Filtros -->
+  <div class="filter-container" aria-labelledby="filter-label">
+    <label id="filter-label" for="status-filter">Filtrar por estado:</label>
+    <div class="select-wrapper">
+      <select
+        id="status-filter"
+        class="status-filter"
+        [(ngModel)]="statusFilter"
+        aria-label="Filtrar mascotas por estado">
+        <option value="all">Todas</option>
+        <option value="available">Disponibles</option>
+        <option value="adopted">Adoptadas</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Estado de carga -->
+  <div *ngIf="isLoading" class="loading-state" aria-live="polite">
+    <span class="spinner"></span>
+    Cargando mascotas...
+  </div>
+
+  <!-- Grid de mascotas -->
+  <div *ngIf="!isLoading" class="pets-grid">
+    <app-pet-card
+      *ngFor="let pet of filteredPets"
+      [pet]="pet"
+      class="pet-card-item"
+      aria-role="article"
+      (petDeleted)="removePetFromList($event)"
+    ></app-pet-card>
+  </div>
+
+  <!-- Mensaje si no hay mascotas -->
+  <div *ngIf="!isLoading && filteredPets.length === 0" class="empty-state">
+    No hay mascotas registradas actualmente en este refugio.
+  </div>
+
+  <!-- Botón final -->
+  <div class="create-button-container" *ngIf="!isLoading">
+    <button
+      type="button"
+      class="create-pet-button"
+      (click)="navigateToCreate()"
+      aria-label="Crear nueva mascota">
+      + Crear nueva mascota
+    </button>
+  </div>
+</section>

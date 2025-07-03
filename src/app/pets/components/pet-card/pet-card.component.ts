@@ -20,13 +20,15 @@ import {RouterLink} from '@angular/router';
 export class PetCardComponent {
   @Input() pet!: Pet;
   @Output() adoptionConfirmed = new EventEmitter<number>();
+  @Output() petDeleted = new EventEmitter<number>();
+
 
   showModal = false;
   modalAnimation = '';
   showConfirmation = false;
   isProcessing = false;
 
-  constructor(private service: PetsService) {}
+  constructor(private petsService: PetsService) {}
 
   // Métodos de modal (sin cambios)
   openDetails(): void {
@@ -45,39 +47,26 @@ export class PetCardComponent {
     }, 300);  // El modal se cierra después de la animación
   }
 
-  // Métodos de adopción (corregidos)
-  openAdoptionConfirmation(): void {
-    this.showConfirmation = true;
-    this.modalAnimation = 'modal-enter';
-  }
-
-  cancelAdoption(): void {
-    this.modalAnimation = 'modal-exit';
-    setTimeout(() => this.showConfirmation = false, 300);
-  }
-
-  confirmAdoption(): void {
-    this.isProcessing = true;
-
-    // CORRECCIÓN: Cambiado updatePetStatus → updateStatus
-    this.service.updateStatus(this.pet.id, 'adopted')
-      .pipe(
-        finalize(() => this.isProcessing = false)
-      )
-      .subscribe({
-        next: () => {
-          this.pet.status = 'adopted';
-          this.showConfirmation = false;
-          this.adoptionConfirmed.emit(this.pet.id);
-        },
-        error: (err) => {
-          console.error('Error en adopción:', err);
-          // Manejo de errores mejorado (podrías usar un toast service)
-        }
-      });
-  }
-
   getStatusBadgeClass(): string {
     return `status-badge ${this.pet.status}`;
+  }
+
+  onDeletePet(): void {
+    if (confirm('¿Eliminar esta mascota?')) {
+      this.isProcessing = true;
+      this.petsService.delete(this.pet.id).subscribe({
+        next: () => {
+          this.isProcessing = false;
+          alert('Mascota eliminada exitosamente');
+          this.closeDetails();
+          this.petDeleted.emit(this.pet.id); // ✅ avisamos al padre
+        },
+        error: (err) => {
+          this.isProcessing = false;
+          console.error('Error al eliminar mascota:', err);
+          alert('Ocurrió un error al eliminar la mascota.');
+        }
+      });
+    }
   }
 }
