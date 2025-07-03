@@ -21,3 +21,12 @@ app-root {
 router-outlet {
   display: block;
 }
+
+.custom-select-panel {
+  background-color: #ffffff !important; /* Azul Material */
+  color: black !important; /* Texto blanco */
+  min-width: 100% !important;
+  max-width: none !important;
+  width: auto !important;
+  border-radius: 6px;
+}

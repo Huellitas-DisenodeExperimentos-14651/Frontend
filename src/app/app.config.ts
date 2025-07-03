@@ -3,13 +3,15 @@ import { provideRouter } from '@angular/router';
 import { withInterceptors } from "@angular/common/http";
 import { authenticationInterceptor } from "./iam/services/authentication.interceptor";
 import { routes } from './app.routes';
-import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { provideAnimations } from '@angular/platform-browser/animations';
 
 import { HttpClient, provideHttpClient } from "@angular/common/http";
 import { importProvidersFrom } from '@angular/core';
 import { TranslateLoader, TranslateModule } from "@ngx-translate/core";
 import { TranslateHttpLoader } from "@ngx-translate/http-loader";
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { IgxOverlayService } from 'igniteui-angular';
+
 
 
 export function HttpLoaderFactory(http: HttpClient) {
@@ -21,7 +23,7 @@ export const appConfig: ApplicationConfig = {
     importProvidersFrom(MatSnackBarModule),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
-    provideAnimationsAsync(),
+    provideAnimations(),
     provideHttpClient(),
 
     importProvidersFrom(
@@ -35,5 +37,7 @@ export const appConfig: ApplicationConfig = {
     ),
 
     provideHttpClient(withInterceptors([authenticationInterceptor])),
+
+    IgxOverlayService
   ]
 };

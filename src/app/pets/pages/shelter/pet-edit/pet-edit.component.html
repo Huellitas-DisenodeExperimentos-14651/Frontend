@@ -1,0 +1,9 @@
+<div class="form-header">
+  <button mat-button class="back-button" (click)="goBack()">
+    ← Volver
+  </button>
+  <h2>Editar mascota</h2>
+</div>
+
+<!-- Formulario reutilizable -->
+<app-pet-form [form]="form" (submitPet)="onUpdatePet()"></app-pet-form>

@@ -52,6 +52,10 @@ mat-icon {
   background: transparent;
 }
 
+mat-sidenav-content {
+  background-color: #fafafa;
+}
+
 .sidenav-item-content {
   display: flex;
   align-items: center;

@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import { PageNotFoundComponent } from "./public/pages/page-not-found/page-not-found.component";
 
-import { PetsGalleryComponent } from './pets/pages/pets-gallery/pets-gallery.component';
+import { PetsGalleryComponent } from './pets/pages/adopter/pets-gallery/pets-gallery.component';
 import { AdoptionsListComponent } from './adoptions/pages/adoptions-list/adoptions-list.component';
 import { DonationOptionsComponent } from './donations/pages/donation-options/donation-options.component';
 import { PublicationsDashboardComponent } from './publications/pages/publications-dashboard/publications-dashboard.component';
@@ -31,6 +31,17 @@ export const routes: Routes = [
 
 // 🔐 Mantén protegidas las que requieren autenticación
   { path: 'pets', component: PetsGalleryComponent, canActivate: [authenticationGuard] },
+  {
+    path: 'pets/create',
+    loadComponent: () =>
+      import('./pets/pages/shelter/pet-create/pet-create.component').then(m => m.PetCreateComponent),
+    canActivate: [authenticationGuard]
+  },
+  {
+    path: 'pets/edit/:id',
+    loadComponent: () => import('./pets/pages/shelter/pet-edit/pet-edit.component').then(m => m.PetEditComponent),
+    canActivate: [authenticationGuard]
+  },
   { path: 'donations', component: DonationOptionsComponent, canActivate: [authenticationGuard] },
   { path: 'publications', component: PublicationsDashboardComponent, canActivate: [authenticationGuard] },
   {

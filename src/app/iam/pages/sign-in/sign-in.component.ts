@@ -76,7 +76,7 @@ export class SignInComponent extends BaseFormComponent implements OnInit {
 
         // ✅ Redirige por rol
         if (response.role === 'SHELTER') {
-          this.router.navigate(['/publications']);
+          this.router.navigate(['/pets']);
         } else if (response.role === 'ADOPTER') {
           this.router.navigate(['/adoptions']);
         } else {
