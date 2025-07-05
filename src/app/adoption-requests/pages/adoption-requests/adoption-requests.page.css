@@ -1,0 +1,47 @@
+.block {
+  margin-top: 2rem;
+}
+
+.block h2 {
+  margin-bottom: 1rem;
+  font-size: 1.25rem;
+  border-left: 4px solid #ff9800;
+  padding-left: .5rem;
+}
+
+.toast {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #333;
+  color: #fff;
+  padding: .75rem 1.25rem;
+  border-radius: .5rem;
+  font-weight: 500;
+  box-shadow: 0 6px 18px rgba(0,0,0,.25);
+  animation: fade 3s forwards;
+}
+
+@keyframes fade {
+  0%   { opacity: 0; transform: translate(-50%, 30px); }
+  10%  { opacity: 1; transform: translate(-50%, 0); }
+  90%  { opacity: 1; }
+  100% { opacity: 0; transform: translate(-50%, -20px); }
+}
+
+.requests {
+  max-width: 720px;
+  margin-inline: auto;
+}
+
+.empty {
+  color: #777;
+  font-style: italic;
+  margin: .75rem 0 1.5rem;
+}
+
+.page {
+  max-width: 760px;
+  padding: 0 1rem;
+}

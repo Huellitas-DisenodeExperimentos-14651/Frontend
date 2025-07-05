@@ -1,21 +1,37 @@
-import { Publication } from '../model/publication.entity';
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
+export interface Publication {
+  id: number;
+  petId: number;
+  title: string;
+  description: string;
+  contactInfo: string;
+  location: string;
+  publishedAt: string;
+  isActive: boolean;
+  photo?: string;
+}
+
+@Injectable({ providedIn: 'root' })
 export class PublicationsService {
-  private publications: Publication[] = [];
+  private readonly api = `${environment.serverBasePath}/publications`;
 
-  getAll(): Publication[] {
-    return [...this.publications];
+  constructor(private http: HttpClient) {}
+
+  getActive(): Observable<Publication[]> {
+    return this.http.get<Publication[]>(`${this.api}/active`);
   }
 
-  add(publication: Omit<Publication, 'id'>): void {
-    const newPublication: Publication = {
-      ...publication,
-      id: Math.random().toString(36).substr(2, 9),
-    };
-    this.publications.push(newPublication);
+  create(
+    payload: Omit<Publication, 'id' | 'publishedAt' | 'isActive'>
+  ): Observable<Publication> {
+    return this.http.post<Publication>(this.api, payload);
   }
 
-  remove(id: string): void {
-    this.publications = this.publications.filter(pub => pub.id !== id);
+  delete(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.api}/${id}`);
   }
 }

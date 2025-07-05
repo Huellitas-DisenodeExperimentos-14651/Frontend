@@ -1,0 +1,36 @@
+<section class="requests">
+  <ul>
+    <li *ngFor="let r of requests"
+        (click)="openDetail(r)"
+        [class.processed]="r.status !== 'PENDING'">
+
+      <strong>#{{ r.id }}</strong>
+      <span>{{ r.applicantFullName }}</span>
+
+      <!-- hint traducido -->
+      <small class="hint">{{ 'adoption.hint.moreInfo' | translate }}</small>
+
+      <!-- badge traducido -->
+      <small class="badge"
+             [attr.data-status]="r.status">
+        {{ ('adoption.status.' + r.status) | translate }}
+      </small>
+    </li>
+  </ul>
+</section>
+
+<div class="backdrop" *ngIf="open() as s" (click)="close()"></div>
+<dialog open *ngIf="open() as s" class="popup">
+  <h2>Solicitud #{{ s.id }}</h2>
+  <p><b>Publicación:</b> {{ s.publicationId }}</p>
+  <p><b>Solicitante:</b> {{ s.applicantFullName }}</p>
+  <p><b>Motivo:</b> {{ s.reasonMessage }}</p>
+  <p><b>Fecha:</b> {{ s.requestDate }}</p>
+  <p><b>Estado actual:</b> {{ s.status }}</p>
+
+  <footer>
+    <button (click)="close()">VOLVER</button>
+    <button class="accept" (click)="approve(s)" [disabled]="s.status !== 'PENDING'">ACEPTAR</button>
+    <button class="reject" (click)="reject(s)"  [disabled]="s.status !== 'PENDING'">RECHAZAR</button>
+  </footer>
+</dialog>

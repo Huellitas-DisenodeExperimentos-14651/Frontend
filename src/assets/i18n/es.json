@@ -15,7 +15,7 @@
     "donations": "Donaciones",
     "profile": "Perfil",
     "publications": "Publicaciones",
-    "manage_adoptions": "Gestión de Adopciones",
+    "adoption_request": "Solicitud de Adopciones",
     "authentication": "Autenticación"
   },
 
@@ -236,5 +236,47 @@
   },
   "COMMON": {
     "CLOSE": "Cerrar"
+  },
+  "publications": {
+    "title": "Publicaciones",
+    "publish": "PUBLICAR",
+    "delete": "BORRAR",
+    "active": "ACTIVA",
+    "publishedAt": "Publicado",
+    "photoAlt": "Foto mascota",
+    "pendingTitle": "Publicaciones pendientes",
+    "activeTitle": "Publicaciones activas",
+    "noPending": "Sin pendientes",
+    "noActive": "Aún no hay publicaciones activas",
+    "publishSuccess": "¡La publicación fue creada exitosamente!",
+    "publishError": "Error: No se pudo publicar la mascota.",
+    "deleteSuccess": "Publicación eliminada con éxito.",
+    "deleteError": "Error: No se pudo eliminar la publicación."
+  },
+  "dialog": {
+    "title": "Información",
+    "accept": "Aceptar"
+  },
+  "adoption": {
+    "title": "Solicitudes de adopción",
+    "pending": "Solicitudes pendientes",
+    "history": "Historial de solicitudes",
+    "empty": {
+      "pending": "No hay solicitudes pendientes.",
+      "history": "No hay solicitudes en el historial."
+    },
+    "hint": {
+      "moreInfo": "clic para más información"
+    },
+    "status": {
+      "PENDING": "pendiente",
+      "APPROVED": "aprobada",
+      "REJECTED": "rechazada"
+    },
+    "toast": {
+      "approved": "Solicitud #{{id}} aceptada.",
+      "rejected": "Solicitud #{{id}} rechazada.",
+      "error": "Error: no fue posible procesar la solicitud."
+    }
   }
 }
