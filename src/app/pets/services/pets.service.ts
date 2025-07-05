@@ -44,3 +44,5 @@ export class PetsService {
     return this.http.put<Pet>(`${this.apiUrl}/${id}`, pet);
   }
 }
+
+export { Pet } from '../model/pet.entity';

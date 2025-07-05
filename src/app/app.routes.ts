@@ -43,7 +43,13 @@ export const routes: Routes = [
     canActivate: [authenticationGuard]
   },
   { path: 'donations', component: DonationOptionsComponent, canActivate: [authenticationGuard] },
-  { path: 'publications', component: PublicationsDashboardComponent, canActivate: [authenticationGuard] },
+  {
+    path: 'publications',
+    loadComponent: () =>
+      import('./publications/pages/publications-dashboard/publications-dashboard.component')
+        .then(m => m.PublicationsDashboardComponent),
+    canActivate: [authenticationGuard]
+  },
   {
     path: 'manage-adoptions',
     loadComponent: () => import('./manage-adoptions/pages/adoption-management/adoption-management.component')

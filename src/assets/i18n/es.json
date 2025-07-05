@@ -236,5 +236,24 @@
   },
   "COMMON": {
     "CLOSE": "Cerrar"
+  },
+  "publications": {
+    "publish": "PUBLICAR",
+    "delete": "BORRAR",
+    "active": "ACTIVA",
+    "publishedAt": "Publicado",
+    "photoAlt": "Foto mascota",
+    "pendingTitle": "Publicaciones pendientes",
+    "activeTitle": "Publicaciones activas",
+    "noPending": "Sin pendientes",
+    "noActive": "Aún no hay publicaciones activas",
+    "publishSuccess": "¡La publicación fue creada exitosamente!",
+    "publishError": "Error: No se pudo publicar la mascota.",
+    "deleteSuccess": "Publicación eliminada con éxito.",
+    "deleteError": "Error: No se pudo eliminar la publicación."
+  },
+  "dialog": {
+    "title": "Información",
+    "accept": "Aceptar"
   }
 }

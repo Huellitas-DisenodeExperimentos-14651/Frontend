@@ -236,5 +236,24 @@
   },
   "COMMON": {
     "CLOSE": "Close"
+  },
+  "publications": {
+    "publish": "PUBLISH",
+    "delete": "DELETE",
+    "active": "ACTIVE",
+    "publishedAt": "Published on",
+    "photoAlt": "Pet photo",
+    "pendingTitle": "Pending publications",
+    "activeTitle": "Active publications",
+    "noPending": "No pending items",
+    "noActive": "No active publications yet",
+    "publishSuccess": "The publication was created successfully!",
+    "publishError": "Error: Could not publish the pet.",
+    "deleteSuccess": "Publication successfully deleted.",
+    "deleteError": "Error: Could not delete the publication."
+  },
+  "dialog": {
+    "title": "Information",
+    "accept": "Accept"
   }
 }

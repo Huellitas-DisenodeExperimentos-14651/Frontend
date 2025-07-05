@@ -1,14 +1,38 @@
-<h1>Gestión de Publicaciones</h1>
-<app-publication-form (add)="onAdd($event)"></app-publication-form>
+<div class="dashboard">
 
-<div *ngIf="publications.length === 0" class="empty-message">
-  No hay publicaciones aún.
-</div>
+    <section class="block">
+        <h2>{{ 'publications.pendingTitle' | translate }}</h2>
 
-<div class="cards-container">
-  <app-publication-card
-    *ngFor="let pub of publications"
-    [publication]="pub"
-    (delete)="onDelete($event)">
-  </app-publication-card>
+        <ng-container *ngIf="pendingPets$ | async as pets">
+            <app-pending-item
+                    *ngFor="let pet of pets"
+                    [pet]="pet"
+                    (publish)="publish(pet)">
+            </app-pending-item>
+
+            <p *ngIf="pets.length === 0" class="empty">
+                {{ 'publications.noPending' | translate }}
+            </p>
+        </ng-container>
+    </section>
+
+    <section class="block">
+        <h2>{{ 'publications.activeTitle' | translate }}</h2>
+
+        <ng-container *ngIf="activePublications$ | async as pubs">
+            <div class="cards-container">
+                <app-publication-card
+                        *ngFor="let pub of pubs"
+                        [publication]="pub"
+                        (remove)="delete(pub)"
+                        class="card">
+                </app-publication-card>
+            </div>
+
+            <p *ngIf="pubs.length === 0" class="empty">
+                {{ 'publications.noActive' | translate }}
+            </p>
+        </ng-container>
+    </section>
+
 </div>
