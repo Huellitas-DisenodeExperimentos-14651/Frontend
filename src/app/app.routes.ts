@@ -5,14 +5,13 @@ import { PetsGalleryComponent } from './pets/pages/adopter/pets-gallery/pets-gal
 import { AdoptionsListComponent } from './adoptions/pages/adoptions-list/adoptions-list.component';
 import { DonationOptionsComponent } from './donations/pages/donation-options/donation-options.component';
 import { PublicationsDashboardComponent } from './publications/pages/publications-dashboard/publications-dashboard.component';
-import { AdoptionManagementComponent } from './manage-adoptions/pages/adoption-management/adoption-management.component';
 
-import { SignInComponent } from './iam/pages/sign-in/sign-in.component'; // Ruta de inicio de sesión
-import { SignUpComponent } from './iam/pages/sign-up/sign-up.component'; // Ruta de registro
-import { authenticationGuard } from './iam/services/authentication.guard'; // Guard para proteger rutas
+import { SignInComponent } from './iam/pages/sign-in/sign-in.component';
+import { SignUpComponent } from './iam/pages/sign-up/sign-up.component';
+import { authenticationGuard } from './iam/services/authentication.guard';
 
 export const routes: Routes = [
-  { path: '', component: PetsGalleryComponent, canActivate: [authenticationGuard] }, // 👈 Mantén protegida si solo quieres que usuarios logueados vean mascotas
+  { path: '', component: PetsGalleryComponent, canActivate: [authenticationGuard] },
 
   {
     path: 'profile',
@@ -21,15 +20,13 @@ export const routes: Routes = [
     canActivate: [authenticationGuard]
   },
 
-// 🔓 Rutas públicas para adopciones
-  { path: 'adoptions', component: AdoptionsListComponent }, // ❌ Quita el guard
+  { path: 'adoptions', component: AdoptionsListComponent },
   {
     path: 'adoptions/:id',
     loadComponent: () => import('./adoptions/pages/adoption-details/adoption-details.component')
-      .then(m => m.AdoptionDetailsComponent) // ❌ Quita el guard aquí también
+      .then(m => m.AdoptionDetailsComponent)
   },
 
-// 🔐 Mantén protegidas las que requieren autenticación
   { path: 'pets', component: PetsGalleryComponent, canActivate: [authenticationGuard] },
   {
     path: 'pets/create',
@@ -42,6 +39,7 @@ export const routes: Routes = [
     loadComponent: () => import('./pets/pages/shelter/pet-edit/pet-edit.component').then(m => m.PetEditComponent),
     canActivate: [authenticationGuard]
   },
+
   { path: 'donations', component: DonationOptionsComponent, canActivate: [authenticationGuard] },
   {
     path: 'publications',
@@ -51,16 +49,15 @@ export const routes: Routes = [
     canActivate: [authenticationGuard]
   },
   {
-    path: 'manage-adoptions',
-    loadComponent: () => import('./manage-adoptions/pages/adoption-management/adoption-management.component')
-      .then(m => m.AdoptionManagementComponent),
+    path: 'adoption-requests',
+    loadComponent: () =>
+      import('./adoption-requests/pages/adoption-requests/adoption-requests.page')
+        .then(m => m.AdoptionRequestsPage),
     canActivate: [authenticationGuard]
   },
 
-  // 🟢 Rutas públicas sin protección
   { path: 'sign-in', component: SignInComponent },
   { path: 'sign-up', component: SignUpComponent },
 
-  // 🔴 Ruta para 404
   { path: '**', component: PageNotFoundComponent }
 ];
