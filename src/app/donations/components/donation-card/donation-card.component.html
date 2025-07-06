@@ -1,59 +1,62 @@
 <div class="donation-card">
+  <!-- Información general de la campaña (la puedes dejar igual) -->
   <img *ngIf="donation.imageUrl" [src]="donation.imageUrl" alt="Campaign image" />
-
   <h3>{{ donation.title }}</h3>
-
-  <p>{{ donation.description.replace('Plin o CCI', 'Plin') }}</p>
-
-  <!-- Contacto según tipo -->
-  <p *ngIf="donation.title.includes('Yape') || donation.title.includes('Plin')">
-    <strong>{{ 'DONATION_CARD.donationNumber' | translate }}</strong>
-    {{ donation.contactInfo.split('-')[0].replace('Yape:', '').trim() }}
+  <p *ngIf="donation.description">
+    {{ (donation.description + '').replace('Plin o CCI', 'Plin') }}
   </p>
-
-  <p *ngIf="!(donation.title.includes('Yape') || donation.title.includes('Plin'))">
-    <strong>{{ 'DONATION_CARD.contact' | translate }}</strong>
-    {{ donation.contactInfo }}
-  </p>
-
   <p *ngIf="donation.location">
     <strong>{{ 'DONATION_CARD.location' | translate }}</strong>
     {{ donation.location }}
   </p>
+  <p *ngIf="donation.title.includes('Yape') || donation.title.includes('Plin')">
+    <strong>{{ 'DONATION_CARD.donationNumber' | translate }}</strong>
+    {{ getYapeNumber(donation.contactInfo) }}
+  </p>
+  <p *ngIf="!(donation.title.includes('Yape') || donation.title.includes('Plin'))">
+    <strong>{{ 'DONATION_CARD.contact' | translate }}</strong>
+    {{ cleanContactInfo(donation.contactInfo) }}
+  </p>
+  <p *ngIf="donation.address">
+    <strong>{{ 'DONATION_CARD.address' | translate }}</strong>
+    {{ cleanAddress(donation.address) }}
+  </p>
 
-  <!-- Botón solo si es monetaria y no es refugio -->
+  <!-- Botón DONAR -->
   <button
-    *ngIf="donation.type === 'monetaria' && userRole !== 'refugio'"
+    *ngIf="!isPhysical && donation.type === 'monetaria' && userRole !== 'SHELTER'"
     (click)="showForm = !showForm">
     {{ showForm ? ('DONATION_CARD.cancel' | translate) : ('DONATION_CARD.donate' | translate) }}
   </button>
 
-  <!-- Formulario -->
-  <div *ngIf="showForm && donation.type === 'monetaria'" class="donation-form">
+  <!-- Formulario de donación -->
+  <div *ngIf="!isPhysical && showForm && donation.type === 'monetaria'" class="donation-form">
     <label>
       {{ 'DONATION_CARD.form.amount' | translate }}
-      <input type="number" [placeholder]="'DONATION_CARD.form.placeholderAmount' | translate" />
+      <input type="number" [(ngModel)]="amount" placeholder="S/." />
     </label>
-
     <label>
       {{ 'DONATION_CARD.form.method' | translate }}
-      <select>
-        <option value="yape">{{ 'DONATION_CARD.form.methods.yape' | translate }}</option>
-        <option value="plin">{{ 'DONATION_CARD.form.methods.plin' | translate }}</option>
-        <option value="transferencia">{{ 'DONATION_CARD.form.methods.transfer' | translate }}</option>
+      <select [(ngModel)]="paymentMethod">
+        <option value="yape">Yape</option>
+        <option value="plin">Plin</option>
+        <option value="transferencia">Transferencia</option>
       </select>
     </label>
-
     <label>
       {{ 'DONATION_CARD.form.operationNumber' | translate }}
-      <input type="text" [placeholder]="'DONATION_CARD.form.operationPlaceholder' | translate" />
+      <input type="text" [(ngModel)]="transactionNumber" placeholder="e.g. 23453564" />
     </label>
-
     <label>
       {{ 'DONATION_CARD.form.name' | translate }}
-      <input type="text" [placeholder]="'DONATION_CARD.form.namePlaceholder' | translate" />
+      <input type="text" [(ngModel)]="donorName" placeholder="Your name" />
     </label>
-
-    <button>{{ 'DONATION_CARD.form.confirm' | translate }}</button>
+    <button (click)="confirmDonation()">
+      {{ 'DONATION_CARD.form.confirm' | translate }}
+    </button>
   </div>
+
+
 </div>
+
+

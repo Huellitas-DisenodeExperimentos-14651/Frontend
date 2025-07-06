@@ -1,42 +1,40 @@
 import { Injectable } from '@angular/core';
 import { Donation } from '../model/donation.entity';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
+import { HttpHeaders } from '@angular/common/http';
+import { DonationRecord } from '../model/donation-record.entity';
+
 
 @Injectable({
   providedIn: 'root',
 })
 export class DonationsService {
-  private allDonations: Donation[] = [
-    {
-      id: '1',
-      type: 'monetaria',
-      title: 'Apoya con Yape/Plin',
-      description: 'Puedes ayudar enviando una donación por Yape, Plin o CCI.',
-      contactInfo: 'Yape: 987654321 - CCI: 002-123456789',
-      imageUrl: 'https://via.placeholder.com/300x180'
-    },
-    {
-      id: '2',
-      type: 'especie',
-      title: 'Donación de alimento seco',
-      description: 'El refugio necesita alimento seco para perros.',
-      contactInfo: 'Refugio Patitas - 987654321',
-      location: 'Av. Los Álamos 789',
-      imageUrl: 'https://via.placeholder.com/300x180'
-    },
-    {
-      id: '3',
-      type: 'monetaria',
-      title: 'Mi campaña activa',
-      description: 'Campaña publicada por el refugio logueado.',
-      contactInfo: 'Mi Refugio - 900000000',
-      imageUrl: 'https://via.placeholder.com/300x180'
-    }
-  ];
+  private apiUrl: string = `${environment.serverBasePath}/donations`;
 
-  getDonationsByRole(role: 'refugio' | 'adoptante' | 'rescatista'): Donation[] {
-    if (role === 'refugio') {
-      return this.allDonations.filter(d => d.id === '3');
-    }
-    return this.allDonations.filter(d => d.id !== '3');
+  private httpOptions = {
+    headers: new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    })
+  };
+
+  constructor(private http: HttpClient) {}
+
+  getAllDonations(): Observable<DonationRecord[]> {
+    return this.http.get<DonationRecord[]>(this.apiUrl);
   }
+
+  getCampaignDonations(): Observable<Donation[]> {
+    return this.http.get<Donation[]>(`${this.apiUrl}/campaigns`);
+  }
+
+  createDonation(donationData: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}`, donationData);
+  }
+
+
+
 }
+
