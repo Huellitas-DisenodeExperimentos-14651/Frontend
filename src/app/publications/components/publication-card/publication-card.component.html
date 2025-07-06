@@ -1,8 +1,19 @@
-<div class="card">
-  <strong>{{ publication.animalName }}</strong>
-  <p>Especie: {{ publication.species }}</p>
-  <p>Edad: {{ publication.age }}</p>
-  <p>Descripción: {{ publication.description }}</p>
-  <p>Refugio: {{ publication.shelter }}</p>
-  <button (click)="onDelete()">Eliminar</button>
-</div>
+<article class="card">
+  <header class="cover">
+    <img [src]="publication.photo" alt="{{ 'publications.photoAlt' | translate }}" />
+    <span class="badge">{{ 'publications.active' | translate }}</span>
+  </header>
+
+  <div class="body">
+    <h3 class="title">{{ publication.title }}</h3>
+    <p class="desc">{{ publication.description }}</p>
+    <small class="date">
+      {{ 'publications.publishedAt' | translate }}:
+      {{ publication.publishedAt | date: 'd/M/yy, h:mm a' }}
+    </small>
+  </div>
+
+  <button class="btn-delete" (click)="remove.emit()">
+    {{ 'publications.delete' | translate }}
+  </button>
+</article>

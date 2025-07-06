@@ -77,7 +77,7 @@ export class AppComponent implements OnInit {
           this.secondaryOptions = [
             { icon: 'https://cdn-icons-png.flaticon.com/512/616/616408.png', path: '/pets', titleKey: 'HEADER.pets' },
             { icon: 'https://cdn-icons-png.flaticon.com/512/2680/2680900.png', path: '/publications', titleKey: 'HEADER.publications' },
-            { icon: 'https://cdn-icons-png.flaticon.com/512/3842/3842536.png', path: '/manage-adoptions', titleKey: 'HEADER.manage_adoptions' },
+            { icon: 'https://cdn-icons-png.flaticon.com/512/3842/3842536.png', path: '/adoption-requests', titleKey: 'HEADER.adoption_requests' },
             { icon: 'https://cdn-icons-png.flaticon.com/512/3177/3177440.png', path: '/profile', titleKey: 'HEADER.profile' }
           ];
         }

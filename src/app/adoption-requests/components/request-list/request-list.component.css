@@ -1,0 +1,116 @@
+.requests ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 1rem;
+}
+
+.requests li {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  border-radius: .75rem;
+  background: #fff;
+  box-shadow: 0 4px 12px rgba(0,0,0,.08);
+  cursor: pointer;
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+
+.requests li:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0,0,0,.12);
+}
+
+.requests li.processed {
+  opacity: .6;
+  cursor: default;
+}
+
+.requests strong { font-weight: 700; }
+.requests span   { flex: 1; }
+
+.requests small {
+  font-size: .75rem;
+  padding: .25rem .5rem;
+  border-radius: .5rem;
+  text-transform: lowercase;
+  color: #fff;
+}
+
+small[data-status="PENDING"]   { background: #ffc107; }
+small[data-status="APPROVED"]  { background: #4caf50; }
+small[data-status="REJECTED"]  { background: #f44336; }
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.45);
+  backdrop-filter: blur(2px);
+}
+
+.popup {
+  position: fixed;
+  inset: 50% auto auto 50%;
+  transform: translate(-50%, -50%);
+  width: min(92%, 460px);
+  border: none;
+  border-radius: 1rem;
+  padding: 2rem 2.25rem;
+  background: #fff;
+  box-shadow: 0 12px 32px rgba(0,0,0,.25);
+}
+
+button {
+  padding: .6rem 1.3rem;
+  border: 0;
+  border-radius: .5rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .15s ease;
+}
+
+button.back   { background: #e0e0e0; }
+button.accept { background: #4caf50; color: #fff; }
+button.reject { background: #f44336; color: #fff; }
+
+button.back:hover   { background: #d5d5d5; }
+button.accept:hover { background: #45a047; }
+button.reject:hover { background: #e53935; }
+
+button:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+
+/* tarjetas más compactas */
+.requests li {
+  gap: .75rem;
+  padding: .85rem 1rem;
+}
+
+/* distribuye: id + nombre · hint · badge */
+.requests span        { flex: 1; }
+
+/* hint */
+.hint {
+  font-size: .7rem;
+  color: #757575;
+  margin-right: .5rem;
+}
+
+/* badge se separa del hint con flex */
+.badge {
+  font-size: .7rem;
+  padding: .25rem .55rem;
+  border-radius: .5rem;
+  text-transform: lowercase;
+  color: #fff;
+}
+
+/* colores existentes */
+.badge[data-status="PENDING"]  { background: #ffc107; }
+.badge[data-status="APPROVED"] { background: #4caf50; }
+.badge[data-status="REJECTED"] { background: #f44336; }
+

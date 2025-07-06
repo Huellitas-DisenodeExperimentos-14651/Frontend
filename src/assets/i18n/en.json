@@ -15,7 +15,7 @@
     "donations": "Donations",
     "profile": "Profile",
     "publications": "Publications",
-    "manage_adoptions": "Manage Adoptions",
+    "adoption_requests": "Adoption Requests",
     "authentication": "Authentication"
   },
 
@@ -245,5 +245,47 @@
   },
   "COMMON": {
     "CLOSE": "Close"
+  },
+  "publications": {
+    "title": "Publications",
+    "publish": "PUBLISH",
+    "delete": "DELETE",
+    "active": "ACTIVE",
+    "publishedAt": "Published on",
+    "photoAlt": "Pet photo",
+    "pendingTitle": "Pending publications",
+    "activeTitle": "Active publications",
+    "noPending": "No pending items",
+    "noActive": "No active publications yet",
+    "publishSuccess": "The publication was created successfully!",
+    "publishError": "Error: Could not publish the pet.",
+    "deleteSuccess": "Publication successfully deleted.",
+    "deleteError": "Error: Could not delete the publication."
+  },
+  "dialog": {
+    "title": "Information",
+    "accept": "Accept"
+  },
+  "adoption": {
+    "title": "Adoption requests",
+    "pending": "Pending requests",
+    "history": "Request history",
+    "empty": {
+      "pending": "There are no pending requests.",
+      "history": "There are no requests in the history."
+    },
+    "hint": {
+      "moreInfo": "click for details"
+    },
+    "status": {
+      "PENDING": "pending",
+      "APPROVED": "approved",
+      "REJECTED": "rejected"
+    },
+    "toast": {
+      "approved": "Request #{{id}} approved.",
+      "rejected": "Request #{{id}} rejected.",
+      "error": "Error: the request could not be processed."
+    }
   }
 }

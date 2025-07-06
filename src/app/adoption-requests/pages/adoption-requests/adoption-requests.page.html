@@ -1,0 +1,37 @@
+<div class="page">
+
+  <h1>{{ 'adoption.title' | translate }}</h1>
+
+  <section class="block">
+    <h2>{{ 'adoption.pending' | translate }}</h2>
+
+    <ng-container *ngIf="pending().length; else noPending">
+      <app-request-list
+        [requests]="pending()"
+        (select)="onDecision($event)">
+      </app-request-list>
+    </ng-container>
+
+    <ng-template #noPending>
+      <p class="empty">{{ 'adoption.empty.pending' | translate }}</p>
+    </ng-template>
+  </section>
+
+  <section class="block">
+    <h2>{{ 'adoption.history' | translate }}</h2>
+
+    <ng-container *ngIf="history().length; else noHistory">
+      <app-request-list
+        [requests]="history()"
+        (select)="onDecision($event)">
+      </app-request-list>
+    </ng-container>
+
+    <ng-template #noHistory>
+      <p class="empty">{{ 'adoption.empty.history' | translate }}</p>
+    </ng-template>
+  </section>
+
+  <div class="toast" *ngIf="toast() as t">{{ t }}</div>
+
+</div>
