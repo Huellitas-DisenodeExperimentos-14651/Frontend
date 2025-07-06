@@ -1,5 +1,5 @@
 // src/environments/environment.ts <-- para desarrollo local
 export const environment = {
   production: false,
-  serverBasePath: "http://localhost:8080/api/v1"
+  serverBasePath: "https://patita-solidaria-backend.onrender.com/api/v1"
 };
