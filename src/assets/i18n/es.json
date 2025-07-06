@@ -180,10 +180,16 @@
 
   "DONATION_CARD": {
     "donationNumber": "Número para donaciones:",
+    "address": "Dirección:",
     "contact": "Contacto:",
     "location": "Ubicación:",
     "donate": "Donar",
     "cancel": "Cancelar",
+    "madeDonations": "Donaciones realizadas",
+    "table": {
+      "name": "Nombre del donante",
+      "amount": "Monto"
+    },
     "form": {
       "amount": "Monto a donar:",
       "placeholderAmount": "S/.",
@@ -208,7 +214,10 @@
     "descriptionRefuge": "Estas son tus publicaciones actuales conectadas a tu perfil.",
     "back": "← Volver",
     "supportMoney": "Apoyar monetariamente",
-    "supportGoods": "Apoyar con donaciones físicas"
+    "supportGoods": "Apoyar con donaciones físicas",
+    "motivationalMessage": "<strong>Tu ayuda puede marcar la diferencia.</strong> Elige cómo deseas apoyar a los refugios: ya sea con una donación monetaria o donando bienes esenciales. ¡Cada aporte cuenta!",
+    "monetaryMessage": "<strong>Apoya con tu donación monetaria</strong>, tu aporte económico permite cubrir gastos médicos, alimentación y cuidados esenciales para los animales del refugio. Tu donación aparecerá en la tabla de la derecha ¡Tu ayuda hace la diferencia!",
+    "physicalMessage": "<strong>Acércate a hacer tus donaciones</strong>, podrás encontrar la dirección de cada refugio en las campañas. Acércate y deja tus donaciones: puedes apoyar con mantas, juguetes o comida sellada para las mascotas del refugio. ¡Te lo agradecerán mucho!"
   },
 
   "USER_PROFILE": {

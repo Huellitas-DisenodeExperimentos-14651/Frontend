@@ -180,10 +180,16 @@
 
   "DONATION_CARD": {
     "donationNumber": "Donation number:",
+    "address": "Address:",
     "contact": "Contact:",
     "location": "Location:",
     "donate": "Donate",
     "cancel": "Cancel",
+    "madeDonations": "All Donations Made",
+    "table": {
+      "name": "Donor Name",
+      "amount": "Amount"
+    },
     "form": {
       "amount": "Amount to donate:",
       "placeholderAmount": "S/.",
@@ -208,7 +214,10 @@
     "descriptionRefuge": "These are your current publications connected to your profile.",
     "back": "← Back",
     "supportMoney": "Support monetarily",
-    "supportGoods": "Support with physical donations"
+    "supportGoods": "Support with physical donations",
+    "motivationalMessage": "<strong>Your help can make a difference.</strong> Choose how you want to support shelters: either with a monetary donation or by donating essential goods. Every contribution counts!",
+    "monetaryMessage": "<strong>Support with your monetary donation</strong>, your financial contribution helps cover medical expenses, food, and essential care for the animals in the shelter. Your donation will appear in the table on the right. Your help makes a difference!",
+    "physicalMessage": "<strong>Bring your donations in person</strong>, you can find each shelter’s address in the campaigns. Come and leave your donations: you can help with blankets, toys or sealed food for the shelter pets. They’ll be very grateful!"
   },
 
   "USER_PROFILE": {
