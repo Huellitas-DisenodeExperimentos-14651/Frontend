@@ -21,4 +21,8 @@ export class AdoptionRequestService {
   reject(id: number): Observable<AdoptionRequest> {
     return this.http.put<AdoptionRequest>(`${this.baseUrl}/${id}/reject`, null);
   }
+
+  create(payload: { publicationId: number; reasonMessage: string }): Observable<AdoptionRequest> {
+    return this.http.post<AdoptionRequest>(this.baseUrl, payload);
+  }
 }

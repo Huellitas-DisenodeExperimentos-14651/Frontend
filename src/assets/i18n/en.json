@@ -39,39 +39,13 @@
   },
 
   "ADOPTION_CARD": {
-    "SPECIES": "Species",
+    "NAME": "Name",
     "BREED": "Breed",
     "AGE": "Age",
     "YEARS": "years",
-    "GENDER": "Gender",
+    "SIZE": "Size",
     "LOCATION": "Location",
     "ADOPT_BUTTON": "Request adoption"
-  },
-
-  "FILTERS": {
-    "TITLE": "Filter by",
-    "ACTIVITY": "Activity Level",
-    "WEIGHT": "Weight",
-    "SIZE": "Size",
-    "HAIR_LENGTH": "Hair Length",
-    "GENDER": "Gender",
-    "AGE": "Age",
-    "LOW": "Low",
-    "MEDIUM": "Medium",
-    "HIGH": "High",
-    "LIGHT": "Light",
-    "HEAVY": "Heavy",
-    "SMALL": "Small",
-    "LARGE": "Large",
-    "SHORT": "Short",
-    "LONG": "Long",
-    "MALE": "Male",
-    "FEMALE": "Female",
-    "PUPPY": "Puppy",
-    "ADULT": "Adult",
-    "SENIOR": "Senior",
-    "ALL": "All",
-    "CLEAR": "Clear filters"
   },
 
   "LIST": {
@@ -84,30 +58,6 @@
     "SORT_AGE_DESC": "Age (oldest first)",
     "NO_PETS": "No pets available.",
     "LOADING": "Loading pets..."
-  },
-
-  "DETAILS": {
-    "LOADING": "Loading pet information...",
-    "BACK": "Back to adoptions",
-    "SPECIES": "Species",
-    "BREED": "Breed",
-    "AGE": "Age",
-    "YEARS": "years",
-    "GENDER": "Gender",
-    "SIZE": "Size",
-    "WEIGHT": "Weight",
-    "HAIR": "Hair length",
-    "ACTIVITY": "Activity level",
-    "LOCATION": "Location",
-    "DESCRIPTION": "Description",
-    "RESCUE_STORY": "Rescue story",
-    "RESCUED_BY": "Rescued by",
-    "HEALTH": "Health status",
-    "VACCINATION_TITLE": "Vaccination Record",
-    "DOSE": "Dose",
-    "VACCINES": "Vaccines",
-    "ADOPT_BUTTON": "Request adoption",
-    "NOT_FOUND": "Pet not found."
   },
 
   "ADOPTION_MANAGEMENT": {
@@ -234,12 +184,6 @@
     "paymentMethods": "Accepts"
   },
 
-  "PET_SIZE": {
-    "small": "Small",
-    "medium": "Medium",
-    "large": "Large"
-  },
-
   "AUTH": {
     "GUARD_MESSAGE": "You must sign in to access this section."
   },
@@ -287,5 +231,49 @@
       "rejected": "Request #{{id}} rejected.",
       "error": "Error: the request could not be processed."
     }
+  },
+
+  "FILTERS": {
+    "TITLE": "Filter by",
+    "AGE": "Age",
+    "PUPPY": "Puppy",
+    "ADULT": "Adult",
+    "SENIOR": "Senior",
+    "SIZE": "Size",
+    "SMALL": "Small",
+    "MEDIUM": "Medium",
+    "LARGE": "Large",
+    "ALL": "All",
+    "CLEAR": "Clear filters"
+  },
+
+  "DETAILS": {
+    "LOADING": "Loading pet details...",
+    "BACK": "Back to Adoptions",
+    "AGE": "Age",
+    "YEARS": "years",
+    "BREED": "Breed",
+    "SIZE": "Size",
+    "STATUS": "Status",
+    "HEALTH": "Health Status",
+    "VACCINATION": "Vaccination Status",
+    "SPECIAL_NEEDS": "Special Needs",
+    "DESCRIPTION": "Description",
+    "REASON_LABEL": "Why do you want to adopt this pet?",
+    "REASON_PLACEHOLDER": "Write your reason here...",
+    "ADOPT_BUTTON": "Send Adoption Request",
+    "NOT_FOUND": "Pet not found."
+  },
+
+  "PET_SIZE": {
+    "SMALL": "Small",
+    "MEDIUM": "Medium",
+    "LARGE": "Large"
+  },
+
+  "PET_STATUS": {
+    "AVAILABLE": "Available",
+    "ADOPTED": "Adopted",
+    "PROCESSING": "Processing"
   }
 }

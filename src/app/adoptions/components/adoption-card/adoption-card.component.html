@@ -6,21 +6,33 @@
 
 <div class="card">
   <!-- Imagen de la mascota -->
-  <img [src]="pet.imageUrl" alt="{{ pet.name }}" class="card-image" />
+  <img [src]="publication.pet.photo" alt="{{ publication.pet.name }}" class="card-image" />
 
   <div class="card-content">
-    <!-- Nombre de la mascota -->
-    <h3>{{ pet.name }}</h3>
+    <!-- Título de la publicación -->
+    <h3>{{ publication.title }}</h3>
 
-    <!-- Detalles clave de la mascota -->
-    <p><strong>{{ 'ADOPTION_CARD.SPECIES' | translate }}:</strong> {{ pet.species }}</p>
-    <p><strong>{{ 'ADOPTION_CARD.BREED' | translate }}:</strong> {{ pet.breed }}</p>
-    <p><strong>{{ 'ADOPTION_CARD.AGE' | translate }}:</strong> {{ pet.age }} {{ 'ADOPTION_CARD.YEARS' | translate }}</p>
-    <p><strong>{{ 'ADOPTION_CARD.GENDER' | translate }}:</strong> {{ pet.gender }}</p>
-    <p><strong>{{ 'ADOPTION_CARD.LOCATION' | translate }}:</strong> {{ pet.location }}</p>
+    <!-- Nombre -->
+    <p><strong>{{ 'ADOPTION_CARD.NAME' | translate }}:</strong> {{ publication.pet.name }}</p>
 
-    <!-- Botón para solicitar adopción -->
-    <a [routerLink]="['/adoptions', pet.id]" class="adopt-btn">
+    <!-- Raza -->
+    <p><strong>{{ 'ADOPTION_CARD.BREED' | translate }}:</strong> {{ publication.pet.breed }}</p>
+
+    <!-- Edad -->
+    <p><strong>{{ 'ADOPTION_CARD.AGE' | translate }}:</strong>
+      {{ publication.pet.age }} {{ 'ADOPTION_CARD.YEARS' | translate }}
+    </p>
+
+    <!-- Tamaño -->
+    <p><strong>{{ 'ADOPTION_CARD.SIZE' | translate }}:</strong>
+      {{ ('PET_SIZE.' + publication.pet.size.toUpperCase()) | translate }}
+    </p>
+
+    <!-- Ubicación -->
+    <p><strong>{{ 'ADOPTION_CARD.LOCATION' | translate }}:</strong> {{ publication.location }}</p>
+
+    <!-- Botón para adoptar -->
+    <a [routerLink]="['/adoptions', publication.pet.id]" class="adopt-btn">
       {{ 'ADOPTION_CARD.ADOPT_BUTTON' | translate }}
     </a>
   </div>

@@ -1,9 +1,3 @@
-<!--
-  Autor: @leccapedro
-  Descripción: Esta vista muestra los detalles completos de una mascota seleccionada.
-  Incluye información general, historia de rescate, estado de salud y registro de vacunación.
--->
-
 <!-- Loader mientras se obtienen los datos -->
 <div *ngIf="loading">{{ 'DETAILS.LOADING' | translate }}</div>
 
@@ -15,48 +9,39 @@
 
   <!-- Imagen de la mascota -->
   <div class="image-section">
-    <img [src]="pet.imageUrl" [alt]="pet.name" />
+    <img [src]="pet.photo" [alt]="pet.name" />
   </div>
 
   <!-- Información detallada -->
   <div class="info-section">
     <h2>{{ pet.name }}</h2>
 
-    <!-- Detalles básicos -->
-    <p><strong>{{ 'DETAILS.SPECIES' | translate }}:</strong> {{ pet.species }}</p>
-    <p><strong>{{ 'DETAILS.BREED' | translate }}:</strong> {{ pet.breed }}</p>
     <p><strong>{{ 'DETAILS.AGE' | translate }}:</strong> {{ pet.age }} {{ 'DETAILS.YEARS' | translate }}</p>
-    <p><strong>{{ 'DETAILS.GENDER' | translate }}:</strong> {{ pet.gender }}</p>
-    <p><strong>{{ 'DETAILS.SIZE' | translate }}:</strong> {{ pet.size }}</p>
-    <p><strong>{{ 'DETAILS.WEIGHT' | translate }}:</strong> {{ pet.weight }}</p>
-    <p><strong>{{ 'DETAILS.HAIR' | translate }}:</strong> {{ pet.hair }}</p>
-    <p><strong>{{ 'DETAILS.ACTIVITY' | translate }}:</strong> {{ pet.activity }}</p>
-    <p><strong>{{ 'DETAILS.LOCATION' | translate }}:</strong> {{ pet.location }}</p>
+    <p><strong>{{ 'DETAILS.BREED' | translate }}:</strong> {{ pet.breed }}</p>
+    <p><strong>{{ 'DETAILS.SIZE' | translate }}:</strong> {{ ('PET_SIZE.' + pet.size.toUpperCase()) | translate }}</p>
+    <p><strong>{{ 'DETAILS.STATUS' | translate }}:</strong> {{ ('PET_STATUS.' + pet.status.toUpperCase()) | translate }}</p>
+    <p><strong>{{ 'DETAILS.HEALTH' | translate }}:</strong> {{ pet.healthStatus }}</p>
+    <p><strong>{{ 'DETAILS.VACCINATION' | translate }}:</strong> {{ pet.vaccinationStatus }}</p>
+    <p><strong>{{ 'DETAILS.SPECIAL_NEEDS' | translate }}:</strong> {{ pet.specialNeeds }}</p>
 
     <hr />
-
-    <!-- Descripción y historia -->
     <p><strong>{{ 'DETAILS.DESCRIPTION' | translate }}:</strong> {{ pet.description }}</p>
-    <p><strong>{{ 'DETAILS.RESCUE_STORY' | translate }}:</strong> {{ pet.rescue_story }}</p>
-    <p><strong>{{ 'DETAILS.RESCUED_BY' | translate }}:</strong> {{ pet.rescued_by }}</p>
-    <p><strong>{{ 'DETAILS.HEALTH' | translate }}:</strong> {{ pet.health }}</p>
 
-    <hr />
-
-    <!-- Registro de vacunación -->
-    <div *ngIf="pet.vaccination_record && pet.vaccination_record.length">
-      <h3>{{ 'DETAILS.VACCINATION_TITLE' | translate }}</h3>
-      <ul>
-        <li *ngFor="let registro of pet.vaccination_record">
-          <strong>{{ 'DETAILS.DOSE' | translate }} {{ registro.doses }}:</strong>
-          <span>{{ registro.date }}</span><br />
-          <em>{{ 'DETAILS.VACCINES' | translate }}:</em> {{ registro.vaccines.join(', ') }}
-        </li>
-      </ul>
+    <!-- 🔽 Campo para mensaje de motivo de adopción -->
+    <div class="adopt-form">
+      <label for="reason">{{ 'DETAILS.REASON_LABEL' | translate }}</label>
+      <textarea
+        id="reason"
+        rows="4"
+        [(ngModel)]="reasonMessage"
+        placeholder="{{ 'DETAILS.REASON_PLACEHOLDER' | translate }}"
+      ></textarea>
     </div>
 
-    <!-- Botón de solicitud -->
-    <button class="adopt-button">{{ 'DETAILS.ADOPT_BUTTON' | translate }}</button>
+    <!-- Botón para enviar solicitud -->
+    <button class="adopt-button" (click)="adopt()">
+      {{ 'DETAILS.ADOPT_BUTTON' | translate }}
+    </button>
   </div>
 </div>
 

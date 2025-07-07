@@ -39,63 +39,13 @@
   },
 
   "ADOPTION_CARD": {
-    "SPECIES": "Especie",
+    "NAME": "Nombre",
     "BREED": "Raza",
     "AGE": "Edad",
     "YEARS": "años",
-    "GENDER": "Género",
+    "SIZE": "Tamaño",
     "LOCATION": "Ubicación",
     "ADOPT_BUTTON": "Solicitar adopción"
-  },
-
-  "DETAILS": {
-    "LOADING": "Cargando información de la mascota...",
-    "BACK": "Volver a adopciones",
-    "SPECIES": "Especie",
-    "BREED": "Raza",
-    "AGE": "Edad",
-    "YEARS": "años",
-    "GENDER": "Género",
-    "SIZE": "Tamaño",
-    "WEIGHT": "Peso",
-    "HAIR": "Largo de pelo",
-    "ACTIVITY": "Nivel de actividad",
-    "LOCATION": "Ubicación",
-    "DESCRIPTION": "Descripción",
-    "RESCUE_STORY": "Historia de rescate",
-    "RESCUED_BY": "Rescatado por",
-    "HEALTH": "Estado de salud",
-    "VACCINATION_TITLE": "Historial de Vacunación",
-    "DOSE": "Dosis",
-    "VACCINES": "Vacunas",
-    "ADOPT_BUTTON": "Solicitar adopción",
-    "NOT_FOUND": "Mascota no encontrada."
-  },
-
-  "FILTERS": {
-    "TITLE": "Filtrar por",
-    "ACTIVITY": "Nivel de actividad",
-    "WEIGHT": "Peso",
-    "SIZE": "Tamaño",
-    "HAIR_LENGTH": "Largo de pelo",
-    "GENDER": "Sexo",
-    "AGE": "Edad",
-    "LOW": "Bajo",
-    "MEDIUM": "Mediano",
-    "HIGH": "Alto",
-    "LIGHT": "Ligero",
-    "HEAVY": "Pesado",
-    "SMALL": "Pequeño",
-    "LARGE": "Grande",
-    "SHORT": "Corto",
-    "LONG": "Largo",
-    "MALE": "Macho",
-    "FEMALE": "Hembra",
-    "PUPPY": "Cachorro",
-    "ADULT": "Adulto",
-    "SENIOR": "Mayor",
-    "ALL": "Todos",
-    "CLEAR": "Limpiar filtros"
   },
 
   "LIST": {
@@ -234,12 +184,6 @@
     "paymentMethods": "Acepta"
   },
 
-  "PET_SIZE": {
-    "small": "Pequeño",
-    "medium": "Mediano",
-    "large": "Grande"
-  },
-
   "AUTH": {
     "GUARD_MESSAGE": "Debes iniciar sesión para acceder a esta sección."
   },
@@ -287,5 +231,49 @@
       "rejected": "Solicitud #{{id}} rechazada.",
       "error": "Error: no fue posible procesar la solicitud."
     }
+  },
+
+  "FILTERS": {
+    "TITLE": "Filtrar por",
+    "AGE": "Edad",
+    "PUPPY": "Cachorro",
+    "ADULT": "Adulto",
+    "SENIOR": "Mayor",
+    "SIZE": "Tamaño",
+    "SMALL": "Pequeño",
+    "MEDIUM": "Mediano",
+    "LARGE": "Grande",
+    "ALL": "Todos",
+    "CLEAR": "Limpiar filtros"
+  },
+
+  "DETAILS": {
+    "LOADING": "Cargando detalles de la mascota...",
+    "BACK": "Volver a Adopciones",
+    "AGE": "Edad",
+    "YEARS": "años",
+    "BREED": "Raza",
+    "SIZE": "Tamaño",
+    "STATUS": "Estado",
+    "HEALTH": "Estado de salud",
+    "VACCINATION": "Vacunas",
+    "SPECIAL_NEEDS": "Necesidades especiales",
+    "DESCRIPTION": "Descripción",
+    "REASON_LABEL": "¿Por qué deseas adoptar a esta mascota?",
+    "REASON_PLACEHOLDER": "Escribe tu motivo aquí...",
+    "ADOPT_BUTTON": "Enviar solicitud de adopción",
+    "NOT_FOUND": "Mascota no encontrada."
+  },
+
+  "PET_SIZE": {
+    "SMALL": "Pequeño",
+    "MEDIUM": "Mediano",
+    "LARGE": "Grande"
+  },
+
+  "PET_STATUS": {
+    "AVAILABLE": "Disponible",
+    "ADOPTED": "Adoptado",
+    "PROCESSING": "En proceso"
   }
 }

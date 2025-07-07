@@ -1,9 +1,3 @@
-<!--
-  Autor: @leccapedro
-  Descripción: Vista principal de la sección de adopciones.
-  Contiene panel de filtros, barra de búsqueda, selector de ordenamiento y listado de mascotas.
--->
-
 <div class="adoptions-container">
   <!-- Panel lateral con filtros -->
   <aside class="filters-panel">
@@ -34,15 +28,15 @@
     </div>
 
     <!-- Mensaje si no hay mascotas disponibles -->
-    <div *ngIf="!loading && pets.length === 0">
+    <div *ngIf="!loading && publications.length === 0">
       {{ 'LIST.NO_PETS' | translate }}
     </div>
 
     <!-- Tarjetas de mascotas filtradas -->
-    <div *ngIf="!loading && pets.length > 0" class="cards-grid">
+    <div *ngIf="!loading && publications.length > 0" class="cards-grid">
       <app-adoption-card
-        *ngFor="let pet of pets | petNameFilter:search"
-        [pet]="pet">
+        *ngFor="let publication of publications | petNameFilter:search"
+        [publication]="publication">
       </app-adoption-card>
     </div>
 

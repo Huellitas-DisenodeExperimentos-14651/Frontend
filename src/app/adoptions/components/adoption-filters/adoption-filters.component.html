@@ -1,30 +1,35 @@
 <!--
   Autor: @leccapedro
-  Descripción: Plantilla del componente de filtros para mascotas en adopción.
+  Descripción: Plantilla del componente de filtros para mascotas en adopción (solo edad y tamaño).
 -->
 
 <div class="filter-wrapper">
   <h3>{{ 'FILTERS.TITLE' | translate }}</h3>
 
-  <!-- Filtro por nivel de actividad -->
+  <!-- Filtro por edad -->
   <div class="filter-section">
-    <button type="button" (click)="toggle('activity')">{{ 'FILTERS.ACTIVITY' | translate }} +</button>
-    <div *ngIf="expanded.activity" class="filter-group">
-      <label><input type="radio" name="activity" value="Bajo" (change)="updateFilter('activity', 'Bajo')"> {{ 'FILTERS.LOW' | translate }}</label><br>
-      <label><input type="radio" name="activity" value="Medio" (change)="updateFilter('activity', 'Medio')"> {{ 'FILTERS.MEDIUM' | translate }}</label><br>
-      <label><input type="radio" name="activity" value="Alto" (change)="updateFilter('activity', 'Alto')"> {{ 'FILTERS.HIGH' | translate }}</label><br>
-      <label><input type="radio" name="activity" value="" (change)="updateFilter('activity', '')"> {{ 'FILTERS.ALL' | translate }}</label>
-    </div>
-  </div>
-
-  <!-- Filtro por peso -->
-  <div class="filter-section">
-    <button type="button" (click)="toggle('weight')">{{ 'FILTERS.WEIGHT' | translate }} +</button>
-    <div *ngIf="expanded.weight" class="filter-group">
-      <label><input type="radio" name="weight" value="Ligero" (change)="updateFilter('weight', 'Ligero')"> {{ 'FILTERS.LIGHT' | translate }}</label><br>
-      <label><input type="radio" name="weight" value="Mediano" (change)="updateFilter('weight', 'Mediano')"> {{ 'FILTERS.MEDIUM' | translate }}</label><br>
-      <label><input type="radio" name="weight" value="Pesado" (change)="updateFilter('weight', 'Pesado')"> {{ 'FILTERS.HEAVY' | translate }}</label><br>
-      <label><input type="radio" name="weight" value="" (change)="updateFilter('weight', '')"> {{ 'FILTERS.ALL' | translate }}</label>
+    <button type="button" (click)="toggle('age')">{{ 'FILTERS.AGE' | translate }} +</button>
+    <div *ngIf="expanded.age" class="filter-group">
+      <label>
+        <input type="radio" name="age" [checked]="filter.age === 'Cachorro'"
+               (change)="updateFilter('age', 'Cachorro')">
+        {{ 'FILTERS.PUPPY' | translate }}
+      </label><br>
+      <label>
+        <input type="radio" name="age" [checked]="filter.age === 'Adulto'"
+               (change)="updateFilter('age', 'Adulto')">
+        {{ 'FILTERS.ADULT' | translate }}
+      </label><br>
+      <label>
+        <input type="radio" name="age" [checked]="filter.age === 'Mayor'"
+               (change)="updateFilter('age', 'Mayor')">
+        {{ 'FILTERS.SENIOR' | translate }}
+      </label><br>
+      <label>
+        <input type="radio" name="age" [checked]="filter.age === undefined"
+               (change)="updateFilter('age', undefined)">
+        {{ 'FILTERS.ALL' | translate }}
+      </label>
     </div>
   </div>
 
@@ -32,42 +37,26 @@
   <div class="filter-section">
     <button type="button" (click)="toggle('size')">{{ 'FILTERS.SIZE' | translate }} +</button>
     <div *ngIf="expanded.size" class="filter-group">
-      <label><input type="radio" name="size" value="Pequeño" (change)="updateFilter('size', 'Pequeño')"> {{ 'FILTERS.SMALL' | translate }}</label><br>
-      <label><input type="radio" name="size" value="Mediano" (change)="updateFilter('size', 'Mediano')"> {{ 'FILTERS.MEDIUM' | translate }}</label><br>
-      <label><input type="radio" name="size" value="Grande" (change)="updateFilter('size', 'Grande')"> {{ 'FILTERS.LARGE' | translate }}</label><br>
-      <label><input type="radio" name="size" value="" (change)="updateFilter('size', '')"> {{ 'FILTERS.ALL' | translate }}</label>
-    </div>
-  </div>
-
-  <!-- Filtro por largo de pelo -->
-  <div class="filter-section">
-    <button type="button" (click)="toggle('hair')">{{ 'FILTERS.HAIR_LENGTH' | translate }} +</button>
-    <div *ngIf="expanded.hair" class="filter-group">
-      <label><input type="radio" name="hair" value="Corto" (change)="updateFilter('hair', 'Corto')"> {{ 'FILTERS.SHORT' | translate }}</label><br>
-      <label><input type="radio" name="hair" value="Mediano" (change)="updateFilter('hair', 'Mediano')"> {{ 'FILTERS.MEDIUM' | translate }}</label><br>
-      <label><input type="radio" name="hair" value="Largo" (change)="updateFilter('hair', 'Largo')"> {{ 'FILTERS.LONG' | translate }}</label><br>
-      <label><input type="radio" name="hair" value="" (change)="updateFilter('hair', '')"> {{ 'FILTERS.ALL' | translate }}</label>
-    </div>
-  </div>
-
-  <!-- Filtro por sexo -->
-  <div class="filter-section">
-    <button type="button" (click)="toggle('gender')">{{ 'FILTERS.GENDER' | translate }} +</button>
-    <div *ngIf="expanded.gender" class="filter-group">
-      <label><input type="radio" name="gender" value="Macho" (change)="updateFilter('gender', 'Macho')"> {{ 'FILTERS.MALE' | translate }}</label><br>
-      <label><input type="radio" name="gender" value="Hembra" (change)="updateFilter('gender', 'Hembra')"> {{ 'FILTERS.FEMALE' | translate }}</label><br>
-      <label><input type="radio" name="gender" value="" (change)="updateFilter('gender', '')"> {{ 'FILTERS.ALL' | translate }}</label>
-    </div>
-  </div>
-
-  <!-- Filtro por edad -->
-  <div class="filter-section">
-    <button type="button" (click)="toggle('age')">{{ 'FILTERS.AGE' | translate }} +</button>
-    <div *ngIf="expanded.age" class="filter-group">
-      <label><input type="radio" name="age" value="Cachorro" (change)="updateFilter('age', 'Cachorro')"> {{ 'FILTERS.PUPPY' | translate }}</label><br>
-      <label><input type="radio" name="age" value="Adulto" (change)="updateFilter('age', 'Adulto')"> {{ 'FILTERS.ADULT' | translate }}</label><br>
-      <label><input type="radio" name="age" value="Mayor" (change)="updateFilter('age', 'Mayor')"> {{ 'FILTERS.SENIOR' | translate }}</label><br>
-      <label><input type="radio" name="age" value="" (change)="updateFilter('age', '')"> {{ 'FILTERS.ALL' | translate }}</label>
+      <label>
+        <input type="radio" name="size" [checked]="filter.size === 'SMALL'"
+               (change)="updateFilter('size', 'SMALL')">
+        {{ 'FILTERS.SMALL' | translate }}
+      </label><br>
+      <label>
+        <input type="radio" name="size" [checked]="filter.size === 'MEDIUM'"
+               (change)="updateFilter('size', 'MEDIUM')">
+        {{ 'FILTERS.MEDIUM' | translate }}
+      </label><br>
+      <label>
+        <input type="radio" name="size" [checked]="filter.size === 'LARGE'"
+               (change)="updateFilter('size', 'LARGE')">
+        {{ 'FILTERS.LARGE' | translate }}
+      </label><br>
+      <label>
+        <input type="radio" name="size" [checked]="filter.size === undefined"
+               (change)="updateFilter('size', undefined)">
+        {{ 'FILTERS.ALL' | translate }}
+      </label>
     </div>
   </div>
 

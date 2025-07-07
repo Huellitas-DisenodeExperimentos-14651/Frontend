@@ -1,20 +1,14 @@
-/**
- * Autor: @leccapedro
- * Descripción: Componente principal que muestra la lista de mascotas disponibles para adopción.
- * Integra los filtros, la búsqueda por nombre y el ordenamiento dinámico.
- */
-
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 
-import { AdoptionsService } from '../../services/adoptions.service';
-import { AdoptionEntity } from '../../model/adoption.entity';
 import { AdoptionFilter } from '../../model/adoption-filter.model';
 import { AdoptionCardComponent } from '../../components/adoption-card/adoption-card.component';
 import { AdoptionFiltersComponent } from '../../components/adoption-filters/adoption-filters.component';
 import { PetNameFilterPipe } from '../../pipes/pet-name-filter.pipe';
+import { PublicationWithPet } from '../../model/publication-with-pet.model';
+import { AdoptionsService } from '../../services/adoptions.service';
 
 @Component({
   standalone: true,
@@ -30,72 +24,56 @@ import { PetNameFilterPipe } from '../../pipes/pet-name-filter.pipe';
     PetNameFilterPipe
   ]
 })
-
 export class AdoptionsListComponent implements OnInit {
-  pets: AdoptionEntity[] = [];         // Lista filtrada de mascotas a mostrar
-  petsOriginal: AdoptionEntity[] = []; // Lista completa original (sin filtros)
-  loading = true;                      // Control de carga inicial
-  search: string = '';                 // Búsqueda por nombre
-  sortOption: string = '';             // Criterio de ordenamiento seleccionado
+  publications: PublicationWithPet[] = [];
+  publicationsOriginal: PublicationWithPet[] = [];
+  loading = true;
+  search: string = '';
+  sortOption: string = '';
 
   constructor(private adoptionsService: AdoptionsService) {}
 
   ngOnInit(): void {
-    // Carga inicial de mascotas desde el servicio
     this.adoptionsService.getAllPets().subscribe({
-      next: (data) => {
-        this.petsOriginal = data;
-        this.pets = data;
+      next: (data: PublicationWithPet[]) => {
+        this.publicationsOriginal = data;
+        this.publications = data;
         this.loading = false;
       },
-      error: (err) => {
-        console.error('Error al cargar mascotas:', err);
+      error: (err: any) => {
+        console.error('Error al cargar publicaciones:', err);
         this.loading = false;
       }
     });
   }
 
-  /**
-   * Convierte un valor numérico de edad en una categoría textual.
-   */
   getAgeCategory(age: number): string {
     if (age < 1) return 'Cachorro';
     if (age < 7) return 'Adulto';
     return 'Mayor';
   }
 
-  /**
-   * Aplica los filtros seleccionados por el usuario sobre la lista original.
-   */
   applyFilters(filter: AdoptionFilter): void {
-    this.pets = this.petsOriginal.filter(pet =>
-      (!filter.gender || pet.gender === filter.gender) &&
-      (!filter.age || this.getAgeCategory(pet.age) === filter.age) &&
-      (!filter.size || pet.size === filter.size) &&
-      (!filter.hair || pet.hair === filter.hair) &&
-      (!filter.activity || pet.activity === filter.activity) &&
-      (!filter.weight || pet.weight === filter.weight)
+    this.publications = this.publicationsOriginal.filter(pub =>
+      (!filter.age || this.getAgeCategory(pub.pet.age) === filter.age) &&
+      (!filter.size || pub.pet.size.toString() === filter.size)
     );
-
-    this.applySort(); // Aplica ordenamiento luego del filtrado
+    this.applySort();
   }
 
-  /**
-   * Ordena la lista actual de mascotas según el criterio seleccionado.
-   */
   applySort(): void {
     if (!this.sortOption) return;
 
-    this.pets.sort((a, b) => {
+    this.publications.sort((a, b) => {
       switch (this.sortOption) {
         case 'name-asc':
-          return a.name.localeCompare(b.name);
+          return a.pet.name.localeCompare(b.pet.name);
         case 'name-desc':
-          return b.name.localeCompare(a.name);
+          return b.pet.name.localeCompare(a.pet.name);
         case 'age-asc':
-          return a.age - b.age;
+          return a.pet.age - b.pet.age;
         case 'age-desc':
-          return b.age - a.age;
+          return b.pet.age - a.pet.age;
         default:
           return 0;
       }

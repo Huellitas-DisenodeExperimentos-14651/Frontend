@@ -11,7 +11,7 @@ import { environment } from '../../../environments/environment';
   providedIn: 'root'
 })
 export class PetsService {
-  private apiUrl = `${environment.serverBasePath}/pets`; // <-- usa el endpoint de tu backend real
+  private apiUrl = `${environment.serverBasePath}/pets`;
 
   constructor(private http: HttpClient) {}
 
@@ -30,6 +30,11 @@ export class PetsService {
     return this.http.post<Pet>(this.apiUrl, pet);
   }
 
+  /** Actualizar una mascota existente */
+  update(id: number, pet: Partial<Pet>): Observable<Pet> {
+    return this.http.put<Pet>(`${this.apiUrl}/${id}`, pet);
+  }
+
   /** Eliminar mascota */
   delete(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
@@ -40,8 +45,9 @@ export class PetsService {
     return this.http.get<Pet[]>(`${this.apiUrl}/profile/${profileId}`);
   }
 
-  update(id: number, pet: Partial<Pet>): Observable<Pet> {
-    return this.http.put<Pet>(`${this.apiUrl}/${id}`, pet);
+  /** Obtener mascotas activas (públicas para adopción) */
+  getActivePublications(): Observable<Pet[]> {
+    return this.http.get<Pet[]>(`${environment.serverBasePath}/publications/active`);
   }
 }
 
