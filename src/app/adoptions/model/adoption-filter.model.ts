@@ -5,10 +5,6 @@
  */
 
 export interface AdoptionFilter {
-  gender?: string;     // Filtro por género (Macho / Hembra)
-  age?: string;        // Filtro por categoría de edad (Cachorro / Adulto / Mayor)
-  size?: string;       // Filtro por tamaño (Pequeño / Mediano / Grande)
-  hair?: string;       // Filtro por largo de pelo (Corto / Mediano / Largo)
-  activity?: string;   // Filtro por nivel de actividad (Bajo / Medio / Alto)
-  weight?: string;     // Filtro por tipo de peso (Ligero / Mediano / Pesado)
+  age?: 'Cachorro' | 'Adulto' | 'Mayor';
+  size?: 'SMALL' | 'MEDIUM' | 'LARGE';
 }

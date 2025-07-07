@@ -1,11 +1,5 @@
-/**
- * Autor: @leccapedro
- * Descripción: Pipe personalizado para filtrar una lista de mascotas por nombre.
- * Se usa en la vista para aplicar búsqueda en tiempo real sobre el array de mascotas.
- */
-
 import { Pipe, PipeTransform } from '@angular/core';
-import { AdoptionEntity } from '../model/adoption.entity';
+import { PublicationWithPet } from '../model/publication-with-pet.model';
 
 @Pipe({
   standalone: true,
@@ -13,17 +7,18 @@ import { AdoptionEntity } from '../model/adoption.entity';
 })
 export class PetNameFilterPipe implements PipeTransform {
   /**
-   * Filtra la lista de mascotas según el texto ingresado en el buscador.
+   * Filtra las publicaciones según el nombre de la mascota asociada.
    * Si no se proporciona un nombre, retorna la lista completa.
    *
-   * @param pets - Lista de mascotas
+   * @param publications - Lista de publicaciones con mascota
    * @param name - Nombre o texto parcial para buscar
-   * @returns Lista filtrada por nombre
+   * @returns Lista filtrada por nombre de mascota
    */
-  transform(pets: AdoptionEntity[], name: string): AdoptionEntity[] {
-    if (!name) return pets;
-    return pets.filter(p =>
-      p.name.toLowerCase().includes(name.toLowerCase())
+  transform(publications: PublicationWithPet[], name: string): PublicationWithPet[] {
+    if (!name) return publications;
+
+    return publications.filter(pub =>
+      pub.pet.name.toLowerCase().includes(name.toLowerCase())
     );
   }
 }

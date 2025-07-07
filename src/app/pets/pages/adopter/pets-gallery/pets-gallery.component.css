@@ -1,0 +1,122 @@
+/* 🟢 app-pet-card host: garantiza buena alineación en el grid */
+app-pet-card {
+  display: block;
+  width: 100%;
+  max-width: 320px;
+  box-sizing: border-box;
+}
+
+/* 🔹 Contenedor general */
+.pets-gallery {
+  padding: 0;
+  max-width: 100vw;         /* usa hasta 90% del ancho visible */
+  height: 100vh;
+  margin: 0 auto;
+  background-color: #fafafa;
+}
+
+/* 🔹 Título */
+.gallery-title {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  color: #2a3d66;
+  background-color: #fafafa;
+}
+
+/* 🔹 Contenedor del filtro */
+.filter-container {
+  display: flex;
+  flex-direction: column;
+  max-width: 400px;
+  margin: 0 auto 2rem;
+}
+
+.select-wrapper {
+  margin-top: 0.5rem;
+}
+
+.status-filter {
+  width: 100%;
+  padding: 0.8rem;
+  font-size: 1rem;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+/* 🔹 Spinner de carga */
+.loading-state {
+  text-align: center;
+  font-size: 1.6rem;
+  color: #555;
+}
+
+.spinner {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  margin-right: 8px;
+  border: 4px solid #ccc;
+  border-top-color: #333;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* 🔹 Grid responsive
+.pets-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, auto));
+  justify-content: center;
+  gap: 1rem;
+}
+*/
+
+/* 🟢 Grid flexible alineado a la izquierda */
+.pets-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 2rem;
+  justify-items: center;       /* centra las cards dentro de cada columna */
+  padding: 0 2rem;        /* 🔹 agrega espacio a izquierda y derecha */
+  max-width: 1200px;      /* 🔹 para que no se estire demasiado en pantallas grandes */
+  margin: 0 auto;
+}
+
+/* 🔹 Estado vacío */
+.empty-state {
+  text-align: center;
+  color: #999;
+  font-size: 1.4rem;
+  margin-top: 2rem;
+}
+
+/* 📍 Contenedor centrado */
+.create-button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+  margin-bottom: 4rem;
+}
+
+/* 🎨 Botón estilizado */
+.create-pet-button {
+  background-color: #1976d2;
+  color: white;
+  font-size: 1rem;
+  font-weight: 500;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.create-pet-button:hover {
+  background-color: #1565c0;
+}

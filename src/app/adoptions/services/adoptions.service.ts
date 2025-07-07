@@ -1,24 +1,41 @@
-/**
- * Autor: @leccapedro
- * Descripción: Servicio encargado de obtener los datos de mascotas desde un archivo JSON local.
- * Simula una fuente de datos externa mediante peticiones HTTP.
- */
-
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { AdoptionEntity } from '../model/adoption.entity';
+import { Observable, forkJoin, map, switchMap } from 'rxjs';
+
+import { Pet } from '../../pets/model/pet.entity';
+import { Publication } from '../model/publication';
+import { PublicationWithPet } from '../model/publication-with-pet.model';
+
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AdoptionsService {
+  private apiUrl = environment.serverBasePath;
+
   constructor(private http: HttpClient) {}
 
-  /**
-   * Obtiene la lista completa de mascotas desde un archivo local JSON.
-   */
-  getAllPets(): Observable<AdoptionEntity[]> {
-    return this.http.get<AdoptionEntity[]>('assets/data/pets.json');
+  /** 🔁 Obtener publicaciones activas con los datos completos de la mascota */
+  getAllPets(): Observable<PublicationWithPet[]> {
+    return this.http.get<Publication[]>(`${this.apiUrl}/publications/active`).pipe(
+      switchMap((publications) =>
+        forkJoin(
+          publications.map(pub =>
+            this.http.get<Pet>(`${this.apiUrl}/pets/${pub.petId}`).pipe(
+              map(pet => ({
+                ...pub,  // Aquí se "funde" pub con pet
+                pet      // Este es el único campo adicional
+              }))
+            )
+          )
+        )
+      )
+    );
+  }
+
+  /** Obtener detalles de mascota por ID */
+  getPetById(id: number): Observable<Pet> {
+    return this.http.get<Pet>(`${this.apiUrl}/pets/${id}`);
   }
 }

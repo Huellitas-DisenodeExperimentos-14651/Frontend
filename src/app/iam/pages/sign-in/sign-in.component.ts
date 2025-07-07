@@ -16,6 +16,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import {TranslatePipe} from '@ngx-translate/core';
+import { Router } from '@angular/router';
+
 
 // Componentes internos
 
@@ -42,7 +44,8 @@ export class SignInComponent extends BaseFormComponent implements OnInit {
 
   constructor(
     private builder: FormBuilder,
-    private authenticationService: AuthenticationService
+    private authenticationService: AuthenticationService,
+    private router: Router
   ) {
     super();
   }
@@ -57,10 +60,32 @@ export class SignInComponent extends BaseFormComponent implements OnInit {
   onSubmit(): void {
     if (this.form.invalid) return;
 
-    const { username, password } = this.form.value;
+    const {username, password} = this.form.value;
     const signInRequest = new SignInRequest(username, password);
 
-    this.authenticationService.signIn(signInRequest);
-    this.submitted = true;
+    this.authenticationService.signIn(signInRequest).subscribe({
+      next: (response) => {
+        // Guardar localStorage
+        localStorage.setItem('token', response.token);
+        localStorage.setItem('role', response.role);
+        localStorage.setItem('username', response.username);
+        localStorage.setItem('profileId', response.profileId.toString());
+
+        // ✅ Actualiza estado global
+        this.authenticationService.setSignedInState(true, response.id, response.username);
+
+        // ✅ Redirige por rol
+        if (response.role === 'SHELTER') {
+          this.router.navigate(['/pets']);
+        } else if (response.role === 'ADOPTER') {
+          this.router.navigate(['/adoptions']);
+        } else {
+          this.router.navigate(['/']);
+        }
+      },
+      error: (error) => {
+        console.error('Error al iniciar sesión:', error);
+      }
+    });
   }
 }

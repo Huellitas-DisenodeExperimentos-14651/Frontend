@@ -31,11 +31,18 @@
       <p><strong>{{ 'DETAILS.RESCUE_STORY' | translate }}:</strong> {{ pet.specialNeeds }}</p>
 
       <div class="modal-buttons">
-        <button [routerLink]="'/adoptions'" class="adopt-link">
-          {{ 'ADOPTION_MANAGEMENT.actions.accept' | translate }}
+        <button
+          class="edit-button"
+          [routerLink]="['/pets/edit', pet.id]">
+          Editar
         </button>
+
+        <button class="delete-button" (click)="onDeletePet()">
+          Eliminar
+        </button>
+
         <button (click)="closeDetails()" class="btn-close">
-          {{ 'ADOPTION_MANAGEMENT.actions.close' | translate }}
+          Cerrar
         </button>
       </div>
     </div>

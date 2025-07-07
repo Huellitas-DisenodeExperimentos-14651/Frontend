@@ -4,7 +4,7 @@
 }
 
 mat-sidenav {
-  width: 220px;
+  width: 240px;
   border-right: none;
   padding: 16px 0;
   border-radius: 0;
@@ -50,6 +50,10 @@ mat-icon {
 .mat-list-item {
   padding: 0; /* Eliminamos padding interno de mat-list-item */
   background: transparent;
+}
+
+mat-sidenav-content {
+  background-color: #fafafa;
 }
 
 .sidenav-item-content {

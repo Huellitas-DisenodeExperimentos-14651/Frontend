@@ -169,20 +169,50 @@ button:hover:not(:disabled) {
   transition: background-color 0.3s ease;  /* Efecto de transición para el hover */
 }
 
-.adopt-link {
-  background-color: #28a745;  /* Verde para el botón "Ir a adoptar" */
+button.adopt-link {
+  background-color: #28a745;
   color: white;
 }
 
-.adopt-link:hover {
-  background-color: #218838;  /* Cambio de color al pasar el ratón sobre el botón */
+button.adopt-link:hover {
+  background-color: #218838;
 }
 
-.btn-close {
-  background-color: #dc3545;  /* Rojo para el botón "Cerrar" */
+button.btn-close {
+  background-color: #dc3545;
   color: white;
 }
 
-.btn-close:hover {
-  background-color: #c82333;  /* Cambio de color al pasar el ratón sobre el botón */
+button.btn-close:hover {
+  background-color: #c82333;
+}
+
+button.edit-button {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button.edit-button:hover {
+  background-color: #0056b3;
+}
+
+.delete-button {
+  background-color: #dc3545; /* rojo */
+  color: white;
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.delete-button:hover {
+  background-color: #c82333;
 }

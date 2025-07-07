@@ -5,7 +5,7 @@
   },
 
   "HEADER": {
-    "home": "Home",
+    "home": "Patita Solidaria",
     "sign_in": "Sign In",
     "sign_up": "Sign Up",
     "sign_out": "Sign Out",
@@ -15,7 +15,7 @@
     "donations": "Donations",
     "profile": "Profile",
     "publications": "Publications",
-    "manage_adoptions": "Manage Adoptions",
+    "adoption_requests": "Adoption Requests",
     "authentication": "Authentication"
   },
 
@@ -39,39 +39,13 @@
   },
 
   "ADOPTION_CARD": {
-    "SPECIES": "Species",
+    "NAME": "Name",
     "BREED": "Breed",
     "AGE": "Age",
     "YEARS": "years",
-    "GENDER": "Gender",
+    "SIZE": "Size",
     "LOCATION": "Location",
     "ADOPT_BUTTON": "Request adoption"
-  },
-
-  "FILTERS": {
-    "TITLE": "Filter by",
-    "ACTIVITY": "Activity Level",
-    "WEIGHT": "Weight",
-    "SIZE": "Size",
-    "HAIR_LENGTH": "Hair Length",
-    "GENDER": "Gender",
-    "AGE": "Age",
-    "LOW": "Low",
-    "MEDIUM": "Medium",
-    "HIGH": "High",
-    "LIGHT": "Light",
-    "HEAVY": "Heavy",
-    "SMALL": "Small",
-    "LARGE": "Large",
-    "SHORT": "Short",
-    "LONG": "Long",
-    "MALE": "Male",
-    "FEMALE": "Female",
-    "PUPPY": "Puppy",
-    "ADULT": "Adult",
-    "SENIOR": "Senior",
-    "ALL": "All",
-    "CLEAR": "Clear filters"
   },
 
   "LIST": {
@@ -84,30 +58,6 @@
     "SORT_AGE_DESC": "Age (oldest first)",
     "NO_PETS": "No pets available.",
     "LOADING": "Loading pets..."
-  },
-
-  "DETAILS": {
-    "LOADING": "Loading pet information...",
-    "BACK": "Back to adoptions",
-    "SPECIES": "Species",
-    "BREED": "Breed",
-    "AGE": "Age",
-    "YEARS": "years",
-    "GENDER": "Gender",
-    "SIZE": "Size",
-    "WEIGHT": "Weight",
-    "HAIR": "Hair length",
-    "ACTIVITY": "Activity level",
-    "LOCATION": "Location",
-    "DESCRIPTION": "Description",
-    "RESCUE_STORY": "Rescue story",
-    "RESCUED_BY": "Rescued by",
-    "HEALTH": "Health status",
-    "VACCINATION_TITLE": "Vaccination Record",
-    "DOSE": "Dose",
-    "VACCINES": "Vaccines",
-    "ADOPT_BUTTON": "Request adoption",
-    "NOT_FOUND": "Pet not found."
   },
 
   "ADOPTION_MANAGEMENT": {
@@ -180,10 +130,16 @@
 
   "DONATION_CARD": {
     "donationNumber": "Donation number:",
+    "address": "Address:",
     "contact": "Contact:",
     "location": "Location:",
     "donate": "Donate",
     "cancel": "Cancel",
+    "madeDonations": "All Donations Made",
+    "table": {
+      "name": "Donor Name",
+      "amount": "Amount"
+    },
     "form": {
       "amount": "Amount to donate:",
       "placeholderAmount": "S/.",
@@ -208,7 +164,10 @@
     "descriptionRefuge": "These are your current publications connected to your profile.",
     "back": "← Back",
     "supportMoney": "Support monetarily",
-    "supportGoods": "Support with physical donations"
+    "supportGoods": "Support with physical donations",
+    "motivationalMessage": "<strong>Your help can make a difference.</strong> Choose how you want to support shelters: either with a monetary donation or by donating essential goods. Every contribution counts!",
+    "monetaryMessage": "<strong>Support with your monetary donation</strong>, your financial contribution helps cover medical expenses, food, and essential care for the animals in the shelter. Your donation will appear in the table on the right. Your help makes a difference!",
+    "physicalMessage": "<strong>Bring your donations in person</strong>, you can find each shelter’s address in the campaigns. Come and leave your donations: you can help with blankets, toys or sealed food for the shelter pets. They’ll be very grateful!"
   },
 
   "USER_PROFILE": {
@@ -225,16 +184,96 @@
     "paymentMethods": "Accepts"
   },
 
-  "PET_SIZE": {
-    "small": "Small",
-    "medium": "Medium",
-    "large": "Large"
-  },
-
   "AUTH": {
     "GUARD_MESSAGE": "You must sign in to access this section."
   },
   "COMMON": {
     "CLOSE": "Close"
+  },
+  "publications": {
+    "title": "Publications",
+    "publish": "PUBLISH",
+    "delete": "DELETE",
+    "active": "ACTIVE",
+    "publishedAt": "Published on",
+    "photoAlt": "Pet photo",
+    "pendingTitle": "Pending publications",
+    "activeTitle": "Active publications",
+    "noPending": "No pending items",
+    "noActive": "No active publications yet",
+    "publishSuccess": "The publication was created successfully!",
+    "publishError": "Error: Could not publish the pet.",
+    "deleteSuccess": "Publication successfully deleted.",
+    "deleteError": "Error: Could not delete the publication."
+  },
+  "dialog": {
+    "title": "Information",
+    "accept": "Accept"
+  },
+  "adoption": {
+    "title": "Adoption requests",
+    "pending": "Pending requests",
+    "history": "Request history",
+    "empty": {
+      "pending": "There are no pending requests.",
+      "history": "There are no requests in the history."
+    },
+    "hint": {
+      "moreInfo": "click for details"
+    },
+    "status": {
+      "PENDING": "pending",
+      "APPROVED": "approved",
+      "REJECTED": "rejected"
+    },
+    "toast": {
+      "approved": "Request #{{id}} approved.",
+      "rejected": "Request #{{id}} rejected.",
+      "error": "Error: the request could not be processed."
+    }
+  },
+
+  "FILTERS": {
+    "TITLE": "Filter by",
+    "AGE": "Age",
+    "PUPPY": "Puppy",
+    "ADULT": "Adult",
+    "SENIOR": "Senior",
+    "SIZE": "Size",
+    "SMALL": "Small",
+    "MEDIUM": "Medium",
+    "LARGE": "Large",
+    "ALL": "All",
+    "CLEAR": "Clear filters"
+  },
+
+  "DETAILS": {
+    "LOADING": "Loading pet details...",
+    "BACK": "Back to Adoptions",
+    "AGE": "Age",
+    "YEARS": "years",
+    "BREED": "Breed",
+    "SIZE": "Size",
+    "STATUS": "Status",
+    "HEALTH": "Health Status",
+    "VACCINATION": "Vaccination Status",
+    "SPECIAL_NEEDS": "Special Needs",
+    "DESCRIPTION": "Description",
+    "REASON_LABEL": "Why do you want to adopt this pet?",
+    "REASON_PLACEHOLDER": "Write your reason here...",
+    "ADOPT_BUTTON": "Send Adoption Request",
+    "NOT_FOUND": "Pet not found."
+  },
+
+  "PET_SIZE": {
+    "SMALL": "Small",
+    "MEDIUM": "Medium",
+    "LARGE": "Large"
+  },
+
+  "PET_STATUS": {
+    "AVAILABLE": "Available",
+    "ADOPTED": "Adopted",
+    "PROCESSING": "Processing"
   }
 }

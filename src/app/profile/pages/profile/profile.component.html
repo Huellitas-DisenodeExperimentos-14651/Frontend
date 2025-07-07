@@ -1,0 +1,142 @@
+<div class="profile-container">
+  <!-- Mostrar cuando hay un usuario cargado -->
+  <div *ngIf="user && !isLoading" class="user-card">
+    <!-- Modo visualización -->
+    <div *ngIf="!isEditMode">
+      <div class="user-header">
+        <img *ngIf="user.profilePic" [src]="user.profilePic" alt="Foto de perfil" class="profile-pic">
+        <h3>{{ user.name }}</h3>
+        <span class="user-role">{{ user.role }}</span>
+      </div>
+
+      <div class="user-info">
+        <p><strong>📍 Ubicación:</strong> {{ user.address }}</p>
+        <p><strong>✉️ Email:</strong> {{ user.email }}</p>
+        <p *ngIf="user.bio" class="user-bio">{{ user.bio }}</p>
+      </div>
+
+      <div *ngIf="user.preferences?.length" class="preferences">
+        <h4>🔍 Preferencias:</h4>
+        <div class="preferences-container">
+          <span class="preference-tag" *ngFor="let pref of user.preferences">
+            {{ pref }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Campos específicos por rol -->
+      <div *ngIf="user.role === 'SHELTER'" class="role-specific">
+        <p><strong>🏠 Capacidad:</strong> {{ user.capacity }} animales</p>
+        <p><strong>🐾 Disponibles:</strong> {{ user.animalsAvailable }}</p>
+      </div>
+
+      <div *ngIf="user.role === 'ADOPTER'" class="role-specific">
+        <p><strong>🏡 Tipo de vivienda:</strong> {{ user.homeType }}</p>
+        <p><strong>📌 Experiencia previa:</strong> {{ user.previousExperience || 'Ninguna' }}</p>
+      </div>
+
+      <!-- Métodos de pago -->
+      <div *ngIf="user.paymentMethods?.length" class="payment-methods">
+        <h4>💳 Métodos de pago:</h4>
+        <div class="methods-container">
+          <span class="method-tag" *ngFor="let method of user.paymentMethods">
+            {{ method }}
+          </span>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button (click)="toggleEditMode()" class="edit-button">
+          <mat-icon>edit</mat-icon> Editar Perfil
+        </button>
+        <button (click)="deleteProfile()" class="delete-button">
+          <mat-icon>delete</mat-icon> Eliminar Perfil
+        </button>
+      </div>
+    </div>
+
+    <!-- Modo edición -->
+    <div *ngIf="isEditMode" class="edit-form">
+      <h3>Editar Perfil</h3>
+
+      <div class="form-group">
+        <label>Nombre:</label>
+        <input [(ngModel)]="user.name" type="text">
+      </div>
+
+      <div class="form-group">
+        <label>Email:</label>
+        <input [(ngModel)]="user.email" type="email">
+      </div>
+
+      <div class="form-group">
+        <label>Dirección:</label>
+        <input [(ngModel)]="user.address" type="text">
+      </div>
+
+      <div class="form-group">
+        <label>Preferencias (separadas por coma):</label>
+        <input
+          [(ngModel)]="user.preferencesString"
+          type="text"
+          placeholder="Ej: Perros, Gatos, Animales grandes"
+        >
+        <small>Separa cada elemento con una coma. Ej: "Perros, Gatos"</small>
+      </div>
+
+      <div class="form-group">
+        <label>Métodos de pago (separados por coma):</label>
+        <input
+          [(ngModel)]="user.paymentMethodsString"
+          type="text"
+          placeholder="Ej: PayPal, Tarjeta de crédito"
+        >
+        <small>Separa cada método con una coma. Ej: "PayPal, Tarjeta"</small>
+      </div>
+
+      <div class="form-group">
+        <label>Foto de perfil (URL):</label>
+        <input [(ngModel)]="user.profilePic" type="text">
+      </div>
+
+      <div class="form-group">
+        <label>Biografía:</label>
+        <textarea [(ngModel)]="user.bio"></textarea>
+      </div>
+
+      <div *ngIf="user.role === 'SHELTER'" class="form-group">
+        <label>Capacidad:</label>
+        <input [(ngModel)]="user.capacity" type="number">
+      </div>
+
+      <div *ngIf="user.role === 'ADOPTER'" class="form-group">
+        <label>Tipo de vivienda:</label>
+        <input [(ngModel)]="user.homeType" type="text">
+      </div>
+
+      <div class="form-actions">
+        <button (click)="saveProfile()" class="save-button">
+          <mat-icon>save</mat-icon> Guardar
+        </button>
+        <button (click)="toggleEditMode()" class="cancel-button">
+          <mat-icon>cancel</mat-icon> Cancelar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mostrar cuando está cargando -->
+  <div *ngIf="isLoading" class="loading">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>Cargando perfil...</p>
+  </div>
+
+  <!-- Mostrar cuando hay error -->
+  <div *ngIf="errorLoading && !isLoading" class="error-loading">
+    <mat-icon class="error-icon">error_outline</mat-icon>
+    <p>No se pudo cargar el perfil</p>
+    <button (click)="retryLoadProfile()" class="retry-button">
+      <mat-icon>refresh</mat-icon> Reintentar
+    </button>
+  </div>
+</div>

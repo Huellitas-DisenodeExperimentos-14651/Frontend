@@ -5,7 +5,7 @@
   },
 
   "HEADER": {
-    "home": "Inicio",
+    "home": "Patita Solidaria",
     "sign_in": "Iniciar sesión",
     "sign_up": "Registrarse",
     "sign_out": "Cerrar sesión",
@@ -15,7 +15,7 @@
     "donations": "Donaciones",
     "profile": "Perfil",
     "publications": "Publicaciones",
-    "manage_adoptions": "Gestión de Adopciones",
+    "adoption_request": "Solicitud de Adopciones",
     "authentication": "Autenticación"
   },
 
@@ -39,63 +39,13 @@
   },
 
   "ADOPTION_CARD": {
-    "SPECIES": "Especie",
+    "NAME": "Nombre",
     "BREED": "Raza",
     "AGE": "Edad",
     "YEARS": "años",
-    "GENDER": "Género",
+    "SIZE": "Tamaño",
     "LOCATION": "Ubicación",
     "ADOPT_BUTTON": "Solicitar adopción"
-  },
-
-  "DETAILS": {
-    "LOADING": "Cargando información de la mascota...",
-    "BACK": "Volver a adopciones",
-    "SPECIES": "Especie",
-    "BREED": "Raza",
-    "AGE": "Edad",
-    "YEARS": "años",
-    "GENDER": "Género",
-    "SIZE": "Tamaño",
-    "WEIGHT": "Peso",
-    "HAIR": "Largo de pelo",
-    "ACTIVITY": "Nivel de actividad",
-    "LOCATION": "Ubicación",
-    "DESCRIPTION": "Descripción",
-    "RESCUE_STORY": "Historia de rescate",
-    "RESCUED_BY": "Rescatado por",
-    "HEALTH": "Estado de salud",
-    "VACCINATION_TITLE": "Historial de Vacunación",
-    "DOSE": "Dosis",
-    "VACCINES": "Vacunas",
-    "ADOPT_BUTTON": "Solicitar adopción",
-    "NOT_FOUND": "Mascota no encontrada."
-  },
-
-  "FILTERS": {
-    "TITLE": "Filtrar por",
-    "ACTIVITY": "Nivel de actividad",
-    "WEIGHT": "Peso",
-    "SIZE": "Tamaño",
-    "HAIR_LENGTH": "Largo de pelo",
-    "GENDER": "Sexo",
-    "AGE": "Edad",
-    "LOW": "Bajo",
-    "MEDIUM": "Mediano",
-    "HIGH": "Alto",
-    "LIGHT": "Ligero",
-    "HEAVY": "Pesado",
-    "SMALL": "Pequeño",
-    "LARGE": "Grande",
-    "SHORT": "Corto",
-    "LONG": "Largo",
-    "MALE": "Macho",
-    "FEMALE": "Hembra",
-    "PUPPY": "Cachorro",
-    "ADULT": "Adulto",
-    "SENIOR": "Mayor",
-    "ALL": "Todos",
-    "CLEAR": "Limpiar filtros"
   },
 
   "LIST": {
@@ -180,10 +130,16 @@
 
   "DONATION_CARD": {
     "donationNumber": "Número para donaciones:",
+    "address": "Dirección:",
     "contact": "Contacto:",
     "location": "Ubicación:",
     "donate": "Donar",
     "cancel": "Cancelar",
+    "madeDonations": "Donaciones realizadas",
+    "table": {
+      "name": "Nombre del donante",
+      "amount": "Monto"
+    },
     "form": {
       "amount": "Monto a donar:",
       "placeholderAmount": "S/.",
@@ -208,7 +164,10 @@
     "descriptionRefuge": "Estas son tus publicaciones actuales conectadas a tu perfil.",
     "back": "← Volver",
     "supportMoney": "Apoyar monetariamente",
-    "supportGoods": "Apoyar con donaciones físicas"
+    "supportGoods": "Apoyar con donaciones físicas",
+    "motivationalMessage": "<strong>Tu ayuda puede marcar la diferencia.</strong> Elige cómo deseas apoyar a los refugios: ya sea con una donación monetaria o donando bienes esenciales. ¡Cada aporte cuenta!",
+    "monetaryMessage": "<strong>Apoya con tu donación monetaria</strong>, tu aporte económico permite cubrir gastos médicos, alimentación y cuidados esenciales para los animales del refugio. Tu donación aparecerá en la tabla de la derecha ¡Tu ayuda hace la diferencia!",
+    "physicalMessage": "<strong>Acércate a hacer tus donaciones</strong>, podrás encontrar la dirección de cada refugio en las campañas. Acércate y deja tus donaciones: puedes apoyar con mantas, juguetes o comida sellada para las mascotas del refugio. ¡Te lo agradecerán mucho!"
   },
 
   "USER_PROFILE": {
@@ -225,16 +184,96 @@
     "paymentMethods": "Acepta"
   },
 
-  "PET_SIZE": {
-    "small": "Pequeño",
-    "medium": "Mediano",
-    "large": "Grande"
-  },
-
   "AUTH": {
     "GUARD_MESSAGE": "Debes iniciar sesión para acceder a esta sección."
   },
   "COMMON": {
     "CLOSE": "Cerrar"
+  },
+  "publications": {
+    "title": "Publicaciones",
+    "publish": "PUBLICAR",
+    "delete": "BORRAR",
+    "active": "ACTIVA",
+    "publishedAt": "Publicado",
+    "photoAlt": "Foto mascota",
+    "pendingTitle": "Publicaciones pendientes",
+    "activeTitle": "Publicaciones activas",
+    "noPending": "Sin pendientes",
+    "noActive": "Aún no hay publicaciones activas",
+    "publishSuccess": "¡La publicación fue creada exitosamente!",
+    "publishError": "Error: No se pudo publicar la mascota.",
+    "deleteSuccess": "Publicación eliminada con éxito.",
+    "deleteError": "Error: No se pudo eliminar la publicación."
+  },
+  "dialog": {
+    "title": "Información",
+    "accept": "Aceptar"
+  },
+  "adoption": {
+    "title": "Solicitudes de adopción",
+    "pending": "Solicitudes pendientes",
+    "history": "Historial de solicitudes",
+    "empty": {
+      "pending": "No hay solicitudes pendientes.",
+      "history": "No hay solicitudes en el historial."
+    },
+    "hint": {
+      "moreInfo": "clic para más información"
+    },
+    "status": {
+      "PENDING": "pendiente",
+      "APPROVED": "aprobada",
+      "REJECTED": "rechazada"
+    },
+    "toast": {
+      "approved": "Solicitud #{{id}} aceptada.",
+      "rejected": "Solicitud #{{id}} rechazada.",
+      "error": "Error: no fue posible procesar la solicitud."
+    }
+  },
+
+  "FILTERS": {
+    "TITLE": "Filtrar por",
+    "AGE": "Edad",
+    "PUPPY": "Cachorro",
+    "ADULT": "Adulto",
+    "SENIOR": "Mayor",
+    "SIZE": "Tamaño",
+    "SMALL": "Pequeño",
+    "MEDIUM": "Mediano",
+    "LARGE": "Grande",
+    "ALL": "Todos",
+    "CLEAR": "Limpiar filtros"
+  },
+
+  "DETAILS": {
+    "LOADING": "Cargando detalles de la mascota...",
+    "BACK": "Volver a Adopciones",
+    "AGE": "Edad",
+    "YEARS": "años",
+    "BREED": "Raza",
+    "SIZE": "Tamaño",
+    "STATUS": "Estado",
+    "HEALTH": "Estado de salud",
+    "VACCINATION": "Vacunas",
+    "SPECIAL_NEEDS": "Necesidades especiales",
+    "DESCRIPTION": "Descripción",
+    "REASON_LABEL": "¿Por qué deseas adoptar a esta mascota?",
+    "REASON_PLACEHOLDER": "Escribe tu motivo aquí...",
+    "ADOPT_BUTTON": "Enviar solicitud de adopción",
+    "NOT_FOUND": "Mascota no encontrada."
+  },
+
+  "PET_SIZE": {
+    "SMALL": "Pequeño",
+    "MEDIUM": "Mediano",
+    "LARGE": "Grande"
+  },
+
+  "PET_STATUS": {
+    "AVAILABLE": "Disponible",
+    "ADOPTED": "Adoptado",
+    "PROCESSING": "En proceso"
   }
 }

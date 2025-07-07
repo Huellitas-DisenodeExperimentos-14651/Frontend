@@ -1,9 +1,16 @@
-export class SignUpRequest {
-  public username: string;
-  public password: string;
-
-  constructor(username: string, password: string) {
-    this.password = password;
-    this.username = username;
-  }
+export interface SignUpRequest {
+  username: string;
+  password: string;
+  name: string;
+  email: string;
+  address: string;
+  role: 'ADOPTER' | 'SHELTER';
+  paymentMethods: string[];
+  preferences: string[];
+  profilePic: string;
+  bio: string;
+  capacity: number;
+  animalsAvailable: number;
+  homeType: string;
+  previousExperience: string;
 }

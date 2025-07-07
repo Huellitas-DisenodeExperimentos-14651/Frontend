@@ -1,16 +1,19 @@
 import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
-import { withInterceptors } from "@angular/common/http";
-import { authenticationInterceptor } from "./iam/services/authentication.interceptor";
+import { withInterceptors } from '@angular/common/http';
+import { authenticationInterceptor } from './iam/services/authentication.interceptor';
 import { routes } from './app.routes';
-import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { provideAnimations } from '@angular/platform-browser/animations';
 
-import { HttpClient, provideHttpClient } from "@angular/common/http";
+import { HttpClient, provideHttpClient } from '@angular/common/http';
 import { importProvidersFrom } from '@angular/core';
-import { TranslateLoader, TranslateModule } from "@ngx-translate/core";
-import { TranslateHttpLoader } from "@ngx-translate/http-loader";
-import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { IgxOverlayService } from 'igniteui-angular';
+
+import { MatDialogModule } from '@angular/material/dialog';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -18,12 +21,11 @@ export function HttpLoaderFactory(http: HttpClient) {
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    importProvidersFrom(MatSnackBarModule),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
-    provideAnimationsAsync(),
-    provideHttpClient(),
-
+    provideAnimations(),
+    provideHttpClient(withInterceptors([authenticationInterceptor])),
+    importProvidersFrom(MatSnackBarModule),
     importProvidersFrom(
       TranslateModule.forRoot({
         loader: {
@@ -33,7 +35,7 @@ export const appConfig: ApplicationConfig = {
         }
       })
     ),
-
-    provideHttpClient(withInterceptors([authenticationInterceptor])),
+    importProvidersFrom(MatDialogModule),
+    IgxOverlayService
   ]
 };
