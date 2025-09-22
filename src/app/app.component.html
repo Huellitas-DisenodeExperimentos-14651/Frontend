@@ -9,7 +9,7 @@
   </button>
 
   <!-- Logo de la aplicación -->
-  <img src="https://i.imgur.com/iVe94bK.png" alt="PatitaSolidaria Logo" style="height: 50px; margin-left: 20px;">
+  <img src="/LogoHuellitasConectadasF.jpg" alt="HuellitasConectadas Logo" style="height: 50px; margin-left: 20px;">
 
   <!-- Botón de navegación a la vista principal de mascotas -->
   <a style="margin-left: 20px; color: white;">
@@ -26,12 +26,10 @@
   <app-language-switcher style="color: white;"></app-language-switcher>
 </mat-toolbar>
 
-
 <!-- Contenedor principal que incluye el sidenav y el contenido -->
 <mat-sidenav-container>
-
   <!-- Menú lateral (sidenav) -->
-  <mat-sidenav #sidenav style="background-color: #FF8C00;">
+  <mat-sidenav #sidenav style="background-color: #F4A261;">
     <mat-nav-list>
       <ng-container *ngFor="let option of secondaryOptions">
         <mat-list-item (click)="sidenav.mode === 'over' && sidenav.toggle()" [routerLink]="option.path">
@@ -57,8 +55,8 @@
 
             <!-- Título traducido -->
             <span class="sidenav-label">
-            {{ option.titleKey | translate }}
-          </span>
+              {{ option.titleKey | translate }}
+            </span>
           </div>
 
         </mat-list-item>

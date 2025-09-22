@@ -36,7 +36,7 @@ import { TranslateModule } from '@ngx-translate/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  title = 'PatitaSolidaria';
+  title = 'HuellitasConectadas';
   isSignedIn: boolean = false;
 
   @ViewChild(MatSidenav, { static: true }) sidenav!: MatSidenav;

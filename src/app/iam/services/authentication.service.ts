@@ -7,6 +7,9 @@ import { SignInRequest } from "../model/sign-in.request";
 import { SignInResponse } from "../model/sign-in.response";
 import { SignUpRequest } from "../model/sign-up.request";
 import { SignUpResponse } from "../model/sign-up.response";
+import { of } from "rxjs";
+import { delay } from "rxjs/operators";
+
 
 @Injectable({
   providedIn: 'root'
@@ -36,8 +39,6 @@ export class AuthenticationService {
 
   /**
    * Sign up a new user.
-   * @param signUpRequest The sign up request.
-   * @returns The sign up response.
    */
   signUp(signUpRequest: SignUpRequest) {
     return this.http.post<SignUpResponse>(
@@ -49,17 +50,39 @@ export class AuthenticationService {
 
   /**
    * Sign in a user.
-   * @param signInRequest The sign in request.
-   * @returns The sign in response.
+   * If environment.mockAuth = true, simulate login without backend.
    */
   signIn(signInRequest: SignInRequest) {
-    return this.http.post<SignInResponse>(`${this.basePath}/authentication/sign-in`, signInRequest, this.httpOptions);
+    if (environment['mockAuth']) {
+      const fakeResponse: SignInResponse = {
+        token: 'fake-jwt-token',
+        id: 1,
+        username: signInRequest.username,
+        role: 'USER',
+        profileId: 1
+      };
+
+      // Guardamos token simulado
+      localStorage.setItem('token', fakeResponse.token);
+
+      // Simulamos que hay un usuario logueado
+      this.setSignedInState(true, fakeResponse.id, fakeResponse.username);
+
+      // devolvemos observable con delay
+      return of(fakeResponse).pipe(delay(300));
+    }
+
+    // 🔗 llamada real al backend
+    return this.http.post<SignInResponse>(
+      `${this.basePath}/authentication/sign-in`,
+      signInRequest,
+      this.httpOptions
+    );
   }
+
 
   /**
    * Sign out a user.
-   *
-   * This method signs out a user by clearing the token from local storage and navigating to the sign-in page.
    */
   signOut() {
     this.signedIn.next(false);
@@ -91,9 +114,6 @@ export class AuthenticationService {
 
   /**
    * Establece el estado de sesión manualmente.
-   * @param isSignedIn Estado de sesión (true o false).
-   * @param userId ID del usuario autenticado.
-   * @param username Nombre de usuario.
    */
   setSignedInState(isSignedIn: boolean, userId: number, username: string): void {
     this.signedIn.next(isSignedIn);

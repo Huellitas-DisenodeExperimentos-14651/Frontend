@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "PatitaSolidaria": {
+    "HuellitasConectadas": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/PatitaSolidaria",
+            "outputPath": "dist/HuellitasConectadas",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
@@ -66,19 +66,17 @@
                 }
               ]
             }
-          }
-        ,
+          },
           "defaultConfiguration": "production"
-        }
-      ,
+        },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "PatitaSolidaria:build:production"
+              "buildTarget": "HuellitasConectadas:build:production"
             },
             "development": {
-              "buildTarget": "PatitaSolidaria:build:development"
+              "buildTarget": "HuellitasConectadas:build:development"
             }
           },
           "defaultConfiguration": "development"
