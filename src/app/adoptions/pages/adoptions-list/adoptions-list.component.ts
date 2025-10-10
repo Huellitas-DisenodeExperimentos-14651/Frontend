@@ -7,8 +7,11 @@ import { AdoptionFilter } from '../../model/adoption-filter.model';
 import { AdoptionCardComponent } from '../../components/adoption-card/adoption-card.component';
 import { AdoptionFiltersComponent } from '../../components/adoption-filters/adoption-filters.component';
 import { PetNameFilterPipe } from '../../pipes/pet-name-filter.pipe';
-import { PublicationWithPet } from '../../model/publication-with-pet.model';
+
 import { AdoptionsService } from '../../services/adoptions.service';
+import { AdoptionRequestService } from '../../../adoption-requests/services/adoption-request.service';
+import { Pet } from '../../../pets/model/pet.entity';
+import { AuthenticationService } from '../../../iam/services/authentication.service';
 
 @Component({
   standalone: true,
@@ -25,23 +28,26 @@ import { AdoptionsService } from '../../services/adoptions.service';
   ]
 })
 export class AdoptionsListComponent implements OnInit {
-  publications: PublicationWithPet[] = [];
-  publicationsOriginal: PublicationWithPet[] = [];
+  publications: Pet[] = [];
+  publicationsOriginal: Pet[] = [];
   loading = true;
   search: string = '';
   sortOption: string = '';
 
-  constructor(private adoptionsService: AdoptionsService) {}
+  constructor(
+    private adoptionsService: AdoptionsService,
+    private adoptionRequestService: AdoptionRequestService,
+    private authenticationService: AuthenticationService
+  ) {}
 
   ngOnInit(): void {
-    this.adoptionsService.getAllPets().subscribe({
-      next: (data: PublicationWithPet[]) => {
+    this.adoptionsService.getAllDirectPets().subscribe({
+      next: (data) => {
         this.publicationsOriginal = data;
         this.publications = data;
         this.loading = false;
       },
-      error: (err: any) => {
-        console.error('Error al cargar publicaciones:', err);
+      error: () => {
         this.loading = false;
       }
     });
@@ -54,9 +60,9 @@ export class AdoptionsListComponent implements OnInit {
   }
 
   applyFilters(filter: AdoptionFilter): void {
-    this.publications = this.publicationsOriginal.filter(pub =>
-      (!filter.age || this.getAgeCategory(pub.pet.age) === filter.age) &&
-      (!filter.size || pub.pet.size.toString() === filter.size)
+    this.publications = this.publicationsOriginal.filter(pet =>
+      (!filter.age || this.getAgeCategory(pet.age) === filter.age) &&
+      (!filter.size || pet.size.toLowerCase() === filter.size?.toLowerCase())
     );
     this.applySort();
   }
@@ -67,16 +73,43 @@ export class AdoptionsListComponent implements OnInit {
     this.publications.sort((a, b) => {
       switch (this.sortOption) {
         case 'name-asc':
-          return a.pet.name.localeCompare(b.pet.name);
+          return a.name.localeCompare(b.name);
         case 'name-desc':
-          return b.pet.name.localeCompare(a.pet.name);
+          return b.name.localeCompare(a.name);
         case 'age-asc':
-          return a.pet.age - b.pet.age;
+          return a.age - b.age;
         case 'age-desc':
-          return b.pet.age - a.pet.age;
+          return b.age - a.age;
         default:
           return 0;
       }
     });
+  }
+
+  onRequestAdoption(pet: Pet): void {
+    if ((pet.status || '').trim().toLowerCase() !== 'available') {
+      alert('Error: Mascota no disponible para adopción.');
+      return;
+    }
+    // Obtener datos del usuario actual
+    const applicantId = localStorage.getItem('profileId');
+    const applicantFullName = localStorage.getItem('username') || '';
+    const request = {
+      publicationId: pet.id,
+      applicantId: applicantId,
+      applicantFullName: applicantFullName,
+      reasonMessage: 'Quiero adoptar esta mascota.',
+      status: 'PENDING',
+      requestDate: new Date().toISOString()
+    };
+    this.adoptionRequestService.create(request)
+      .subscribe({
+        next: () => {
+          alert('Request enviado, espera la respuesta');
+        },
+        error: () => {
+          alert('Error al enviar la solicitud.');
+        }
+      });
   }
 }

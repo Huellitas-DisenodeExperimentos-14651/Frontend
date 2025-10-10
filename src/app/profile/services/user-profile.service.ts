@@ -18,23 +18,23 @@ export class UserProfileService {
 
   constructor(private http: HttpClient) {}
 
-  getProfile(profileId: number): Observable<User> {
-    return this.http.get<User>(`${this.basePath}/profiles/${profileId}`, this.httpOptions);
+  getProfile(profileId: string | number): Observable<User> {
+    return this.http.get<User>(`${this.basePath}/users/${profileId}`, this.httpOptions);
   }
 
   createProfile(user: User): Observable<User> {
-    return this.http.post<User>(this.basePath, user, this.httpOptions);
+    return this.http.post<User>(`${this.basePath}/users`, user, this.httpOptions);
   }
 
-  updateProfile(profileId: number, user: User): Observable<User> {
-    return this.http.put<User>(`${this.basePath}/profiles/${profileId}`, user, this.httpOptions);
+  updateProfile(profileId: string | number, user: User): Observable<User> {
+    return this.http.put<User>(`${this.basePath}/users/${profileId}`, user, this.httpOptions);
   }
 
-  deleteProfile(profileId: number): Observable<void> {
-    return this.http.delete<void>(`${this.basePath}/profiles/${profileId}`); // Usa /profiles/
+  deleteProfile(profileId: string | number): Observable<void> {
+    return this.http.delete<void>(`${this.basePath}/users/${profileId}`, this.httpOptions);
   }
 
   getProfiles(): Observable<User[]> {
-    return this.http.get<User[]>(this.basePath, this.httpOptions);
+    return this.http.get<User[]>(`${this.basePath}/users`, this.httpOptions);
   }
 }

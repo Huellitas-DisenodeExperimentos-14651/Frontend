@@ -22,7 +22,14 @@ export class AdoptionRequestService {
     return this.http.put<AdoptionRequest>(`${this.baseUrl}/${id}/reject`, null);
   }
 
-  create(payload: { publicationId: number; reasonMessage: string }): Observable<AdoptionRequest> {
-    return this.http.post<AdoptionRequest>(this.baseUrl, payload);
+  create(payload: any): Observable<AdoptionRequest> {
+    // Agregar fecha y estado automáticamente
+    const now = new Date().toISOString();
+    const request = {
+      ...payload,
+      date: now,
+      status: payload.status || 'pendiente'
+    };
+    return this.http.post<AdoptionRequest>(this.baseUrl, request);
   }
 }

@@ -65,19 +65,26 @@ export class SignInComponent extends BaseFormComponent implements OnInit {
 
     this.authenticationService.signIn(signInRequest).subscribe({
       next: (response) => {
+        if (!response || response.length === 0) {
+          // Usuario o contraseña incorrectos
+          console.error('Usuario o contraseña incorrectos');
+          // Aquí puedes mostrar un mensaje al usuario
+          return;
+        }
+        const user = response[0];
         // Guardar localStorage
-        localStorage.setItem('token', response.token);
-        localStorage.setItem('role', response.role);
-        localStorage.setItem('username', response.username);
-        localStorage.setItem('profileId', response.profileId.toString());
+        localStorage.setItem('token', 'fake-token'); // Puedes generar un token falso si lo necesitas
+        localStorage.setItem('role', user.role);
+        localStorage.setItem('username', user.username);
+        localStorage.setItem('profileId', user.id.toString());
 
         // ✅ Actualiza estado global
-        this.authenticationService.setSignedInState(true, response.id, response.username);
+        this.authenticationService.setSignedInState(true, user.id, user.username);
 
         // ✅ Redirige por rol
-        if (response.role === 'SHELTER') {
+        if (user.role === 'SHELTER') {
           this.router.navigate(['/pets']);
-        } else if (response.role === 'ADOPTER') {
+        } else if (user.role === 'ADOPTER') {
           this.router.navigate(['/adoptions']);
         } else {
           this.router.navigate(['/']);

@@ -35,8 +35,9 @@
     <!-- Tarjetas de mascotas filtradas -->
     <div *ngIf="!loading && publications.length > 0" class="cards-grid">
       <app-adoption-card
-        *ngFor="let publication of publications | petNameFilter:search"
-        [publication]="publication">
+        *ngFor="let pet of publications | petNameFilter:search"
+        [pet]="pet"
+        (requestAdoption)="onRequestAdoption($event)">
       </app-adoption-card>
     </div>
 

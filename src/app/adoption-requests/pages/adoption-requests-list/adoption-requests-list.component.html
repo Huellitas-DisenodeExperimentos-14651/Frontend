@@ -1,0 +1,21 @@
+<div class="requests-list-container">
+  <h2>Mis Solicitudes de Adopción</h2>
+  <div *ngIf="loading">Cargando solicitudes...</div>
+  <div *ngIf="!loading && requests.length === 0">No hay solicitudes registradas.</div>
+  <div *ngIf="!loading && requests.length > 0">
+    <div *ngFor="let req of requests" class="request-card">
+      <div class="request-header">
+        <span class="request-date">{{ formatDate(req.date) }}</span>
+        <span class="request-status status-{{ req.status }}">{{ req.status | uppercase }}</span>
+      </div>
+      <div class="request-body">
+        <img [src]="req.pet?.photo" alt="Mascota" class="pet-photo" />
+        <div class="pet-info">
+          <div><strong>Nombre:</strong> {{ req.pet?.name }}</div>
+          <div><strong>Raza:</strong> {{ req.pet?.breed }}</div>
+          <div><strong>Edad:</strong> {{ req.pet?.age }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

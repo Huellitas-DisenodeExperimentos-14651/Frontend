@@ -59,34 +59,34 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Verifica autenticación
     this.authenticationService.isSignedIn.subscribe((isSignedIn) => {
       this.isSignedIn = isSignedIn;
-
-      if (isSignedIn) {
-        const currentUser = this.authenticationService.getCurrentUser();
-
-        if (currentUser?.role === 'ADOPTER') {
+      const currentUser = this.authenticationService.getCurrentUser();
+      if (isSignedIn && currentUser) {
+        if (currentUser.role === 'ADOPTER') {
           this.secondaryOptions = [
             { icon: 'https://cdn-icons-png.flaticon.com/512/5308/5308557.png', path: '/adoptions', titleKey: 'HEADER.adoptions' },
             { icon: 'https://cdn-icons-png.flaticon.com/512/11008/11008379.png', path: '/donations', titleKey: 'HEADER.donations' },
-            { icon: 'https://cdn-icons-png.flaticon.com/512/3177/3177440.png', path: '/profile', titleKey: 'HEADER.profile' }
+            { icon: 'https://cdn-icons-png.flaticon.com/512/3177/3177440.png', path: '/profile', titleKey: 'HEADER.profile' },
+            { icon: 'https://cdn-icons-png.flaticon.com/512/3842/3842536.png', path: '/adoption-requests', titleKey: 'HEADER.adoption_requests' }
           ];
-        } else if (currentUser?.role === 'SHELTER') {
+        } else if (currentUser.role === 'SHELTER') {
           this.secondaryOptions = [
             { icon: 'https://cdn-icons-png.flaticon.com/512/616/616408.png', path: '/pets', titleKey: 'HEADER.pets' },
             { icon: 'https://cdn-icons-png.flaticon.com/512/2680/2680900.png', path: '/publications', titleKey: 'HEADER.publications' },
             { icon: 'https://cdn-icons-png.flaticon.com/512/3842/3842536.png', path: '/adoption-requests', titleKey: 'HEADER.adoption_requests' },
             { icon: 'https://cdn-icons-png.flaticon.com/512/3177/3177440.png', path: '/profile', titleKey: 'HEADER.profile' }
           ];
+        } else {
+          // Otros roles autenticados
+          this.secondaryOptions = [
+            { icon: 'https://cdn-icons-png.flaticon.com/512/5308/5308557.png', path: '/adoptions', titleKey: 'HEADER.adoptions' }
+          ];
         }
       } else {
-        // 👉 Secciones visibles para usuarios NO autenticados
-        this.secondaryOptions = [
-          { icon: 'https://cdn-icons-png.flaticon.com/512/5308/5308557.png', path: '/adoptions', titleKey: 'HEADER.adoptions' }
-        ];
-
-        this.router.navigate(['/sign-in']);
+        // Usuario no autenticado: menú vacío
+        this.secondaryOptions = [];
+        // No redirigir automáticamente, solo mostrar menú vacío
       }
     });
 

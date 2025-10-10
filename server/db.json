@@ -1,52 +1,9 @@
-
 {
-  "adoptionRequests": [
-    {
-      "id": "1",
-      "petName": "Luna",
-      "petAge": 2,
-      "petPhoto": "https://placedog.net/400/300?id=1",
-      "adopterName": "Carlos Pérez",
-      "adopterAge": 32,
-      "adopterPhoto": "https://randomuser.me/api/portraits/men/45.jpg",
-      "reason": "Siempre he querido tener una perrita para compañía.",
-      "status": "pendiente",
-      "birthDate": "1992-04-17",
-      "email": "carlos.perez@example.com",
-      "dni": "75864321",
-      "location": "Lima, Perú",
-      "maritalStatus": "Soltero",
-      "hasChildren": false,
-      "livesWithParents": true,
-      "economicStatus": "Estable",
-      "phone": "+51 987654321",
-      "petExperience": "Tuve dos perros en el pasado y los cuidé hasta su vejez."
-    },
-    {
-      "id": "2",
-      "petName": "Max",
-      "petAge": 3,
-      "petPhoto": "https://placedog.net/400/300?id=2",
-      "adopterName": "Ana Torres",
-      "adopterAge": 28,
-      "adopterPhoto": "https://randomuser.me/api/portraits/women/65.jpg",
-      "reason": "Quiero brindarle un hogar a un animal rescatado.",
-      "status": "pendiente",
-      "birthDate": "1995-08-22",
-      "email": "ana.torres@example.com",
-      "dni": "48392017",
-      "location": "Arequipa, Perú",
-      "maritalStatus": "Casada",
-      "hasChildren": true,
-      "livesWithParents": false,
-      "economicStatus": "Buena",
-      "phone": "+51 923456789",
-      "petExperience": "Actualmente tengo un gato. De niña tuve un conejo."
-    }
+  "adoption-requests": [
   ],
   "pets": [
     {
-      "id": 1,
+      "id": "1",
       "name": "Max",
       "age": 3,
       "photo": "https://images.unsplash.com/photo-1561037404-61cd46aa615b",
@@ -59,29 +16,66 @@
       "specialNeeds": "Necesita ejercicio diario"
     },
     {
-      "id": 2,
+      "id": "2",
       "name": "Luna",
       "age": 2,
       "photo": "https://images.unsplash.com/photo-1526336024174-e58f5cdd8e13",
       "breed": "Siamés",
       "size": "small",
-      "status": "pending",
+      "status": "available",
       "description": "Luna es una gata cariñosa pero tímida al principio. Le encanta dormir en lugares cálidos.",
       "healthStatus": "En tratamiento",
       "vaccinationStatus": "Pendiente",
       "specialNeeds": "Requiere dieta especial"
     },
     {
-      "id": 3,
+      "id": "3",
       "name": "Rocky",
       "age": 5,
       "photo": "https://images.unsplash.com/photo-1583337130417-3346a1be7dee",
       "breed": "Bulldog Francés",
       "size": "medium",
-      "status": "adopted",
+      "status": "available",
       "description": "Rocky es tranquilo y le encanta estar en compañía. Perfecto para departamentos pequeños.",
       "healthStatus": "Excelente",
       "vaccinationStatus": "Completo"
+    }
+  ],
+  "users": [
+    {
+      "id": "1",
+      "username": "admin",
+      "email": "admin@example.com",
+      "password": "admin123",
+      "role": "admin"
+    },
+    {
+      "id": "2",
+      "username": "usuario",
+      "email": "usuario@example.com",
+      "password": "usuario123",
+      "role": "user"
+    },
+    {
+      "id": "98cd",
+      "username": "Christian",
+      "password": "Christian123",
+      "name": "Christian Renato",
+      "email": "Christian@gmail.com",
+      "address": "Av almeda del corregidor",
+      "role": "ADOPTER",
+      "paymentMethods": [
+        "Yape"
+      ],
+      "preferences": [
+        "Perros"
+      ],
+      "profilePic": "s",
+      "bio": "Mi nombre es Christian",
+      "capacity": 1,
+      "animalsAvailable": 0,
+      "homeType": "Departamento",
+      "previousExperience": "No cuento con experiencia previa"
     }
   ]
 }

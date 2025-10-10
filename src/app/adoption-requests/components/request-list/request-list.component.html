@@ -21,16 +21,19 @@
 
 <div class="backdrop" *ngIf="open() as s" (click)="close()"></div>
 <dialog open *ngIf="open() as s" class="popup">
-  <h2>Solicitud #{{ s.id }}</h2>
-  <p><b>Publicación:</b> {{ s.publicationId }}</p>
-  <p><b>Solicitante:</b> {{ s.applicantFullName }}</p>
-  <p><b>Motivo:</b> {{ s.reasonMessage }}</p>
-  <p><b>Fecha:</b> {{ s.requestDate }}</p>
-  <p><b>Estado actual:</b> {{ s.status }}</p>
-
+  <ng-container *ngIf="s.pet">
+    <div class="pet-detail">
+      <img *ngIf="s.pet.photo" [src]="s.pet.photo" alt="Mascota" class="pet-photo" />
+      <div class="pet-info">
+        <div><strong>Nombre:</strong> {{ s.pet.name }}</div>
+        <div><strong>Raza:</strong> {{ s.pet.breed }}</div>
+        <div><strong>Edad:</strong> {{ s.pet.age }}</div>
+      </div>
+    </div>
+  </ng-container>
+  <p><b>Fecha de solicitud:</b> {{ s.requestDate }}</p>
+  <p><b>Estado:</b> {{ s.status | uppercase }}</p>
   <footer>
     <button (click)="close()">VOLVER</button>
-    <button class="accept" (click)="approve(s)" [disabled]="s.status !== 'PENDING'">ACEPTAR</button>
-    <button class="reject" (click)="reject(s)"  [disabled]="s.status !== 'PENDING'">RECHAZAR</button>
   </footer>
 </dialog>

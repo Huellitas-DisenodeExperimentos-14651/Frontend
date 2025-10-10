@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { PublicationWithPet } from '../model/publication-with-pet.model';
+import { Pet } from '../../pets/model/pet.entity';
 
 @Pipe({
   standalone: true,
@@ -7,18 +7,18 @@ import { PublicationWithPet } from '../model/publication-with-pet.model';
 })
 export class PetNameFilterPipe implements PipeTransform {
   /**
-   * Filtra las publicaciones según el nombre de la mascota asociada.
+   * Filtra las mascotas según el nombre.
    * Si no se proporciona un nombre, retorna la lista completa.
    *
-   * @param publications - Lista de publicaciones con mascota
+   * @param pets - Lista de mascotas
    * @param name - Nombre o texto parcial para buscar
    * @returns Lista filtrada por nombre de mascota
    */
-  transform(publications: PublicationWithPet[], name: string): PublicationWithPet[] {
-    if (!name) return publications;
+  transform(pets: Pet[], name: string): Pet[] {
+    if (!name) return pets;
 
-    return publications.filter(pub =>
-      pub.pet.name.toLowerCase().includes(name.toLowerCase())
+    return pets.filter(pet =>
+      pet.name.toLowerCase().includes(name.toLowerCase())
     );
   }
 }

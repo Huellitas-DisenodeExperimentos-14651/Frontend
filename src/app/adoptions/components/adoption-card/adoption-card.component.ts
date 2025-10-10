@@ -5,12 +5,11 @@
  * del tipo `Pet` como entrada.
  */
 
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { Pet } from '../../../pets/model/pet.entity';
-import { PublicationWithPet } from '../../model/publication-with-pet.model'; // Asegúrate de usar el path correcto
 
 @Component({
   standalone: true,
@@ -21,7 +20,19 @@ import { PublicationWithPet } from '../../model/publication-with-pet.model'; // 
 })
 export class AdoptionCardComponent {
   /**
-   * Recibe una publicación con mascota para mostrar en la tarjeta.
+   * Recibe una mascota para mostrar en la tarjeta.
    */
-  @Input() publication!: PublicationWithPet;
+  @Input() pet!: Pet;
+
+  /**
+   * Evento que se emite al solicitar la adopción de una mascota.
+   */
+  @Output() requestAdoption = new EventEmitter<Pet>();
+
+  /**
+   * Método para solicitar la adopción de la mascota.
+   */
+  onRequestAdoption() {
+    this.requestAdoption.emit(this.pet);
+  }
 }

@@ -38,4 +38,9 @@ export class AdoptionsService {
   getPetById(id: number): Observable<Pet> {
     return this.http.get<Pet>(`${this.apiUrl}/pets/${id}`);
   }
+
+  /** Obtener todas las mascotas directamente */
+  getAllDirectPets(): Observable<Pet[]> {
+    return this.http.get<Pet[]>(`${this.apiUrl}/pets`);
+  }
 }

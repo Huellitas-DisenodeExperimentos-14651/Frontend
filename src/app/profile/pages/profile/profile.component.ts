@@ -51,45 +51,48 @@ export class ProfileComponent implements OnInit {
     this.errorLoading = false;
 
     const token = localStorage.getItem('token');
-    if (!token) {
-      this.handleAuthError('No hay token de autenticación');
+    let profileId: string | null = null;
+    if (token === 'fake-token') {
+      profileId = localStorage.getItem('profileId');
+    } else if (token) {
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        profileId = payload.profileId;
+      } catch (error) {
+        console.error('Error decoding token:', error);
+        this.handleAuthError('Error de autenticación');
+        return;
+      }
+    }
+
+    // Usa el profileId como string, no lo conviertas a número
+    if (!profileId) {
+      this.handleAuthError('ID de perfil no encontrado');
       return;
     }
 
-    try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      const profileId = payload.profileId;
+    this.userProfileService.getProfile(profileId).subscribe({
+      next: (user) => {
+        this.user = {
+          ...user,
+          preferencesString: user.preferences?.join(', ') || '',
+          paymentMethodsString: user.paymentMethods?.join(', ') || ''
+        };
+        this.originalUser = { ...this.user };
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error('Error loading profile:', err);
+        this.isLoading = false;
+        this.errorLoading = true;
 
-      if (!profileId) {
-        throw new Error('ID de perfil no encontrado en el token');
-      }
-
-      this.userProfileService.getProfile(profileId).subscribe({
-        next: (user) => {
-          this.user = {
-            ...user,
-            preferencesString: user.preferences?.join(', ') || '',
-            paymentMethodsString: user.paymentMethods?.join(', ') || ''
-          };
-          this.originalUser = { ...this.user };
-          this.isLoading = false;
-        },
-        error: (err) => {
-          console.error('Error loading profile:', err);
-          this.isLoading = false;
-          this.errorLoading = true;
-
-          if (err.status === 401) {
-            this.handleAuthError('Sesión expirada. Por favor inicia sesión nuevamente.');
-          } else {
-            this.showError('Error al cargar el perfil. Intenta nuevamente.');
-          }
+        if (err.status === 401) {
+          this.handleAuthError('Sesión expirada. Por favor inicia sesión nuevamente.');
+        } else {
+          this.showError('Error al cargar el perfil. Intenta nuevamente.');
         }
-      });
-    } catch (error) {
-      console.error('Error decoding token:', error);
-      this.handleAuthError('Error de autenticación');
-    }
+      }
+    });
   }
 
   private handleAuthError(message: string): void {

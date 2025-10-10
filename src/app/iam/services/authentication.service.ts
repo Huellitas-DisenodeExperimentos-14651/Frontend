@@ -38,46 +38,24 @@ export class AuthenticationService {
   }
 
   /**
-   * Sign up a new user.
+   * Sign up a new user en la colección 'users' de db.json
    */
   signUp(signUpRequest: SignUpRequest) {
+    // Se asume que signUpRequest tiene username, email y password
     return this.http.post<SignUpResponse>(
-      `${this.basePath}/authentication/sign-up`,
+      `${this.basePath}/users`,
       signUpRequest,
       this.httpOptions
     );
   }
 
   /**
-   * Sign in a user.
-   * If environment.mockAuth = true, simulate login without backend.
+   * Sign in buscando usuario en la colección 'users' de db.json
    */
   signIn(signInRequest: SignInRequest) {
-    if (environment['mockAuth']) {
-      const fakeResponse: SignInResponse = {
-        token: 'fake-jwt-token',
-        id: 1,
-        username: signInRequest.username,
-        role: 'USER',
-        profileId: 1
-      };
-
-      // Guardamos token simulado
-      localStorage.setItem('token', fakeResponse.token);
-
-      // Simulamos que hay un usuario logueado
-      this.setSignedInState(true, fakeResponse.id, fakeResponse.username);
-
-      // devolvemos observable con delay
-      return of(fakeResponse).pipe(delay(300));
-    }
-
-    // 🔗 llamada real al backend
-    return this.http.post<SignInResponse>(
-      `${this.basePath}/authentication/sign-in`,
-      signInRequest,
-      this.httpOptions
-    );
+    // Buscar por username y password (o email y password)
+    const query = `?username=${encodeURIComponent(signInRequest.username)}&password=${encodeURIComponent(signInRequest.password)}`;
+    return this.http.get<any[]>(`${this.basePath}/users${query}`, this.httpOptions);
   }
 
 
@@ -97,6 +75,20 @@ export class AuthenticationService {
    */
   getCurrentUser(): { username: string; role: string; profileId: number } | null {
     const token = localStorage.getItem('token');
+    // Si el token es falso, leer los datos directamente de localStorage
+    if (token === 'fake-token') {
+      const role = localStorage.getItem('role');
+      const username = localStorage.getItem('username');
+      const profileId = localStorage.getItem('profileId');
+      if (role && username && profileId) {
+        return {
+          username,
+          role,
+          profileId: Number(profileId)
+        };
+      }
+      return null;
+    }
     if (!token) return null;
 
     try {
