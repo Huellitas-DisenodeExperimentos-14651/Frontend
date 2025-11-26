@@ -77,6 +77,24 @@ export class AuthenticationService {
   }
 
   /**
+   * Comprueba si un email ya existe en la colección 'users'.
+   * Devuelve Observable<boolean> (true si existe).
+   */
+  public emailExists(email: string): Observable<boolean> {
+    if (!email) return of(false);
+    const query = `?email=${encodeURIComponent(email)}`;
+    return this.http.get<any[]>(`${this.basePath}/users${query}`, this.httpOptions)
+      .pipe(
+        map(users => Array.isArray(users) && users.length > 0),
+        catchError(err => {
+          console.error('emailExists error:', err);
+          // En caso de error, asumimos que no existe para no bloquear al usuario
+          return of(false);
+        })
+      );
+  }
+
+  /**
    * Sign out a user.
    */
   signOut() {

@@ -171,20 +171,21 @@ mat-form-field .mat-error {
   color: #d32f2f; /* rojo */
   font-size: 0.78rem; /* un poco más pequeño */
   line-height: 1.1;
-  margin-top: 4px;
+  margin-top: 2px; /* reducido para acercarlo al campo */
 }
 
 /* Hint para acciones en curso (comprobando disponibilidad) */
 mat-form-field .mat-hint {
   font-size: 0.75rem;
   color: #666;
+  margin-top: 2px; /* acercar */
 }
 
 /* Hint para indicar que el nombre de usuario está disponible */
 .available-hint {
   color: #2e7d32; /* verde */
   font-size: 0.78rem;
-  margin-top: 4px;
+  margin-top: 2px;
   display: block;
 }
 
@@ -193,33 +194,21 @@ mat-form-field .mat-hint {
   color: #d32f2f !important; /* rojo */
   font-size: 0.78rem !important; /* más pequeño */
   line-height: 1.1 !important;
-  margin-top: 4px !important;
+  margin-top: 2px !important;
 }
 
 /* también asegurar hints (como 'Comprobando disponibilidad...') con mayor especificidad */
 .auth-card mat-form-field .mat-hint {
   font-size: 0.75rem !important;
   color: #666 !important;
-}
-
-/* Forzar estilos dentro de componentes hijos de Angular Material */
-:host ::ng-deep .mat-error {
-  color: #d32f2f !important; /* rojo */
-  font-size: 0.78rem !important; /* más pequeño */
-  line-height: 1.1 !important;
-  margin-top: 4px !important;
-}
-
-:host ::ng-deep .mat-hint {
-  font-size: 0.75rem !important;
-  color: #666 !important;
+  margin-top: 2px !important;
 }
 
 /* Asegurar el hint de "disponible" dentro del mat-hint renderizado por Material */
 :host ::ng-deep .available-hint {
   color: #2e7d32 !important; /* verde */
   font-size: 0.78rem !important;
-  margin-top: 4px !important;
+  margin-top: 2px !important;
   display: block !important;
 }
 
@@ -232,7 +221,7 @@ mat-form-field mat-error.custom-error {
   font-size: 0.78rem !important; /* más pequeño */
   font-weight: 500 !important;
   line-height: 1.1 !important;
-  margin-top: 4px !important;
+  margin-top: 2px !important;
 }
 
 :host ::ng-deep mat-hint.custom-hint,
@@ -241,6 +230,7 @@ mat-form-field mat-error.custom-error {
 mat-form-field mat-hint.custom-hint {
   color: #666 !important;
   font-size: 0.75rem !important;
+  margin-top: 2px !important;
 }
 
 :host ::ng-deep mat-hint.custom-hint.available-hint,
@@ -250,6 +240,7 @@ mat-form-field mat-hint.custom-hint.available-hint {
   color: #2e7d32 !important; /* verde */
   font-size: 0.78rem !important;
   display: block !important;
+  margin-top: 2px !important;
 }
 
 /* Responsive */

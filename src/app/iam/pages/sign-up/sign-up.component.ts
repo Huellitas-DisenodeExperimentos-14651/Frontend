@@ -73,7 +73,7 @@ export class SignUpComponent extends BaseFormComponent implements OnInit, AfterV
 
     this.personalFormGroup = this.builder.group({
       name: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
+      email: ['', [Validators.required, Validators.email], [this.emailExistsValidator()]],
       address: ['', Validators.required],
       role: ['ADOPTER', Validators.required]
     });
@@ -115,6 +115,22 @@ export class SignUpComponent extends BaseFormComponent implements OnInit, AfterV
   }
 
   /**
+   * Validador asíncrono que consulta el servicio para saber si el email ya existe.
+   */
+  private emailExistsValidator(): AsyncValidatorFn {
+    return (control: AbstractControl): Observable<ValidationErrors | null> => {
+      const value = (control.value || '').trim();
+      if (!value) return of(null);
+      // Pequeño debounce para no bombardear el backend
+      return timer(400).pipe(
+        switchMap(() => this.authenticationService.emailExists(value)),
+        map(exists => (exists ? { emailTaken: true } : null)),
+        catchError(() => of(null))
+      );
+    };
+  }
+
+  /**
    * Validador síncrono de fortaleza de contraseña.
    * Requisitos: mínimo 8 caracteres, mayúscula, minúscula, número y carácter especial.
    */
@@ -138,6 +154,7 @@ export class SignUpComponent extends BaseFormComponent implements OnInit, AfterV
         this.renderer.setStyle(el, 'color', '#d32f2f', 2);
         this.renderer.setStyle(el, 'font-size', '0.78rem', 2);
         this.renderer.setStyle(el, 'line-height', '1.1', 2);
+        this.renderer.setStyle(el, 'margin-top', '2px', 2);
       });
 
       const hintEls: NodeListOf<HTMLElement> = host.querySelectorAll('.custom-hint, .mat-hint');
@@ -146,9 +163,11 @@ export class SignUpComponent extends BaseFormComponent implements OnInit, AfterV
         if (el.classList.contains('available-hint')) {
           this.renderer.setStyle(el, 'color', '#2e7d32', 2);
           this.renderer.setStyle(el, 'font-size', '0.78rem', 2);
+          this.renderer.setStyle(el, 'margin-top', '2px', 2);
         } else {
           this.renderer.setStyle(el, 'color', '#666', 2);
           this.renderer.setStyle(el, 'font-size', '0.75rem', 2);
+          this.renderer.setStyle(el, 'margin-top', '2px', 2);
         }
       });
     } catch (err) {
