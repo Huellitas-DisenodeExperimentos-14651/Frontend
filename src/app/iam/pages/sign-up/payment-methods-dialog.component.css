@@ -1,0 +1,91 @@
+mat-list-item { display: flex; align-items: center; }
+mat-list-item .spacer { flex: 1 1 auto; }
+mat-form-field { margin-bottom: 8px; }
+
+/* Botón primario coherente con la app */
+.app-primary {
+  background-color: #ff9800; /* mismo color primario de la app */
+  color: #fff !important;
+}
+
+.app-primary.mat-button {
+  min-width: 140px;
+}
+
+/* Badge para el tipo de pago */
+.payment-badge {
+  background-color: rgba(255,152,0,0.12);
+  color: #ff9800;
+  border-radius: 12px;
+  padding: 4px 8px;
+  font-weight: 600;
+  font-size: 0.75rem;
+}
+
+/* Lista más compacta */
+mat-list {
+  max-height: 200px;
+  overflow: auto;
+}
+
+mat-list-item { padding: 8px 0; }
+
+/* Icon button remove spacing */
+mat-list-item button[mat-icon-button] { margin-left: 8px; }
+
+/* Inputs del diálogo más compactos */
+mat-form-field { width: 100%; }
+
+/* Asegurar contraste del dialog actions */
+:host ::ng-deep .mat-dialog-actions .app-primary {
+  background-color: #ff9800 !important;
+  color: #fff !important;
+}
+
+/* Asegurar que el panel del mat-select (overlay) tenga fondo opaco y sea legible */
+:host ::ng-deep .mat-select-panel {
+  background-color: #ffffff !important; /* fondo blanco opaco */
+  opacity: 1 !important;
+  color: #222 !important;
+  border-radius: 8px !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  background-clip: padding-box !important;
+}
+
+/* Específico para el panel del select usado en este diálogo */
+:host ::ng-deep .payment-select-panel {
+  background-color: #ffffff !important; /* Asegurar que sea blanco */
+  opacity: 1 !important; /* sin transparencia */
+  filter: none !important;
+  mix-blend-mode: normal !important;
+  z-index: 3000 !important; /* por encima de otros overlays */
+}
+
+:host ::ng-deep .mat-select-panel .mat-option {
+  background-color: transparent !important;
+  color: #222 !important;
+}
+
+:host ::ng-deep .mat-select-panel .mat-option.mat-active,
+:host ::ng-deep .mat-select-panel .mat-option:hover {
+  background-color: rgba(255, 152, 0, 0.08) !important; /* hover suave */
+}
+
+:host ::ng-deep .mat-select-panel .mat-option.mat-selected {
+  background-color: rgba(255,152,0,0.16) !important; /* acento primario ligero */
+  color: #ff9800 !important;
+}
+
+/* Asegurar que el overlay no herede transparencias del padre */
+:host ::ng-deep .cdk-overlay-pane .payment-select-panel,
+:host ::ng-deep .cdk-overlay-container .payment-select-panel {
+  background-color: #ffffff !important;
+  opacity: 1 !important;
+}
+
+/* Aumentar contraste si overlay tiene algún filtro aplicado por el tema */
+:host ::ng-deep .cdk-overlay-pane {
+  z-index: 2000 !important;
+}

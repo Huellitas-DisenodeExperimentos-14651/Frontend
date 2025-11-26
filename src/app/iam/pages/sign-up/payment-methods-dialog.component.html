@@ -1,0 +1,71 @@
+<h2 mat-dialog-title>Configurar métodos de pago</h2>
+<div mat-dialog-content>
+  <div style="display:flex; gap:12px; align-items:center; margin-bottom:8px;">
+    <mat-form-field appearance="fill" style="flex:1;">
+      <mat-label>Tipo de método</mat-label>
+      <!-- Añadimos panelClass para aplicar estilos específicos al overlay del select -->
+      <mat-select [formControl]="selectedType" panelClass="payment-select-panel">
+        <mat-option value="YAPE">Yape</mat-option>
+        <mat-option value="PLIN">Plin</mat-option>
+        <mat-option value="TARJETA">Tarjeta</mat-option>
+        <mat-option value="OTRO">Otro</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <!-- Campos condicionales -->
+  <div *ngIf="selectedType.value !== 'TARJETA'" style="display:flex; gap:8px; align-items:center;">
+    <mat-form-field appearance="fill" style="flex:1;">
+      <mat-label>{{ selectedType.value === 'YAPE' || selectedType.value === 'PLIN' ? 'Número de celular' : 'Identificador' }}</mat-label>
+      <input matInput [formControl]="identifierCtrl" (keydown.enter)="addMethod(); $event.preventDefault();" />
+    </mat-form-field>
+    <button mat-icon-button color="primary" (click)="addMethod()" aria-label="Añadir" class="app-primary">
+      <mat-icon>add</mat-icon>
+    </button>
+  </div>
+
+  <div *ngIf="selectedType.value === 'TARJETA'" style="display:flex; flex-direction:column; gap:8px;">
+    <mat-form-field appearance="fill">
+      <mat-label>Número de tarjeta</mat-label>
+      <input matInput [formControl]="cardNumber" />
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>Nombre en la tarjeta</mat-label>
+      <input matInput [formControl]="cardName" />
+    </mat-form-field>
+    <div style="display:flex; gap:8px;">
+      <mat-form-field appearance="fill" style="flex:1;">
+        <mat-label>Fecha expiración</mat-label>
+        <input matInput [formControl]="cardExpiry" placeholder="MM/AA" />
+      </mat-form-field>
+      <mat-form-field appearance="fill" style="width:120px;">
+        <mat-label>CVC</mat-label>
+        <input matInput [formControl]="cardCvc" />
+      </mat-form-field>
+      <button mat-icon-button color="primary" (click)="addMethod()" class="app-primary" aria-label="Añadir tarjeta">
+        <mat-icon>add</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <mat-divider style="margin-top:12px; margin-bottom:8px;"></mat-divider>
+
+  <mat-list>
+    <mat-list-item *ngFor="let m of methods; let i = index">
+      <span class="payment-badge">{{m.type}}</span>
+      <span style="margin-left:8px;">{{m.label}}</span>
+      <span class="spacer"></span>
+      <button mat-icon-button color="warn" (click)="remove(i)">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </mat-list-item>
+    <mat-list-item *ngIf="methods.length === 0">
+      <span>No hay métodos añadidos</span>
+    </mat-list-item>
+  </mat-list>
+</div>
+<div mat-dialog-actions align="end">
+  <button mat-button (click)="cancel()">Cancelar</button>
+  <button mat-button (click)="dialogRef.close('later')" class="app-primary">Agregar más tarde</button>
+  <button mat-raised-button color="primary" (click)="save()" class="app-primary">Guardar</button>
+</div>

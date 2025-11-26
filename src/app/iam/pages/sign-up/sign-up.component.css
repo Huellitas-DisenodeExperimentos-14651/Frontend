@@ -243,6 +243,40 @@ mat-form-field mat-hint.custom-hint.available-hint {
   margin-top: 2px !important;
 }
 
+/* Estilos para la sección de métodos en la pantalla de signup */
+.payment-actions button.app-primary {
+  background-color: #ff9800; /* color primario de la app */
+  color: #fff !important;
+}
+
+.methods-list mat-list {
+  max-height: 160px;
+  overflow: auto;
+  margin-top: 6px;
+}
+
+.methods-list mat-list-item {
+  display: flex;
+  align-items: center;
+  padding: 6px 0;
+}
+
+.methods-list .payment-badge {
+  background-color: rgba(255,152,0,0.12);
+  color: #ff9800;
+  border-radius: 12px;
+  padding: 4px 8px;
+  font-weight: 600;
+  font-size: 0.75rem;
+}
+
+/* Asegurar que el botón tiene buen contraste si se usan clases mat-button */
+:host ::ng-deep .payment-actions .mat-button.app-primary,
+:host ::ng-deep .payment-actions button.app-primary {
+  background-color: #ff9800 !important;
+  color: #fff !important;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   mat-card.auth-card {

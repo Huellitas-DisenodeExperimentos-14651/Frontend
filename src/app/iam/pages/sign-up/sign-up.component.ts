@@ -21,9 +21,12 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatListModule } from '@angular/material/list';
 
 import { RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
+import { PaymentMethodsDialogComponent } from './payment-methods-dialog.component';
 
 @Component({
   selector: 'app-sign-up',
@@ -41,7 +44,10 @@ import { TranslatePipe } from '@ngx-translate/core';
     MatIconModule,
     RouterLink,
     TranslatePipe,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatDialogModule,
+    MatListModule,
+    PaymentMethodsDialogComponent
   ],
   templateUrl: './sign-up.component.html',
   styleUrls: ['./sign-up.component.css']
@@ -54,13 +60,16 @@ export class SignUpComponent extends BaseFormComponent implements OnInit, AfterV
 
   submitted = false;
 
+  paymentMethodsArray: Array<{ type: string; label?: string; data: any }> = [];
+
   constructor(
     private builder: FormBuilder,
     private authenticationService: AuthenticationService,
     private router: Router, // ✅ CORRECTO: servicio Router
     private snackBar: MatSnackBar,
     private el: ElementRef,
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    private dialog: MatDialog
   ) {
     super();
   }
@@ -80,7 +89,8 @@ export class SignUpComponent extends BaseFormComponent implements OnInit, AfterV
 
     this.preferencesFormGroup = this.builder.group({
       paymentMethods: [''],
-      preferences: ['']
+      preferences: [''],
+      paymentConfigured: [false, Validators.requiredTrue]
     });
 
     this.homeFormGroup = this.builder.group({
@@ -177,6 +187,35 @@ export class SignUpComponent extends BaseFormComponent implements OnInit, AfterV
     }
   }
 
+  openPaymentDialog(): void {
+    const ref = this.dialog.open(PaymentMethodsDialogComponent, {
+      width: '420px',
+      data: { methods: this.paymentMethodsArray }
+    });
+
+    ref.afterClosed().subscribe(result => {
+      if (result === null) {
+        // cancelado, no marcar como configurado
+        return;
+      }
+      if (result === 'later') {
+        // usuario eligió "Agregar más tarde" -> marcar como configurado para poder continuar
+        this.preferencesFormGroup.get('paymentConfigured')?.setValue(true);
+        this.paymentMethodsArray = [];
+        this.preferencesFormGroup.get('paymentMethods')?.setValue('');
+      } else if (Array.isArray(result)) {
+        // result es un array de objetos {type,label,data}
+        this.paymentMethodsArray = result as Array<{ type: string; label?: string; data: any }>;
+        // guardar las etiquetas (labels) en el form para persistencia simple
+        const labels = this.paymentMethodsArray.map(m => m.label || m.type || '');
+        this.preferencesFormGroup.get('paymentMethods')?.setValue(labels.join(','));
+        this.preferencesFormGroup.get('paymentConfigured')?.setValue(true);
+      }
+      // marcar touched para que el estado se actualice
+      this.preferencesFormGroup.get('paymentConfigured')?.markAsTouched();
+    });
+  }
+
   onSubmit(): void {
     if (
       this.accountFormGroup.invalid ||
@@ -189,9 +228,8 @@ export class SignUpComponent extends BaseFormComponent implements OnInit, AfterV
       ...this.personalFormGroup.value,
       ...this.preferencesFormGroup.value,
       ...this.homeFormGroup.value,
-      paymentMethods: this.preferencesFormGroup.value.paymentMethods
-        ? this.preferencesFormGroup.value.paymentMethods.split(',').map((m: string) => m.trim())
-        : [],
+      // Enviamos los métodos completos (objetos con type/label/data) para que el backend tenga los detalles
+      paymentMethods: this.paymentMethodsArray && this.paymentMethodsArray.length ? this.paymentMethodsArray : [],
       preferences: this.preferencesFormGroup.value.preferences
         ? this.preferencesFormGroup.value.preferences.split(',').map((p: string) => p.trim())
         : [],

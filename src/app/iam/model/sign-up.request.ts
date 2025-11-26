@@ -5,7 +5,8 @@ export interface SignUpRequest {
   email: string;
   address: string;
   role: 'ADOPTER' | 'SHELTER';
-  paymentMethods: string[];
+  // paymentMethods: string[];
+  paymentMethods: Array<{ type: string; label?: string; data: any }>;
   preferences: string[];
   profilePic: string;
   bio: string;

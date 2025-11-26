@@ -1,0 +1,88 @@
+import { Component, Inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
+import { ReactiveFormsModule, FormControl } from '@angular/forms';
+import { MatSelectModule } from '@angular/material/select';
+
+@Component({
+  selector: 'app-payment-methods-dialog',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatIconModule,
+    MatListModule,
+    ReactiveFormsModule,
+    MatSelectModule
+  ],
+  templateUrl: './payment-methods-dialog.component.html',
+  styleUrls: ['./payment-methods-dialog.component.css']
+})
+export class PaymentMethodsDialogComponent {
+  methods: Array<{ type: string; label?: string; data: any }> = [];
+
+  // controles temporales para los campos del diálogo
+  selectedType = new FormControl('YAPE');
+  identifierCtrl = new FormControl(''); // teléfono o identificador genérico
+
+  // campos para tarjeta
+  cardNumber = new FormControl('');
+  cardName = new FormControl('');
+  cardExpiry = new FormControl('');
+  cardCvc = new FormControl('');
+
+  constructor(
+    public dialogRef: MatDialogRef<PaymentMethodsDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: { methods?: Array<{ type: string; label?: string; data: any }> }
+  ) {
+    if (data && Array.isArray(data.methods)) {
+      this.methods = data.methods.map(m => ({ ...m }));
+    }
+  }
+
+  addMethod() {
+    const type = this.selectedType.value;
+    if (!type) return;
+
+    if (type === 'TARJETA') {
+      const num = (this.cardNumber.value || '').toString().trim();
+      const name = (this.cardName.value || '').toString().trim();
+      const expiry = (this.cardExpiry.value || '').toString().trim();
+      const cvc = (this.cardCvc.value || '').toString().trim();
+      if (!num || !name) return; // mínimo
+      const label = `Tarjeta • ${num.slice(-4)}`;
+      this.methods.push({ type: 'TARJETA', label, data: { number: num, name, expiry, cvc } });
+      // limpiar
+      this.cardNumber.setValue('');
+      this.cardName.setValue('');
+      this.cardExpiry.setValue('');
+      this.cardCvc.setValue('');
+    } else {
+      const id = (this.identifierCtrl.value || '').toString().trim();
+      if (!id) return;
+      const label = `${type} • ${id}`;
+      this.methods.push({ type, label, data: { identifier: id } });
+      this.identifierCtrl.setValue('');
+    }
+  }
+
+  remove(index: number) {
+    this.methods.splice(index, 1);
+  }
+
+  save() {
+    this.dialogRef.close(this.methods);
+  }
+
+  cancel() {
+    this.dialogRef.close(null);
+  }
+}

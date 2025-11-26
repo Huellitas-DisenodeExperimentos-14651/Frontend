@@ -143,11 +143,28 @@
           <span [ngClass]="{ 'active-label': stepper.selectedIndex === 2 }">Preferencias</span>
         </ng-template>
 
+        <!-- reemplazado: botón para abrir diálogo de métodos de pago -->
         <div class="form-field-wrapper">
-        <mat-form-field appearance="fill">
-          <mat-label>Métodos de pago disponibles</mat-label>
-          <input matInput formControlName="paymentMethods" placeholder="Ej. Yape, Plin" />
-        </mat-form-field>
+          <div style="width:100%; max-width:480px;">
+            <label style="display:block; margin-bottom:8px; font-weight:500;">Métodos de pago disponibles</label>
+            <div class="payment-actions" style="display:flex; gap:8px; margin-bottom:8px;">
+              <button mat-raised-button color="primary" class="app-primary" (click)="openPaymentDialog()">Configurar métodos de pago</button>
+              <span *ngIf="preferencesFormGroup.get('paymentConfigured')?.value" class="payment-badge" style="margin-left:8px;">Configurado</span>
+            </div>
+
+            <div class="methods-list" *ngIf="paymentMethodsArray?.length">
+              <mat-list>
+                <mat-list-item *ngFor="let m of paymentMethodsArray">
+                  <span class="payment-badge">{{ m.type }}</span>
+                  <span style="margin-left:8px;">{{ m.label }}</span>
+                </mat-list-item>
+              </mat-list>
+            </div>
+
+            <mat-error class="custom-error" *ngIf="preferencesFormGroup.get('paymentConfigured')?.hasError('required') && (preferencesFormGroup.get('paymentConfigured')?.touched || preferencesFormGroup.get('paymentConfigured')?.dirty)">
+              Debes presionar "Configurar métodos de pago" o elegir "Agregar más tarde" para continuar
+            </mat-error>
+          </div>
         </div>
 
         <div class="form-field-wrapper">
