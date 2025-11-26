@@ -1,11 +1,15 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { Component, OnInit, AfterViewInit, ElementRef, Renderer2 } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AsyncValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router'; // ✅ AÑADIDO: para redireccionar
 
 import { AuthenticationService } from '../../services/authentication.service';
 import { SignUpRequest } from '../../model/sign-up.request';
 import { BaseFormComponent } from '../../../shared/components/base-form.component';
+
+// RxJS
+import { Observable, of, timer } from 'rxjs';
+import { map, switchMap, debounceTime, distinctUntilChanged, catchError } from 'rxjs/operators';
 
 // Angular Material
 import { MatCardModule } from '@angular/material/card';
@@ -42,7 +46,7 @@ import { TranslatePipe } from '@ngx-translate/core';
   templateUrl: './sign-up.component.html',
   styleUrls: ['./sign-up.component.css']
 })
-export class SignUpComponent extends BaseFormComponent implements OnInit {
+export class SignUpComponent extends BaseFormComponent implements OnInit, AfterViewInit {
   accountFormGroup!: FormGroup;
   personalFormGroup!: FormGroup;
   preferencesFormGroup!: FormGroup;
@@ -54,15 +58,17 @@ export class SignUpComponent extends BaseFormComponent implements OnInit {
     private builder: FormBuilder,
     private authenticationService: AuthenticationService,
     private router: Router, // ✅ CORRECTO: servicio Router
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private el: ElementRef,
+    private renderer: Renderer2
   ) {
     super();
   }
 
   ngOnInit(): void {
     this.accountFormGroup = this.builder.group({
-      username: ['', Validators.required],
-      password: ['', [Validators.required, Validators.minLength(4)]]
+      username: ['', [Validators.required], [this.usernameExistsValidator()]],
+      password: ['', [Validators.required, Validators.minLength(8), this.passwordStrengthValidator]]
     });
 
     this.personalFormGroup = this.builder.group({
@@ -85,6 +91,71 @@ export class SignUpComponent extends BaseFormComponent implements OnInit {
       homeType: [''],
       previousExperience: ['']
     });
+  }
+
+  ngAfterViewInit(): void {
+    // Aplicar estilos inline para asegurar prioridad sobre otras reglas CSS
+    this.applyInlineStylesToErrorsAndHints();
+  }
+
+  /**
+   * Validador asíncrono que consulta el servicio para saber si el username ya existe.
+   */
+  private usernameExistsValidator(): AsyncValidatorFn {
+    return (control: AbstractControl): Observable<ValidationErrors | null> => {
+      const value = (control.value || '').trim();
+      if (!value) return of(null);
+      // Pequeño debounce para no bombardear el backend
+      return timer(400).pipe(
+        switchMap(() => this.authenticationService.usernameExists(value)),
+        map(exists => (exists ? { usernameTaken: true } : null)),
+        catchError(() => of(null))
+      );
+    };
+  }
+
+  /**
+   * Validador síncrono de fortaleza de contraseña.
+   * Requisitos: mínimo 8 caracteres, mayúscula, minúscula, número y carácter especial.
+   */
+  private passwordStrengthValidator(control: AbstractControl): ValidationErrors | null {
+    const value: string = control.value || '';
+    if (!value) return null;
+    const minLength = 8;
+    const hasUpper = /[A-Z]/.test(value);
+    const hasLower = /[a-z]/.test(value);
+    const hasNumber = /[0-9]/.test(value);
+    const hasSpecial = /[!@#$%^&*(),.?"':{}|<>]/.test(value);
+    const valid = value.length >= minLength && hasUpper && hasLower && hasNumber && hasSpecial;
+    return valid ? null : { weakPassword: true };
+  }
+
+  private applyInlineStylesToErrorsAndHints(): void {
+    try {
+      const host: HTMLElement = this.el.nativeElement;
+      const errorEls: NodeListOf<HTMLElement> = host.querySelectorAll('.custom-error, .mat-error');
+      errorEls.forEach((el) => {
+        this.renderer.setStyle(el, 'color', '#d32f2f', 2);
+        this.renderer.setStyle(el, 'font-size', '0.78rem', 2);
+        this.renderer.setStyle(el, 'line-height', '1.1', 2);
+      });
+
+      const hintEls: NodeListOf<HTMLElement> = host.querySelectorAll('.custom-hint, .mat-hint');
+      hintEls.forEach((el) => {
+        // Si tiene la clase available-hint, usar verde
+        if (el.classList.contains('available-hint')) {
+          this.renderer.setStyle(el, 'color', '#2e7d32', 2);
+          this.renderer.setStyle(el, 'font-size', '0.78rem', 2);
+        } else {
+          this.renderer.setStyle(el, 'color', '#666', 2);
+          this.renderer.setStyle(el, 'font-size', '0.75rem', 2);
+        }
+      });
+    } catch (err) {
+      // no bloquear si Renderer falla por alguna razón
+      // eslint-disable-next-line no-console
+      console.warn('No se pudieron aplicar estilos inline a los errores/hints:', err);
+    }
   }
 
   onSubmit(): void {

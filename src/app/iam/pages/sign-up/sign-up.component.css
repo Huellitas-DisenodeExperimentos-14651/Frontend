@@ -10,7 +10,7 @@
 /* Contenedor principal del formulario */
 mat-card.auth-card {
   max-width: 1000px;
-  padding: 0px;
+  padding: 0;
   border-radius: 16px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
   background-color: #ffffff;
@@ -166,6 +166,91 @@ mat-form-field textarea {
   justify-content: center;
 }
 
+/* Mensajes de error personalizados (más pequeños y rojos) */
+mat-form-field .mat-error {
+  color: #d32f2f; /* rojo */
+  font-size: 0.78rem; /* un poco más pequeño */
+  line-height: 1.1;
+  margin-top: 4px;
+}
+
+/* Hint para acciones en curso (comprobando disponibilidad) */
+mat-form-field .mat-hint {
+  font-size: 0.75rem;
+  color: #666;
+}
+
+/* Hint para indicar que el nombre de usuario está disponible */
+.available-hint {
+  color: #2e7d32; /* verde */
+  font-size: 0.78rem;
+  margin-top: 4px;
+  display: block;
+}
+
+/* Forzar estilo de los errores dentro de este componente para evitar que estilos globales los sobrescriban */
+.auth-card mat-form-field .mat-error {
+  color: #d32f2f !important; /* rojo */
+  font-size: 0.78rem !important; /* más pequeño */
+  line-height: 1.1 !important;
+  margin-top: 4px !important;
+}
+
+/* también asegurar hints (como 'Comprobando disponibilidad...') con mayor especificidad */
+.auth-card mat-form-field .mat-hint {
+  font-size: 0.75rem !important;
+  color: #666 !important;
+}
+
+/* Forzar estilos dentro de componentes hijos de Angular Material */
+:host ::ng-deep .mat-error {
+  color: #d32f2f !important; /* rojo */
+  font-size: 0.78rem !important; /* más pequeño */
+  line-height: 1.1 !important;
+  margin-top: 4px !important;
+}
+
+:host ::ng-deep .mat-hint {
+  font-size: 0.75rem !important;
+  color: #666 !important;
+}
+
+/* Asegurar el hint de "disponible" dentro del mat-hint renderizado por Material */
+:host ::ng-deep .available-hint {
+  color: #2e7d32 !important; /* verde */
+  font-size: 0.78rem !important;
+  margin-top: 4px !important;
+  display: block !important;
+}
+
+/* Target directo a las clases añadidas en la plantilla para máxima especificidad */
+:host ::ng-deep mat-error.custom-error,
+:host ::ng-deep mat-form-field mat-error.custom-error,
+.auth-card mat-form-field mat-error.custom-error,
+mat-form-field mat-error.custom-error {
+  color: #d32f2f !important; /* rojo */
+  font-size: 0.78rem !important; /* más pequeño */
+  font-weight: 500 !important;
+  line-height: 1.1 !important;
+  margin-top: 4px !important;
+}
+
+:host ::ng-deep mat-hint.custom-hint,
+:host ::ng-deep mat-form-field mat-hint.custom-hint,
+.auth-card mat-form-field mat-hint.custom-hint,
+mat-form-field mat-hint.custom-hint {
+  color: #666 !important;
+  font-size: 0.75rem !important;
+}
+
+:host ::ng-deep mat-hint.custom-hint.available-hint,
+:host ::ng-deep mat-form-field mat-hint.custom-hint.available-hint,
+.auth-card mat-form-field mat-hint.custom-hint.available-hint,
+mat-form-field mat-hint.custom-hint.available-hint {
+  color: #2e7d32 !important; /* verde */
+  font-size: 0.78rem !important;
+  display: block !important;
+}
 
 /* Responsive */
 @media (max-width: 768px) {

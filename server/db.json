@@ -1,5 +1,25 @@
 {
   "adoption-requests": [
+    {
+      "id": "4b6e",
+      "publicationId": "1",
+      "applicantId": "98cd",
+      "applicantFullName": "Christian",
+      "reasonMessage": "Quiero adoptar esta mascota.",
+      "status": "PENDING",
+      "requestDate": "2025-11-14T23:28:31.278Z",
+      "date": "2025-11-14T23:28:31.279Z"
+    },
+    {
+      "id": "1a43",
+      "publicationId": "3",
+      "applicantId": "98cd",
+      "applicantFullName": "Christian",
+      "reasonMessage": "Quiero adoptar esta mascota.",
+      "status": "PENDING",
+      "requestDate": "2025-11-15T23:08:22.272Z",
+      "date": "2025-11-15T23:08:22.284Z"
+    }
   ],
   "pets": [
     {
@@ -76,6 +96,27 @@
       "animalsAvailable": 0,
       "homeType": "Departamento",
       "previousExperience": "No cuento con experiencia previa"
+    },
+    {
+      "id": "ba8b",
+      "username": "Jose",
+      "password": "Jose123",
+      "name": "Jose",
+      "email": "Jose@gmail.com",
+      "address": "Los Angamos 234",
+      "role": "SHELTER",
+      "paymentMethods": [
+        "Yape"
+      ],
+      "preferences": [
+        "Perros"
+      ],
+      "profilePic": "",
+      "bio": "Hola Soy Jose",
+      "capacity": 1,
+      "animalsAvailable": 0,
+      "homeType": "Casa",
+      "previousExperience": "Jose"
     }
   ]
 }

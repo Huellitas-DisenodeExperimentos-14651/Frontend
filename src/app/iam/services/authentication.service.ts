@@ -4,11 +4,11 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { BehaviorSubject } from "rxjs";
 import { Router } from "@angular/router";
 import { SignInRequest } from "../model/sign-in.request";
-import { SignInResponse } from "../model/sign-in.response";
 import { SignUpRequest } from "../model/sign-up.request";
 import { SignUpResponse } from "../model/sign-up.response";
 import { of } from "rxjs";
-import { delay } from "rxjs/operators";
+import { map, catchError } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 
 @Injectable({
@@ -58,6 +58,23 @@ export class AuthenticationService {
     return this.http.get<any[]>(`${this.basePath}/users${query}`, this.httpOptions);
   }
 
+  /**
+   * Comprueba si un username ya existe en la colección 'users'.
+   * Devuelve Observable<boolean> (true si existe).
+   */
+  public usernameExists(username: string): Observable<boolean> {
+    if (!username) return of(false);
+    const query = `?username=${encodeURIComponent(username)}`;
+    return this.http.get<any[]>(`${this.basePath}/users${query}`, this.httpOptions)
+      .pipe(
+        map(users => Array.isArray(users) && users.length > 0),
+        catchError(err => {
+          console.error('usernameExists error:', err);
+          // En caso de error, asumimos que no existe para no bloquear al usuario
+          return of(false);
+        })
+      );
+  }
 
   /**
    * Sign out a user.

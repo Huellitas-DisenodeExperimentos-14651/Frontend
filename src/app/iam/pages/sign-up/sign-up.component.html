@@ -26,6 +26,19 @@
         <mat-form-field appearance="fill">
           <mat-label>Nombre de usuario</mat-label>
           <input matInput formControlName="username" required />
+
+          <!-- Mostrar mientras el validador asíncrono está en curso -->
+          <mat-hint class="custom-hint" *ngIf="accountFormGroup.get('username')?.pending">Comprobando disponibilidad...</mat-hint>
+
+          <!-- Mostrar disponible sólo cuando no está pending, el campo tiene valor, no hay error y el usuario ya interactuó -->
+          <mat-hint class="custom-hint available-hint" *ngIf="!accountFormGroup.get('username')?.pending && accountFormGroup.get('username')?.value && !accountFormGroup.get('username')?.hasError('required') && !accountFormGroup.get('username')?.hasError('usernameTaken') && (accountFormGroup.get('username')?.dirty || accountFormGroup.get('username')?.touched)">Nombre de usuario disponible</mat-hint>
+
+          <mat-error class="custom-error" *ngIf="accountFormGroup.get('username')?.hasError('required')">
+            El nombre de usuario es obligatorio
+          </mat-error>
+          <mat-error class="custom-error" *ngIf="accountFormGroup.get('username')?.hasError('usernameTaken')">
+            Este nombre de usuario ya está en uso
+          </mat-error>
         </mat-form-field>
         </div>
 
@@ -33,6 +46,15 @@
         <mat-form-field appearance="fill">
           <mat-label>Contraseña</mat-label>
           <input matInput type="password" formControlName="password" required />
+          <mat-error class="custom-error" *ngIf="accountFormGroup.get('password')?.hasError('required')">
+            La contraseña es obligatoria
+          </mat-error>
+          <mat-error class="custom-error" *ngIf="accountFormGroup.get('password')?.hasError('minlength')">
+            La contraseña debe tener al menos 8 caracteres
+          </mat-error>
+          <mat-error class="custom-error" *ngIf="accountFormGroup.get('password')?.hasError('weakPassword')">
+            La contraseña debe incluir mayúscula, minúscula, número y carácter especial
+          </mat-error>
         </mat-form-field>
         </div>
 
