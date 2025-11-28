@@ -1,50 +1,63 @@
 <h2 mat-dialog-title>Configurar métodos de pago</h2>
 <div mat-dialog-content>
-  <div style="display:flex; gap:12px; align-items:center; margin-bottom:8px;">
-    <mat-form-field appearance="fill" style="flex:1;">
-      <mat-label>Tipo de método</mat-label>
-      <!-- Añadimos panelClass para aplicar estilos específicos al overlay del select -->
-      <mat-select [formControl]="selectedType" panelClass="payment-select-panel">
-        <mat-option value="YAPE">Yape</mat-option>
-        <mat-option value="PLIN">Plin</mat-option>
-        <mat-option value="TARJETA">Tarjeta</mat-option>
-        <mat-option value="OTRO">Otro</mat-option>
-      </mat-select>
-    </mat-form-field>
+  <!-- Selector inline de tipo (sin overlay) para evitar problemas de transparencia) -->
+  <div class="method-type-toggle" style="margin-bottom:12px;">
+    <label style="display:block; margin-bottom:6px; font-weight:600;">Tipo de método</label>
+    <mat-button-toggle-group [formControl]="selectedType" appearance="standard" aria-label="Tipo de método">
+      <mat-button-toggle value="YAPE" class="type-toggle">Yape</mat-button-toggle>
+      <mat-button-toggle value="PLIN" class="type-toggle">Plin</mat-button-toggle>
+      <mat-button-toggle value="TARJETA" class="type-toggle">Tarjeta</mat-button-toggle>
+      <mat-button-toggle value="OTRO" class="type-toggle">Otro</mat-button-toggle>
+    </mat-button-toggle-group>
   </div>
 
-  <!-- Campos condicionales -->
-  <div *ngIf="selectedType.value !== 'TARJETA'" style="display:flex; gap:8px; align-items:center;">
-    <mat-form-field appearance="fill" style="flex:1;">
-      <mat-label>{{ selectedType.value === 'YAPE' || selectedType.value === 'PLIN' ? 'Número de celular' : 'Identificador' }}</mat-label>
-      <input matInput [formControl]="identifierCtrl" (keydown.enter)="addMethod(); $event.preventDefault();" />
-    </mat-form-field>
-    <button mat-icon-button color="primary" (click)="addMethod()" aria-label="Añadir" class="app-primary">
-      <mat-icon>add</mat-icon>
-    </button>
-  </div>
-
-  <div *ngIf="selectedType.value === 'TARJETA'" style="display:flex; flex-direction:column; gap:8px;">
-    <mat-form-field appearance="fill">
-      <mat-label>Número de tarjeta</mat-label>
-      <input matInput [formControl]="cardNumber" />
-    </mat-form-field>
-    <mat-form-field appearance="fill">
-      <mat-label>Nombre en la tarjeta</mat-label>
-      <input matInput [formControl]="cardName" />
-    </mat-form-field>
-    <div style="display:flex; gap:8px;">
+  <!-- Contenedor con fondo blanco para campos -->
+  <div class="method-card">
+    <!-- Campos condicionales para Yape/Plin/Otro -->
+    <div *ngIf="selectedType.value !== 'TARJETA'" class="inline-row">
       <mat-form-field appearance="fill" style="flex:1;">
-        <mat-label>Fecha expiración</mat-label>
-        <input matInput [formControl]="cardExpiry" placeholder="MM/AA" />
+        <mat-label>{{ selectedType.value === 'YAPE' || selectedType.value === 'PLIN' ? 'Número de celular' : 'Identificador' }}</mat-label>
+        <input matInput [formControl]="identifierCtrl" (keydown.enter)="addMethod(); $event.preventDefault();" />
+        <mat-error class="custom-error" *ngIf="identifierCtrl.hasError('required')">Ingresa un identificador</mat-error>
       </mat-form-field>
-      <mat-form-field appearance="fill" style="width:120px;">
-        <mat-label>CVC</mat-label>
-        <input matInput [formControl]="cardCvc" />
-      </mat-form-field>
-      <button mat-icon-button color="primary" (click)="addMethod()" class="app-primary" aria-label="Añadir tarjeta">
+
+      <button mat-icon-button color="primary" (click)="addMethod()" aria-label="Añadir" [disabled]="!canAdd" class="app-primary add-button">
         <mat-icon>add</mat-icon>
       </button>
+    </div>
+
+    <!-- Campos para tarjeta -->
+    <div *ngIf="selectedType.value === 'TARJETA'" class="card-fields">
+      <div style="display:flex; gap:8px;">
+        <mat-form-field appearance="fill" style="flex:1;">
+          <mat-label>Número de tarjeta</mat-label>
+          <input matInput [formControl]="cardNumber" maxlength="19" placeholder="XXXX XXXX XXXX XXXX" />
+          <mat-error class="custom-error" *ngIf="cardNumber.hasError('required')">El número es obligatorio</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" style="width:120px;">
+          <mat-label>CVC</mat-label>
+          <input matInput [formControl]="cardCvc" maxlength="4" />
+        </mat-form-field>
+      </div>
+      <mat-form-field appearance="fill">
+        <mat-label>Nombre en la tarjeta</mat-label>
+        <input matInput [formControl]="cardName" />
+        <mat-error class="custom-error" *ngIf="cardName.hasError('required')">El nombre es obligatorio</mat-error>
+      </mat-form-field>
+
+      <div style="display:flex; gap:8px; align-items:center; justify-content:space-between;">
+        <mat-form-field appearance="fill" style="width:140px;">
+          <mat-label>Fecha expiración</mat-label>
+          <input matInput [formControl]="cardExpiry" placeholder="MM/AA" />
+        </mat-form-field>
+
+        <div style="flex:1; text-align:right;">
+          <button mat-icon-button color="primary" (click)="addMethod()" aria-label="Añadir tarjeta" [disabled]="!canAdd" class="app-primary add-button">
+            <mat-icon>add</mat-icon>
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 

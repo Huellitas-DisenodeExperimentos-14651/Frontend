@@ -6,8 +6,10 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
-import { ReactiveFormsModule, FormControl } from '@angular/forms';
+import { ReactiveFormsModule, FormControl, Validators } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatChipsModule } from '@angular/material/chips';
 
 @Component({
   selector: 'app-payment-methods-dialog',
@@ -21,7 +23,9 @@ import { MatSelectModule } from '@angular/material/select';
     MatIconModule,
     MatListModule,
     ReactiveFormsModule,
-    MatSelectModule
+    MatSelectModule,
+    MatButtonToggleModule,
+    MatChipsModule
   ],
   templateUrl: './payment-methods-dialog.component.html',
   styleUrls: ['./payment-methods-dialog.component.css']
@@ -31,13 +35,13 @@ export class PaymentMethodsDialogComponent {
 
   // controles temporales para los campos del diálogo
   selectedType = new FormControl('YAPE');
-  identifierCtrl = new FormControl(''); // teléfono o identificador genérico
+  identifierCtrl = new FormControl('', []); // teléfono o identificador genérico
 
   // campos para tarjeta
-  cardNumber = new FormControl('');
-  cardName = new FormControl('');
-  cardExpiry = new FormControl('');
-  cardCvc = new FormControl('');
+  cardNumber = new FormControl('', []);
+  cardName = new FormControl('', []);
+  cardExpiry = new FormControl('', []);
+  cardCvc = new FormControl('', []);
 
   constructor(
     public dialogRef: MatDialogRef<PaymentMethodsDialogComponent>,
@@ -46,6 +50,30 @@ export class PaymentMethodsDialogComponent {
     if (data && Array.isArray(data.methods)) {
       this.methods = data.methods.map(m => ({ ...m }));
     }
+
+    // actualizar validadores según el tipo seleccionado
+    this.selectedType.valueChanges.subscribe((type) => {
+      if (type === 'TARJETA') {
+        this.cardNumber.setValidators([Validators.required]);
+        this.cardName.setValidators([Validators.required]);
+        this.identifierCtrl.clearValidators();
+      } else {
+        this.identifierCtrl.setValidators([Validators.required]);
+        this.cardNumber.clearValidators();
+        this.cardName.clearValidators();
+      }
+      this.cardNumber.updateValueAndValidity({ onlySelf: true });
+      this.cardName.updateValueAndValidity({ onlySelf: true });
+      this.identifierCtrl.updateValueAndValidity({ onlySelf: true });
+    });
+  }
+
+  get canAdd(): boolean {
+    const type = this.selectedType.value;
+    if (type === 'TARJETA') {
+      return !!(this.cardNumber.value && this.cardName.value);
+    }
+    return !!(this.identifierCtrl.value && String(this.identifierCtrl.value).trim().length > 0);
   }
 
   addMethod() {
@@ -76,6 +104,12 @@ export class PaymentMethodsDialogComponent {
 
   remove(index: number) {
     this.methods.splice(index, 1);
+  }
+
+  // nuevo: eliminar por objeto (usado por chips)
+  removeMethod(method: { type: string; label?: string; data: any }) {
+    const idx = this.methods.indexOf(method);
+    if (idx >= 0) this.methods.splice(idx, 1);
   }
 
   save() {

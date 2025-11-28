@@ -61,31 +61,179 @@ mat-form-field { width: 100%; }
   filter: none !important;
   mix-blend-mode: normal !important;
   z-index: 3000 !important; /* por encima de otros overlays */
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  background-clip: padding-box !important;
 }
 
-:host ::ng-deep .mat-select-panel .mat-option {
-  background-color: transparent !important;
+/* Overwrites adicionales para cubrir distintos contenedores del overlay */
+:host ::ng-deep .cdk-overlay-pane .payment-select-panel,
+:host ::ng-deep .cdk-overlay-container .payment-select-panel,
+:host ::ng-deep .mat-select-panel.payment-select-panel {
+  background-color: #ffffff !important;
+  opacity: 1 !important;
+  mix-blend-mode: normal !important;
+  filter: none !important;
+  -webkit-filter: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  color: #222 !important;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.25) !important;
+  border-radius: 8px !important;
+  background-clip: padding-box !important;
+}
+
+/* Forzar que cada opción tenga fondo blanco y texto oscuro para evitar ver el fondo debajo */
+:host ::ng-deep .payment-select-panel .mat-option,
+:host ::ng-deep .mat-select-panel.payment-select-panel .mat-option {
+  background-color: #ffffff !important;
   color: #222 !important;
 }
 
-:host ::ng-deep .mat-select-panel .mat-option.mat-active,
-:host ::ng-deep .mat-select-panel .mat-option:hover {
-  background-color: rgba(255, 152, 0, 0.08) !important; /* hover suave */
+/* Hover y seleccionado con acento de la app */
+:host ::ng-deep .payment-select-panel .mat-option.mat-active,
+:host ::ng-deep .payment-select-panel .mat-option:hover {
+  background-color: rgba(255, 152, 0, 0.08) !important;
 }
 
-:host ::ng-deep .mat-select-panel .mat-option.mat-selected {
-  background-color: rgba(255,152,0,0.16) !important; /* acento primario ligero */
+:host ::ng-deep .payment-select-panel .mat-option.mat-selected {
+  background-color: rgba(255,152,0,0.16) !important;
   color: #ff9800 !important;
 }
 
-/* Asegurar que el overlay no herede transparencias del padre */
-:host ::ng-deep .cdk-overlay-pane .payment-select-panel,
+/* Aumentar z-index por si el overlay queda detrás de otros elementos */
 :host ::ng-deep .cdk-overlay-container .payment-select-panel {
-  background-color: #ffffff !important;
-  opacity: 1 !important;
+  z-index: 4000 !important;
 }
 
-/* Aumentar contraste si overlay tiene algún filtro aplicado por el tema */
-:host ::ng-deep .cdk-overlay-pane {
-  z-index: 2000 !important;
+:host {
+  display: block;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+/* Contenedor tipo tarjeta para los campos */
+.method-card {
+  background: #fff;
+  border-radius: 10px;
+  padding: 12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  margin-bottom: 12px;
+  border: 1px solid rgba(0,0,0,0.04);
+}
+
+/* Grupo de toggles como control segmentado */
+.method-type-toggle .mat-button-toggle-group {
+  display: inline-flex;
+  border-radius: 8px;
+  background: rgba(0,0,0,0.03);
+  padding: 4px;
+}
+
+.method-type-toggle .mat-button-toggle {
+  border-radius: 6px;
+  text-transform: none;
+  font-weight: 600;
+  color: #444;
+  min-width: 72px;
+}
+
+/* estado seleccionado del toggle */
+.method-type-toggle .mat-button-toggle.mat-button-toggle-checked,
+.method-type-toggle .mat-button-toggle.mat-button-toggle-checked .mat-button-toggle-label-content {
+  background: #ff9800 !important;
+  color: #fff !important;
+}
+
+/* Alineación y estilo de la fila principal */
+.inline-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+/* Botón añadir más visible */
+.add-button {
+  background-color: #ff9800 !important;
+  color: #fff !important;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.add-button[disabled] {
+  background-color: rgba(0,0,0,0.08) !important;
+  color: rgba(0,0,0,0.38) !important;
+}
+
+/* Campos de tarjeta más compactos */
+.card-fields mat-form-field {
+  width: 100%;
+}
+
+/* Chips / badges para métodos añadidos (más legible) */
+.payment-badge {
+  background-color: #fff !important;
+  color: #333;
+  border-radius: 16px;
+  padding: 6px 10px;
+  border: 1px solid rgba(0,0,0,0.06);
+  font-weight: 700;
+  font-size: 0.8rem;
+}
+
+/* Lista de métodos: usar contenedor tipo tarjeta también */
+mat-list {
+  max-height: 200px;
+  overflow: auto;
+  margin-top: 8px;
+}
+
+mat-list-item {
+  display: flex;
+  align-items: center;
+  padding: 8px 4px;
+  background: transparent;
+}
+
+/* Botón eliminar más pequeño y claro */
+mat-list-item button[mat-icon-button] {
+  margin-left: 12px;
+}
+
+/* Mensajes de error compactos y en rojo */
+:host ::ng-deep .mat-error,
+.custom-error {
+  color: #d32f2f !important;
+  font-size: 0.78rem !important;
+  margin-top: 4px !important;
+  line-height: 1.1 !important;
+}
+
+/* Ajustes para que el dialog actions tengan buena separación */
+:host ::ng-deep .mat-dialog-actions {
+  padding: 12px 24px 16px 24px !important;
+}
+
+/* Asegurar contraste de botones primarios */
+:host ::ng-deep .mat-dialog-actions .app-primary {
+  background-color: #ff9800 !important;
+  color: #fff !important;
+}
+
+/* Mantener overrides para cualquiera referencia a mat-select-panel por si queda en el DOM */
+:host ::ng-deep .mat-select-panel,
+:host ::ng-deep .payment-select-panel {
+  background-color: #ffffff !important;
+  opacity: 1 !important;
+  color: #222 !important;
+}
+
+/* Small responsive tweaks */
+@media (max-width: 420px) {
+  .method-card { padding: 10px; }
+  .add-button { width: 40px; height: 40px; }
+  .method-type-toggle .mat-button-toggle { min-width: 60px; font-size: 0.9rem; }
 }
