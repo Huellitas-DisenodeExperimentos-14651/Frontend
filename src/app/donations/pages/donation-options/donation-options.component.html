@@ -1,91 +1,64 @@
-<div class="donations-wrapper">
-  <!-- Encabezado y descripción SOLO si no hay tipo seleccionado -->
-  <div *ngIf="!selectedType && userRole === 'ADOPTER'" class="intro">
-    <h2>{{ 'DONATION_OPTIONS.headerUser' | translate }}</h2>
-    <!-- <p>{{ 'DONATION_OPTIONS.descriptionUser' | translate }}</p> -->
-  </div>
-
-  <!-- Encabezado para refugio -->
-  <div *ngIf="userRole === 'SHELTER'" class="intro">
-    <h2>{{ 'DONATION_OPTIONS.headerRefuge' | translate }}</h2>
-    <p>{{ 'DONATION_OPTIONS.descriptionRefuge' | translate }}</p>
-  </div>
-
-  <!-- Botón volver -->
-  <div *ngIf="userRole === 'ADOPTER' && selectedType" class="back-button-container">
-    <button class="back-button" (click)="resetSelection()">
-      {{ 'DONATION_OPTIONS.back' | translate }}
-    </button>
-  </div>
-
-  <p *ngIf="selectedType === 'especie'" class="intro-text" [innerHTML]="'DONATION_OPTIONS.physicalMessage' | translate"></p>
-
-  <!-- Mensaje al elegir donación monetaria -->
-  <p *ngIf="selectedType === 'monetaria'" class="intro-text" [innerHTML]="'DONATION_OPTIONS.monetaryMessage' | translate"></p>
-
-
-
-
-
-  <div class="donation-layout">
-    <!-- Campañas SOLO si eres refugio -->
-    <div *ngIf="userRole === 'SHELTER'" class="donations-grid">
-      <app-donation-card
-        *ngFor="let donation of donations"
-        [donation]="donation"
-        [userRole]="userRole"
-        [isPhysical]="false">
-      </app-donation-card>
+<div class="donation-wrapper">
+  <div class="donation-header">
+    <div>
+      <h2>Apoya a una mascota</h2>
+      <p class="lead">Elige una mascota disponible y el método de pago que ya tienes registrado. Puedes seleccionar un monto rápido o escribir uno personalizado.</p>
     </div>
-
-    <!-- Botones para elegir tipo de donación SOLO si eres adoptante -->
-    <div *ngIf="userRole === 'ADOPTER' && !selectedType" class="donation-selection-wrapper">
-      <p class="intro-text" [innerHTML]="'DONATION_OPTIONS.motivationalMessage' | translate"></p>
-
-
-      <div class="donation-type-buttons">
-        <button (click)="goToMonetaryDonations()">
-          {{ 'DONATION_OPTIONS.supportMoney' | translate }}
-        </button>
-        <button (click)="goToPhysicalDonations()">
-          {{ 'DONATION_OPTIONS.supportGoods' | translate }}
-        </button>
-      </div>
-
+    <div class="help-area">
+      <button class="help-btn" (click)="toggleHelp()">Ayuda</button>
     </div>
+  </div>
 
-    <!-- Campañas para adoptante + tabla -->
-    <div *ngIf="userRole === 'ADOPTER' && selectedType" class="donation-content">
-      <!-- Izquierda: campañas -->
-      <div class="donations-grid">
-        <app-donation-card
-          *ngFor="let donation of donations"
-          [donation]="donation"
-          [userRole]="userRole"
-          [isPhysical]="selectedType === 'especie'">
-        </app-donation-card>
-      </div>
-
-      <!-- Derecha: tabla de todas las donaciones (solo para donación monetaria) -->
-      <ng-container *ngIf="selectedType === 'monetaria' && allDonationRecords && allDonationRecords.length > 0">
-        <div class="donation-table-wrapper">
-          <h3>{{ 'DONATION_CARD.madeDonations' | translate }}</h3>
-          <table>
-            <thead>
-            <tr>
-              <th>{{ 'DONATION_CARD.table.name' | translate }}</th>
-              <th>{{ 'DONATION_CARD.table.amount' | translate }}</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr *ngFor="let record of allDonationRecords">
-              <td>{{ record.donorName }}</td>
-              <td>S/. {{ record.amount }}</td>
-            </tr>
-            </tbody>
-          </table>
+  <div class="content">
+    <section class="pets-section">
+      <h3>Mascotas disponibles</h3>
+      <div class="pet-grid">
+        <div *ngFor="let pet of pets" class="pet-card" [class.selected]="pet.id === selectedPetId" (click)="selectedPetId = pet.id">
+          <img *ngIf="pet.photo" [src]="pet.photo" alt="{{pet.name}}" />
+          <div class="pet-name">{{ pet.name }}</div>
+          <div class="select-indicator">{{ pet.id === selectedPetId ? 'Seleccionada' : 'Seleccionar' }}</div>
         </div>
-      </ng-container>
-    </div>
+        <div *ngIf="!pets || pets.length === 0" class="no-pets">No hay mascotas disponibles por ahora.</div>
+      </div>
+    </section>
+
+    <aside class="controls">
+      <div class="payment-block">
+        <h4>Método de pago</h4>
+        <div *ngIf="paymentMethods && paymentMethods.length > 0" class="methods">
+          <select [(ngModel)]="selectedPaymentMethod">
+            <option *ngFor="let m of paymentMethods" [value]="m">{{ m | uppercase }}</option>
+          </select>
+          <button class="edit-profile" (click)="goToProfile()">Editar métodos</button>
+        </div>
+        <div *ngIf="!paymentMethods || paymentMethods.length === 0" class="no-methods">
+          No tienes métodos registrados. Ve a tu perfil para configurarlos.
+          <button class="edit-profile" (click)="goToProfile()">Ir al perfil</button>
+        </div>
+      </div>
+
+      <div class="amount-block">
+        <h4>Monto</h4>
+        <div class="quick-amounts">
+          <button *ngFor="let a of quickAmounts" (click)="selectQuickAmount(a)" [class.active]="selectedAmount===a">S/. {{ a }}</button>
+        </div>
+        <div class="custom-amount">
+          <label>Otro monto</label>
+          <input type="number" min="1" (input)="onCustomAmountInput($event)" placeholder="Ej: 30" />
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="donate" (click)="donate()" [disabled]="loading">
+          {{ loading ? 'Donando...' : (selectedAmount || customAmount ? ('Donar S/. ' + (selectedAmount || customAmount)) : 'Donar') }}
+        </button>
+      </div>
+
+      <div class="help-text" *ngIf="showHelp">
+        <h4>¿Cómo funciona?</h4>
+        <p>Selecciona la mascota, el método de pago que ya tengas registrado y el monto. Pulsa "Donar" y recibirás una confirmación en pantalla.</p>
+        <p>Si no tienes métodos registrados, haz clic en "Editar métodos" para agregarlos en tu perfil.</p>
+      </div>
+    </aside>
   </div>
 </div>

@@ -1,40 +1,69 @@
 <div class="donation-card">
-  <!-- Información general de la campaña (la puedes dejar igual) -->
-  <img *ngIf="donation.imageUrl" [src]="donation.imageUrl" alt="Campaign image" />
-  <h3>{{ donation.title }}</h3>
-  <p *ngIf="donation.description">
-    {{ (donation.description + '').replace('Plin o CCI', 'Plin') }}
-  </p>
-  <p *ngIf="donation.location">
-    <strong>{{ 'DONATION_CARD.location' | translate }}</strong>
-    {{ donation.location }}
-  </p>
-  <p *ngIf="donation.title.includes('Yape') || donation.title.includes('Plin')">
-    <strong>{{ 'DONATION_CARD.donationNumber' | translate }}</strong>
-    {{ getYapeNumber(donation.contactInfo) }}
-  </p>
-  <p *ngIf="!(donation.title.includes('Yape') || donation.title.includes('Plin'))">
-    <strong>{{ 'DONATION_CARD.contact' | translate }}</strong>
-    {{ cleanContactInfo(donation.contactInfo) }}
-  </p>
-  <p *ngIf="donation.address">
-    <strong>{{ 'DONATION_CARD.address' | translate }}</strong>
-    {{ cleanAddress(donation.address) }}
-  </p>
+  <div class="card-header">
+    <img *ngIf="donation?.imageUrl" [src]="donation.imageUrl" alt="Campaign image" />
+    <div class="card-title">
+      <h3>{{ donation?.title }}</h3>
+      <div class="badges">
+        <span class="badge" *ngIf="donation?.category">{{ donation?.category }}</span>
+        <span class="badge type" *ngIf="donation?.type">{{ donation?.type }}</span>
+      </div>
+    </div>
+  </div>
+
+  <p class="desc" *ngIf="donation?.description">{{ (donation.description + '')?.replace('Plin o CCI', 'Plin') }}</p>
+
+  <div class="meta-row">
+    <div class="meta-item" *ngIf="donation?.location">
+      <strong>{{ 'DONATION_CARD.location' | translate }}</strong>
+      <div>{{ donation.location }}</div>
+    </div>
+
+    <div class="meta-item" *ngIf="donation?.title && (donation.title.includes('Yape') || donation.title.includes('Plin'))">
+      <strong>{{ 'DONATION_CARD.donationNumber' | translate }}</strong>
+      <div>{{ getYapeNumber(donation?.contactInfo) }}</div>
+    </div>
+
+    <div class="meta-item" *ngIf="donation?.address">
+      <strong>{{ 'DONATION_CARD.address' | translate }}</strong>
+      <div>{{ cleanAddress(donation.address) }}</div>
+    </div>
+  </div>
+
+  <!-- Barra de progreso -->
+  <div class="progress-wrapper" *ngIf="donation?.goal">
+    <div class="progress-info">
+      <span class="collected">S/. {{ donation?.collected || 0 }}</span>
+      <span class="goal">/ {{ formattedGoal() }}</span>
+      <span class="percent">{{ getProgressPercent() }}%</span>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-fill" [style.width.%]="getProgressPercent()"></div>
+    </div>
+  </div>
 
   <!-- Botón DONAR -->
-  <button
-    *ngIf="!isPhysical && donation.type === 'monetaria' && userRole !== 'SHELTER'"
-    (click)="showForm = !showForm">
-    {{ showForm ? ('DONATION_CARD.cancel' | translate) : ('DONATION_CARD.donate' | translate) }}
-  </button>
+  <div class="actions">
+    <button
+      *ngIf="!isPhysical && donation?.type === 'monetaria' && userRole !== 'SHELTER'"
+      class="donate-btn"
+      (click)="showForm = !showForm">
+      {{ showForm ? ('DONATION_CARD.cancel' | translate) : ('DONATION_CARD.donate' | translate) }}
+    </button>
+
+    <button *ngIf="donation?.type === 'especie'" class="donate-physical">
+      {{ 'DONATION_CARD.donatePhysical' | translate }}
+    </button>
+  </div>
 
   <!-- Formulario de donación -->
-  <div *ngIf="!isPhysical && showForm && donation.type === 'monetaria'" class="donation-form">
+  <div *ngIf="!isPhysical && showForm && donation?.type === 'monetaria'" class="donation-form">
     <label>
       {{ 'DONATION_CARD.form.amount' | translate }}
-      <input type="number" [(ngModel)]="amount" placeholder="S/." />
+      <input type="number" [(ngModel)]="amount" placeholder="{{ amount ? amount : ('DONATION_CARD.form.amountPlaceholder' | translate) }}" />
     </label>
+    <div class="quick-presets" *ngIf="donation && donation['__presetAmount']">
+      <small>{{ 'DONATION_CARD.presets.presetApplied' | translate }} S/. {{ donation['__presetAmount'] }}</small>
+    </div>
     <label>
       {{ 'DONATION_CARD.form.method' | translate }}
       <select [(ngModel)]="paymentMethod">
@@ -49,14 +78,14 @@
     </label>
     <label>
       {{ 'DONATION_CARD.form.name' | translate }}
-      <input type="text" [(ngModel)]="donorName" placeholder="Your name" />
+      <input type="text" [(ngModel)]="donorName" placeholder="{{ 'DONATION_CARD.form.namePlaceholder' | translate }}" />
     </label>
-    <button (click)="confirmDonation()">
-      {{ 'DONATION_CARD.form.confirm' | translate }}
-    </button>
+    <div class="form-actions">
+      <button class="confirm" (click)="confirmDonation()">
+        {{ 'DONATION_CARD.form.confirm' | translate }}
+      </button>
+      <button class="cancel" (click)="showForm=false">{{ 'DONATION_CARD.form.cancel' | translate }}</button>
+    </div>
   </div>
 
-
 </div>
-
-

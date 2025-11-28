@@ -31,21 +31,24 @@ export class DonationCardComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadAllDonations();
+
+    // Si la entidad trae un monto preseleccionado (señal desde la lista), lo tomamos
+    const preset = (this.donation as any).__presetAmount;
+    if (preset && Number(preset) > 0) {
+      this.amount = Number(preset);
+      this.showForm = true; // abrir directamente el formulario
+    }
   }
 
   loadAllDonations(): void {
     this.donationsService.getAllDonations().subscribe({
       next: (data: DonationRecord[]) => {
-        this.allDonations = data;
+        this.allDonations = data || [];
       },
       error: (err) => {
         console.error('Error al cargar todas las donaciones:', err);
       }
     });
-  }
-
-  hasDonationRecords(): boolean {
-    return this.allDonations.length > 0;
   }
 
   getYapeNumber(contactInfo: string | undefined): string {
@@ -67,6 +70,21 @@ export class DonationCardComponent implements OnInit {
     return match ? match[1] : str;
   }
 
+  // progreso relativo de la campaña: 0..100
+  getProgressPercent(): number {
+    const goal = (this.donation as any).goal || 0;
+    const collected = (this.donation as any).collected || 0;
+    if (!goal || goal <= 0) return 0;
+    const p = Math.round((collected / goal) * 100);
+    return Math.min(100, Math.max(0, p));
+  }
+
+  // texto amigable de meta
+  formattedGoal(): string {
+    const goal = (this.donation as any).goal;
+    return goal ? `S/. ${goal}` : '-';
+  }
+
   confirmDonation(): void {
     if (
       !this.amount || this.amount <= 0 ||
@@ -79,10 +97,12 @@ export class DonationCardComponent implements OnInit {
     }
 
     const donationData = {
+      campaignId: (this.donation as any).id || null,
       amount: this.amount,
       paymentMethod: this.paymentMethod.toUpperCase(),
       transactionNumber: this.transactionNumber,
-      donorName: this.donorName
+      donorName: this.donorName,
+      createdAt: new Date().toISOString()
     };
 
     this.donationsService.createDonation(donationData).subscribe({
@@ -92,6 +112,7 @@ export class DonationCardComponent implements OnInit {
         this.amount = 0;
         this.transactionNumber = '';
         this.donorName = '';
+        // recargar registros y, opcionalmente, notificar al servidor para actualizar campaña
         this.loadAllDonations();
       },
       error: (err) => {
@@ -101,5 +122,3 @@ export class DonationCardComponent implements OnInit {
     });
   }
 }
-
-
