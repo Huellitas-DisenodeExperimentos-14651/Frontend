@@ -84,9 +84,7 @@
       "email": "Christian@gmail.com",
       "address": "Av almeda del corregidor",
       "role": "ADOPTER",
-      "paymentMethods": [
-        "Yape"
-      ],
+      "paymentMethods": [],
       "preferences": [
         "Perros"
       ],
@@ -95,7 +93,10 @@
       "capacity": 1,
       "animalsAvailable": 0,
       "homeType": "Departamento",
-      "previousExperience": "No cuento con experiencia previa"
+      "previousExperience": "No cuento con experiencia previa",
+      "preferencesString": "Perros",
+      "paymentMethodsString": "Yape",
+      "paymentConfigured": true
     },
     {
       "id": "ba8b",

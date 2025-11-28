@@ -244,8 +244,8 @@ export class SignUpComponent extends BaseFormComponent implements OnInit, AfterV
 
   openPaymentDialog(): void {
     const ref = this.dialog.open(PaymentMethodsDialogComponent, {
-      width: '420px',
-      data: { methods: this.paymentMethodsArray }
+      width: '520px',
+      data: { methods: this.paymentMethodsArray, allowAddLater: true }
     });
 
     ref.afterClosed().subscribe(result => {

@@ -49,8 +49,8 @@
         <button (click)="toggleEditMode()" class="edit-button">
           <mat-icon>edit</mat-icon> Editar Perfil
         </button>
-        <button (click)="deleteProfile()" class="delete-button">
-          <mat-icon>delete</mat-icon> Eliminar Perfil
+        <button (click)="openPaymentMethodsDialog()" class="payment-button">
+          <mat-icon>payment</mat-icon> Editar métodos de pago
         </button>
       </div>
     </div>
@@ -85,16 +85,6 @@
       </div>
 
       <div class="form-group">
-        <label>Métodos de pago (separados por coma):</label>
-        <input
-          [(ngModel)]="user.paymentMethodsString"
-          type="text"
-          placeholder="Ej: PayPal, Tarjeta de crédito"
-        >
-        <small>Separa cada método con una coma. Ej: "PayPal, Tarjeta"</small>
-      </div>
-
-      <div class="form-group">
         <label>Foto de perfil (URL):</label>
         <input [(ngModel)]="user.profilePic" type="text">
       </div>
@@ -114,6 +104,18 @@
         <input [(ngModel)]="user.homeType" type="text">
       </div>
 
+      <div *ngIf="user.role === 'ADOPTER'" class="form-group">
+        <label>Experiencia previa:</label>
+        <input [(ngModel)]="user.previousExperience" type="text">
+      </div>
+
+      <!-- Nueva sección: confirmación de contraseña para aplicar cambios -->
+      <div class="form-group">
+        <label>Ingresa tu contraseña actual para confirmar cambios:</label>
+        <input [(ngModel)]="confirmPassword" type="password" placeholder="Contraseña actual">
+        <small *ngIf="passwordError" class="password-error">{{ passwordError }}</small>
+      </div>
+
       <div class="form-actions">
         <button (click)="saveProfile()" class="save-button">
           <mat-icon>save</mat-icon> Guardar
@@ -122,6 +124,8 @@
           <mat-icon>cancel</mat-icon> Cancelar
         </button>
       </div>
+
+      <p class="note">Para modificar métodos de pago, ve a la sección <a (click)="goToPaymentSettings()">Configurar métodos de pago</a>.</p>
     </div>
   </div>
 

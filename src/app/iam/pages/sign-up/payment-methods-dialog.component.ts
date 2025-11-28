@@ -43,13 +43,19 @@ export class PaymentMethodsDialogComponent {
   cardExpiry = new FormControl('', []);
   cardCvc = new FormControl('', []);
 
+  // bandera para permitir mostrar "Agregar más tarde" (por defecto false)
+  allowAddLater: boolean = false;
+
   constructor(
     public dialogRef: MatDialogRef<PaymentMethodsDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { methods?: Array<{ type: string; label?: string; data: any }> }
+    @Inject(MAT_DIALOG_DATA) public data: { methods?: Array<{ type: string; label?: string; data: any }>, allowAddLater?: boolean }
   ) {
     if (data && Array.isArray(data.methods)) {
       this.methods = data.methods.map(m => ({ ...m }));
     }
+
+    // establecer bandera con valor por defecto false
+    this.allowAddLater = !!(data && data.allowAddLater);
 
     // actualizar validadores según el tipo seleccionado
     this.selectedType.valueChanges.subscribe((type) => {

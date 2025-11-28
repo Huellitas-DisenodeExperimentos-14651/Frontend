@@ -79,6 +79,6 @@
 </div>
 <div mat-dialog-actions align="end">
   <button mat-button (click)="cancel()">Cancelar</button>
-  <button mat-button (click)="dialogRef.close('later')" class="app-primary">Agregar más tarde</button>
+  <button *ngIf="allowAddLater" mat-button (click)="dialogRef.close('later')" class="app-primary">Agregar más tarde</button>
   <button mat-raised-button color="primary" (click)="save()" class="app-primary">Guardar</button>
 </div>
