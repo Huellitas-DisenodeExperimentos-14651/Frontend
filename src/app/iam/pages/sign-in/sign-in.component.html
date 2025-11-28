@@ -13,6 +13,11 @@
 
 
     <mat-card-content>
+      <!-- Mensaje de error general (visible en UI) -->
+      <div *ngIf="errorMessage" class="form-error" role="alert">
+        {{ errorMessage }}
+      </div>
+
       <form [formGroup]="form" (submit)="onSubmit()">
         <mat-form-field appearance="fill" class="full-width">
           <mat-label>{{ 'SIGN_IN.username' | translate }}</mat-label>
@@ -34,11 +39,6 @@
           {{ 'SIGN_IN.login_button' | translate }}
         </button>
 
-        <!-- Enlaces secundarios -->
-        <div class="secondary-actions">
-          <button mat-button disabled>{{ 'SIGN_IN.forgot_password' | translate }}</button>
-          <button mat-button disabled>{{ 'SIGN_IN.login_google' | translate }}</button>
-        </div>
       </form>
     </mat-card-content>
   </mat-card>

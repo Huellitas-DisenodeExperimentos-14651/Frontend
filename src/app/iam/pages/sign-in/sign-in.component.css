@@ -61,6 +61,18 @@ mat-error {
   color: #f44336;
 }
 
+/* Mensaje de error general visible en UI */
+.form-error {
+  background: #ffebee; /* ligero tono de fondo para destacarlo */
+  color: #c62828; /* rojo oscuro */
+  border: 1px solid #ffcdd2;
+  padding: 8px 12px;
+  border-radius: 6px;
+  margin-bottom: 12px;
+  font-size: 0.85rem;
+  text-align: left;
+}
+
 /* Botón principal */
 button.mat-raised-button {
   width: 100%;

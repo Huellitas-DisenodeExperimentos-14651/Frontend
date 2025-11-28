@@ -18,6 +18,10 @@ import { MatDividerModule } from '@angular/material/divider';
 import {TranslatePipe} from '@ngx-translate/core';
 import { Router } from '@angular/router';
 
+// RxJS
+import { of } from 'rxjs';
+import { switchMap, catchError } from 'rxjs/operators';
+
 
 // Componentes internos
 
@@ -41,6 +45,8 @@ export class SignInComponent extends BaseFormComponent implements OnInit {
 
   form!: FormGroup;
   submitted = false;
+  // Mensaje de error visible en la UI
+  errorMessage: string | null = null;
 
   constructor(
     private builder: FormBuilder,
@@ -58,19 +64,48 @@ export class SignInComponent extends BaseFormComponent implements OnInit {
   }
 
   onSubmit(): void {
-    if (this.form.invalid) return;
+    // resetear mensaje visible
+    this.errorMessage = null;
+
+    if (this.form.invalid) {
+      // Mostrar un mensaje general si el formulario no es válido
+      this.errorMessage = 'Por favor completa los campos requeridos.';
+      return;
+    }
 
     const {username, password} = this.form.value;
-    const signInRequest = new SignInRequest(username, password);
 
-    this.authenticationService.signIn(signInRequest).subscribe({
-      next: (response) => {
-        if (!response || response.length === 0) {
-          // Usuario o contraseña incorrectos
-          console.error('Usuario o contraseña incorrectos');
-          // Aquí puedes mostrar un mensaje al usuario
+    // Primero comprobamos si el username existe para dar un mensaje claro
+    this.authenticationService.usernameExists(username)
+      .pipe(
+        switchMap(exists => {
+          if (!exists) {
+            // Usuario no existe -> mostramos mensaje y cortamos el flujo
+            this.errorMessage = 'El nombre de usuario no existe.';
+            return of(null);
+          }
+          // Si existe, intentamos iniciar sesión (comprobación de contraseña)
+          const signInRequest = new SignInRequest(username, password);
+          return this.authenticationService.signIn(signInRequest);
+        }),
+        catchError(err => {
+          console.error('Error durante comprobación de inicio de sesión:', err);
+          this.errorMessage = 'Error al iniciar sesión. Inténtalo nuevamente.';
+          return of(null);
+        })
+      )
+      .subscribe(response => {
+        if (response === null) {
+          // ya se mostró mensaje previamente o hubo error; no continuar
           return;
         }
+
+        if (!response || response.length === 0) {
+          // Usuario existe pero las credenciales no coinciden => contraseña incorrecta
+          this.errorMessage = 'Contraseña incorrecta.';
+          return;
+        }
+
         const user = response[0];
         // Guardar localStorage
         localStorage.setItem('token', 'fake-token'); // Puedes generar un token falso si lo necesitas
@@ -89,10 +124,6 @@ export class SignInComponent extends BaseFormComponent implements OnInit {
         } else {
           this.router.navigate(['/']);
         }
-      },
-      error: (error) => {
-        console.error('Error al iniciar sesión:', error);
-      }
-    });
+      });
   }
 }
