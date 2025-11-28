@@ -117,6 +117,42 @@
       "animalsAvailable": 0,
       "homeType": "Casa",
       "previousExperience": "Jose"
+    },
+    {
+      "id": "7c70",
+      "username": "sdadas",
+      "password": "Hola123!",
+      "name": "dsdsa",
+      "email": "adsdasq@gmail.com",
+      "address": "asdads",
+      "role": "SHELTER",
+      "paymentMethods": [],
+      "preferences": [],
+      "paymentConfigured": true,
+      "profilePic": "",
+      "bio": "dasddasdsa",
+      "capacity": 1,
+      "animalsAvailable": 2,
+      "homeType": "",
+      "previousExperience": ""
+    },
+    {
+      "id": "cc0e",
+      "username": "Hola",
+      "password": "Hola123!",
+      "name": "asdads",
+      "email": "hola@gal.c",
+      "address": "dsadsa",
+      "role": "ADOPTER",
+      "paymentMethods": [],
+      "preferences": [],
+      "paymentConfigured": true,
+      "profilePic": "https://unsplash.com/es/fotos/una-mujer-tomando-una-foto-de-la-puesta-de-sol-sobre-un-cuerpo-de-agua-a5LSIj59-4g",
+      "bio": "dsadas",
+      "capacity": 1,
+      "animalsAvailable": 0,
+      "homeType": "dsdsa",
+      "previousExperience": "asddas"
     }
   ]
 }

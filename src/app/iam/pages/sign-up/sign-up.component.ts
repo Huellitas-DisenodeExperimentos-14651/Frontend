@@ -94,18 +94,73 @@ export class SignUpComponent extends BaseFormComponent implements OnInit, AfterV
     });
 
     this.homeFormGroup = this.builder.group({
-      profilePic: [''],
-      bio: [''],
-      capacity: [1, [Validators.required, Validators.min(1)]],
-      animalsAvailable: [0],
-      homeType: [''],
-      previousExperience: ['']
+      profilePic: ['', [Validators.required, Validators.pattern(/^(https?:\/\/).+/)]], // ahora requerido siempre + patrón simple
+      bio: ['', Validators.required], // ahora requerido siempre
+      capacity: [1, [Validators.min(1)]], // validadores condicionales según rol
+      animalsAvailable: [0, []],
+      homeType: ['', []],
+      previousExperience: ['', []]
+    });
+
+    // Aplicar validadores iniciales según rol por defecto
+    this.applyHomeValidatorsBasedOnRole(this.personalFormGroup.get('role')?.value);
+
+    // Escuchar cambios de rol para actualizar validadores de homeFormGroup
+    this.personalFormGroup.get('role')?.valueChanges.subscribe(role => {
+      this.applyHomeValidatorsBasedOnRole(role);
     });
   }
 
   ngAfterViewInit(): void {
-    // Aplicar estilos inline para asegurar prioridad sobre otras reglas CSS
+    // Asegurar que el hook requerido por AfterViewInit exista y aplique estilos inline
     this.applyInlineStylesToErrorsAndHints();
+  }
+
+  /**
+   * Configura validadores en `homeFormGroup` según el rol seleccionado.
+   * - Todos deben tener `profilePic` y `bio` requeridos.
+   * - Si rol === 'SHELTER' (rescatista/refugio) -> `capacity` y `animalsAvailable` son requeridos.
+   * - Si rol === 'ADOPTER' -> `homeType` y `previousExperience` son requeridos.
+   */
+  private applyHomeValidatorsBasedOnRole(role: string | null): void {
+    // profilePic y bio ya son requeridos por defecto en el grupo, aseguramos validez
+    const profilePicCtrl = this.homeFormGroup.get('profilePic');
+    const bioCtrl = this.homeFormGroup.get('bio');
+    // preservar el patrón de URL al (re)asignar validadores
+    const urlPattern = Validators.pattern(/^(https?:\/\/).+/);
+    profilePicCtrl?.setValidators([Validators.required, urlPattern]);
+    bioCtrl?.setValidators([Validators.required]);
+    profilePicCtrl?.updateValueAndValidity({ onlySelf: true });
+    bioCtrl?.updateValueAndValidity({ onlySelf: true });
+
+    const capacityCtrl = this.homeFormGroup.get('capacity');
+    const animalsCtrl = this.homeFormGroup.get('animalsAvailable');
+    const homeTypeCtrl = this.homeFormGroup.get('homeType');
+    const prevExpCtrl = this.homeFormGroup.get('previousExperience');
+
+    if (role === 'SHELTER') {
+      // Refugio: capacidad y animales disponibles obligatorios
+      capacityCtrl?.setValidators([Validators.required, Validators.min(1)]);
+      animalsCtrl?.setValidators([Validators.required, Validators.min(0)]);
+
+      // Adoptante-only fields no obligatorios
+      homeTypeCtrl?.clearValidators();
+      prevExpCtrl?.clearValidators();
+    } else {
+      // ADOPTER
+      homeTypeCtrl?.setValidators([Validators.required]);
+      prevExpCtrl?.setValidators([Validators.required]);
+
+      // Shelter-only fields no obligatorios
+      capacityCtrl?.clearValidators();
+      animalsCtrl?.clearValidators();
+    }
+
+    // Actualizar estados
+    capacityCtrl?.updateValueAndValidity({ onlySelf: true });
+    animalsCtrl?.updateValueAndValidity({ onlySelf: true });
+    homeTypeCtrl?.updateValueAndValidity({ onlySelf: true });
+    prevExpCtrl?.updateValueAndValidity({ onlySelf: true });
   }
 
   /**
