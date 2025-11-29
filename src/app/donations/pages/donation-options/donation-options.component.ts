@@ -45,18 +45,16 @@ export class DonationOptionsComponent implements OnInit {
   ngOnInit(): void {
     this.userProfileId = localStorage.getItem('profileId');
 
-    // cargar mascotas disponibles desde adoptions
-    this.adoptionsService.getAllPets().subscribe({
-      next: (pubs) => {
-        // pub may include pet inside
-        this.pets = (pubs || []).map((p: any) => ({
-          id: Number(p.pet?.id || p.petId || p.id),
-          name: p.pet?.name || p.pet?.title || p.title || 'Mascota',
-          photo: p.pet?.photo || p.pet?.imageUrl || undefined
-        }));
+    // cargar mascotas directamente desde el endpoint de pets (igual que AdoptionsList)
+    this.adoptionsService.getAllDirectPets().subscribe({
+      next: (data) => {
+        // mapear Pet -> SimplePet y filtrar sólo las disponibles
+        this.pets = (data || [])
+          .filter((p: any) => (p.status || '').toString().toLowerCase() === 'available')
+          .map((p: any) => ({ id: Number(p.id), name: p.name || 'Mascota', photo: p.photo || p.imageUrl }));
       },
       error: (err) => {
-        console.error('Error cargando mascotas disponibles:', err);
+        console.error('Error cargando mascotas desde pets:', err);
       }
     });
 
