@@ -205,11 +205,22 @@
     "publishSuccess": "The publication was created successfully!",
     "publishError": "Error: Could not publish the pet.",
     "deleteSuccess": "Publication successfully deleted.",
-    "deleteError": "Error: Could not delete the publication."
+    "deleteError": "Error: Could not delete the publication.",
+    "createTitle": "Create publication",
+    "createNew": "Create publication",
+    "selectPet": "Select pet",
+    "selectedPetLabel": "Selected pet:",
+    "petRequired": "You must select a pet.",
+    "titleLabel": "Title",
+    "titleRequired": "Title is required.",
+    "description": "Description",
+    "photoUrl": "Image URL (optional)",
+    "create": "Create",
+    "creating": "Creating..."
   },
-  "dialog": {
-    "title": "Information",
-    "accept": "Accept"
+  "common": {
+    "cancel": "Cancel",
+    "close": "Close"
   },
   "adoption": {
     "title": "Adoption requests",

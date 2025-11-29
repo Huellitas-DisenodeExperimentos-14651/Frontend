@@ -3,11 +3,13 @@ import { CommonModule } from '@angular/common';
 import { Publication } from '../../services/publications.service';
 import { PetsService } from '../../../pets/services/pets.service';
 import {TranslatePipe} from '@ngx-translate/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-publication-card',
   standalone: true,
-  imports: [CommonModule, TranslatePipe],
+  imports: [CommonModule, TranslatePipe, MatButtonModule, MatIconModule],
   templateUrl: './publication-card.component.html',
   styleUrls: ['./publication-card.component.css']
 })

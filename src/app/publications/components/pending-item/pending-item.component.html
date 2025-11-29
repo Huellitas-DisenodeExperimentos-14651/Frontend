@@ -1,6 +1,6 @@
 <div class="pending">
   <span>{{ pet.name }}</span>
-  <button class="btn-publish" (click)="publish.emit()">
+  <button mat-raised-button color="primary" (click)="publish.emit()" [attr.aria-label]="'publications.publish' | translate">
     {{ 'publications.publish' | translate }}
   </button>
 </div>

@@ -191,6 +191,10 @@
   "COMMON": {
     "CLOSE": "Cerrar"
   },
+  "common": {
+    "cancel": "Cancelar",
+    "close": "Cerrar"
+  },
   "publications": {
     "title": "Publicaciones",
     "publish": "PUBLICAR",
@@ -205,7 +209,18 @@
     "publishSuccess": "¡La publicación fue creada exitosamente!",
     "publishError": "Error: No se pudo publicar la mascota.",
     "deleteSuccess": "Publicación eliminada con éxito.",
-    "deleteError": "Error: No se pudo eliminar la publicación."
+    "deleteError": "Error: No se pudo eliminar la publicación.",
+    "createTitle": "Crear publicación",
+    "createNew": "Crear publicación",
+    "selectPet": "Seleccionar mascota",
+    "selectedPetLabel": "Mascota seleccionada:",
+    "petRequired": "Debes seleccionar una mascota.",
+    "titleLabel": "Título",
+    "titleRequired": "El título es obligatorio.",
+    "description": "Descripción",
+    "photoUrl": "URL de la imagen (opcional)",
+    "create": "Crear",
+    "creating": "Creando..."
   },
   "dialog": {
     "title": "Información",

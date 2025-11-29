@@ -13,6 +13,20 @@ export interface Publication {
   publishedAt: string;
   isActive: boolean;
   photo?: string;
+  ownerId?: string; // id del usuario/refugio que creó la publicación
+}
+
+// Payload al crear: más flexible para permitir publishedAt/isActive/ownerId desde el cliente
+export interface CreatePublicationPayload {
+  petId: number;
+  title: string;
+  description: string;
+  contactInfo: string;
+  location: string;
+  photo?: string;
+  ownerId?: string;
+  publishedAt?: string;
+  isActive?: boolean;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -25,9 +39,12 @@ export class PublicationsService {
     return this.http.get<Publication[]>(`${this.api}/active`);
   }
 
-  create(
-    payload: Omit<Publication, 'id' | 'publishedAt' | 'isActive'>
-  ): Observable<Publication> {
+  // Obtener publicaciones por ownerId (json-server permite query simple: ?ownerId=...)
+  getByOwner(ownerId: string): Observable<Publication[]> {
+    return this.http.get<Publication[]>(`${this.api}?ownerId=${ownerId}&isActive=true`);
+  }
+
+  create(payload: CreatePublicationPayload): Observable<Publication> {
     return this.http.post<Publication>(this.api, payload);
   }
 

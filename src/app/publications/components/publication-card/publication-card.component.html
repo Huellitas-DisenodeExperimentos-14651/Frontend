@@ -1,6 +1,6 @@
 <article class="card">
   <header class="cover">
-    <img [src]="publication.photo" alt="{{ 'publications.photoAlt' | translate }}" />
+    <img [src]="photoUrl" alt="{{ 'publications.photoAlt' | translate }}" />
     <span class="badge">{{ 'publications.active' | translate }}</span>
   </header>
 
@@ -13,7 +13,12 @@
     </small>
   </div>
 
-  <button class="btn-delete" (click)="remove.emit()">
-    {{ 'publications.delete' | translate }}
-  </button>
+  <footer class="card-footer">
+    <div class="actions">
+      <button mat-raised-button color="warn" (click)="remove.emit()" [attr.aria-label]="'publications.delete' | translate">
+        <mat-icon aria-hidden="true">delete</mat-icon>
+        <span class="btn-label">{{ 'publications.delete' | translate }}</span>
+      </button>
+    </div>
+  </footer>
 </article>

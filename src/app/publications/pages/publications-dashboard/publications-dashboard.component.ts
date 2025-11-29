@@ -1,23 +1,17 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Observable, map } from 'rxjs';
+import { Observable, map, of } from 'rxjs';
 import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { ChangeDetectorRef } from '@angular/core';
-import { of, forkJoin } from 'rxjs';
+import { of as rxOf, forkJoin } from 'rxjs';
 
 import { PetsService } from '../../../pets/services/pets.service';
-import { Pet } from '../../../pets/model/pet.entity';
-
-import {
-  PublicationsService,
-  Publication
-} from '../../services/publications.service';
-
-import { PendingItemComponent } from '../../components/pending-item/pending-item.component';
+import { Publication, PublicationsService } from '../../services/publications.service';
 import { PublicationCardComponent } from '../../components/publication-card/publication-card.component';
 import { InfoDialogComponent } from '../../../shared/components/info-dialog/info-dialog.component';
-
-import {TranslatePipe, TranslateService} from "@ngx-translate/core";
+import { CreatePublicationDialogComponent } from '../../components/create-publication-dialog/create-publication-dialog.component';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-publications-dashboard',
@@ -26,11 +20,12 @@ import {TranslatePipe, TranslateService} from "@ngx-translate/core";
   styleUrls: ['./publications-dashboard.component.css'],
   imports: [
     CommonModule,
-    PendingItemComponent,
     PublicationCardComponent,
     MatDialogModule,
     InfoDialogComponent,
-    TranslatePipe
+    CreatePublicationDialogComponent,
+    TranslatePipe,
+    MatButtonModule
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -41,31 +36,22 @@ export class PublicationsDashboardComponent implements OnInit {
   private cdr = inject(ChangeDetectorRef);
   private translate = inject(TranslateService);
 
-  pendingPets$!: Observable<Pet[]>;
   activePublications$!: Observable<Publication[]>;
 
   ngOnInit(): void {
     this.refresh();
   }
 
-  publish(pet: Pet): void {
-    this.pubs.create({
-      petId: pet.id,
-      title: pet.name,
-      description: pet.description ?? '',
-      contactInfo: 'contact@example.com',
-      location: 'Chimbote',
-      photo: pet.photo
-    }).subscribe({
-      next: () => {
-        const ref = this.showDialog(this.translate.instant('publications.publishSuccess'));
-        ref.afterClosed().subscribe(() => {
-          this.refresh();
-          this.cdr.markForCheck();
-        });
-      },
-      error: () => {
-        this.showDialog(this.translate.instant('publications.publishError'));
+  openCreateDialog(): void {
+    const dialogRef = this.dialog.open(CreatePublicationDialogComponent, {
+      width: '520px',
+      maxWidth: '95vw'
+    });
+
+    dialogRef.afterClosed().subscribe((created: boolean) => {
+      if (created) {
+        this.refresh();
+        this.cdr.markForCheck();
       }
     });
   }
@@ -85,20 +71,24 @@ export class PublicationsDashboardComponent implements OnInit {
     });
   }
   private refresh(): void {
-    forkJoin({
-      publications: this.pubs.getActive(),
-      pets: this.pets.getAll()
-    }).subscribe(({ publications, pets }) => {
-      this.activePublications$ = of(
-          publications.map(pub => ({
-            ...pub,
-            photo: pets.find(p => p.id === pub.petId)?.photo ?? ''
-          }))
-      );
-    });
+    const ownerId = localStorage.getItem('profileId');
 
-    this.pendingPets$ = this.pets.getAll()
-        .pipe(map(arr => arr.filter(p => String(p.status).toUpperCase() === 'AVAILABLE')));
+    if (!ownerId) {
+      // Si no hay ownerId, no mostramos publicaciones propias
+      this.activePublications$ = rxOf([]);
+    } else {
+      forkJoin({
+        publications: this.pubs.getByOwner(ownerId),
+        pets: this.pets.getAll()
+      }).subscribe(({ publications, pets }) => {
+        this.activePublications$ = of(
+            publications.map(pub => ({
+              ...pub,
+              photo: pets.find(p => String(p.id) === String(pub.petId))?.photo ?? pub.photo ?? ''
+            }))
+        );
+      });
+    }
   }
 
   private showDialog(message: string): MatDialogRef<InfoDialogComponent> {

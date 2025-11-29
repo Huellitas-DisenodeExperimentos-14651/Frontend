@@ -1,0 +1,42 @@
+<h2>{{ 'publications.createTitle' | translate }}</h2>
+
+<form [formGroup]="form" (ngSubmit)="submit()" class="create-form" novalidate>
+
+  <!-- Selector simple de mascota usando mat-select -->
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>{{ 'publications.selectPet' | translate }}</mat-label>
+    <mat-select formControlName="petId" [attr.aria-label]="'publications.selectPet' | translate">
+      <mat-option *ngFor="let p of (pets$ | async)" [value]="p.id">{{ p.name }}</mat-option>
+    </mat-select>
+    <mat-error *ngIf="form.get('petId')?.invalid">{{ 'publications.petRequired' | translate }}</mat-error>
+  </mat-form-field>
+
+  <div class="selected-pet" *ngIf="selectedPet$ | async as sel">
+    <strong>{{ 'publications.selectedPetLabel' | translate }}</strong>
+    <span class="sel-name">{{ sel.name }}</span>
+  </div>
+
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>{{ 'publications.titleLabel' | translate }}</mat-label>
+    <input matInput formControlName="title" [attr.aria-label]="'publications.titleLabel' | translate">
+    <mat-error *ngIf="form.get('title')?.invalid">{{ 'publications.titleRequired' | translate }}</mat-error>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>{{ 'publications.description' | translate }}</mat-label>
+    <textarea matInput formControlName="description" rows="4" [attr.aria-label]="'publications.description' | translate"></textarea>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>{{ 'publications.photoUrl' | translate }}</mat-label>
+    <input matInput formControlName="photo" [attr.aria-label]="'publications.photoUrl' | translate">
+  </mat-form-field>
+
+  <div class="actions">
+    <button mat-button type="button" (click)="cancel()">{{ 'common.cancel' | translate }}</button>
+    <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid || submitting">
+      <span *ngIf="!submitting">{{ 'publications.create' | translate }}</span>
+      <span *ngIf="submitting">{{ 'publications.creating' | translate }}</span>
+    </button>
+  </div>
+</form>

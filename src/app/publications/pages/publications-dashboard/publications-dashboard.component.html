@@ -1,22 +1,11 @@
 <div class="dashboard">
 
-  <h1>{{ 'publications.title' | translate }}</h1>
-
-    <section class="block">
-        <h2>{{ 'publications.pendingTitle' | translate }}</h2>
-
-        <ng-container *ngIf="pendingPets$ | async as pets">
-            <app-pending-item
-                    *ngFor="let pet of pets"
-                    [pet]="pet"
-                    (publish)="publish(pet)">
-            </app-pending-item>
-
-            <p *ngIf="pets.length === 0" class="empty">
-                {{ 'publications.noPending' | translate }}
-            </p>
-        </ng-container>
-    </section>
+  <div class="dashboard-header">
+    <h1>{{ 'publications.title' | translate }}</h1>
+    <button mat-raised-button color="primary" class="create-button" (click)="openCreateDialog()">
+      {{ 'publications.createNew' | translate }}
+    </button>
+  </div>
 
     <section class="block">
         <h2>{{ 'publications.activeTitle' | translate }}</h2>
