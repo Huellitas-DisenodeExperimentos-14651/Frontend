@@ -15,6 +15,7 @@ export class Pet {
   healthStatus: string;
   vaccinationStatus: string;
   specialNeeds: string;
+  profileId?: string | number; // id del refugio/owner
 
   constructor(data: any) {
     this.id = data.id;
@@ -28,5 +29,6 @@ export class Pet {
     this.healthStatus = data.healthStatus;
     this.vaccinationStatus = data.vaccinationStatus;
     this.specialNeeds = data.specialNeeds;
+    this.profileId = data.profileId ?? data.ownerId ?? undefined;
   }
 }

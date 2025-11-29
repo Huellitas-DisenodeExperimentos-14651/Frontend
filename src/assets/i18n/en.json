@@ -122,7 +122,11 @@
         "all": "All",
         "available": "Available",
         "adopted": "Adopted",
-        "pending": "Pending"
+        "pending": "Pending",
+        "interview": "In interview",
+        "approved": "Approved",
+        "rejected": "Rejected",
+        "completed": "Completed"
       },
       "loading": "Loading pets...",
       "empty": "No pets found."
@@ -193,6 +197,8 @@
   },
   "publications": {
     "title": "Publications",
+    "all": "All publications",
+    "noResults": "No active publications found",
     "publish": "PUBLISH",
     "delete": "DELETE",
     "active": "ACTIVE",
@@ -216,18 +222,30 @@
     "description": "Description",
     "photoUrl": "Image URL (optional)",
     "create": "Create",
-    "creating": "Creating..."
+    "creating": "Creating...",
+    "noPetsOwner": "You don't have any pets registered in your shelter. Create a pet before publishing."
   },
   "common": {
     "cancel": "Cancel",
-    "close": "Close"
+    "close": "Close",
+    "back": "← Back"
   },
   "adoption": {
     "title": "Adoption requests",
     "pending": "Pending requests",
+    "interview": "Request with interview",
     "history": "Request history",
+    "requestDate": "Request date",
+    "statusLabel": "Status",
+    "actions": {
+      "approve": "Approve",
+      "reject": "Reject",
+      "schedule": "Schedule interview",
+      "completed": "Completed"
+    },
     "empty": {
       "pending": "There are no pending requests.",
+      "interview": "There are no requests with interview scheduled.",
       "history": "There are no requests in the history."
     },
     "hint": {
@@ -241,7 +259,16 @@
     "toast": {
       "approved": "Request #{{id}} approved.",
       "rejected": "Request #{{id}} rejected.",
+      "interviewScheduled": "Interview scheduled for request #{{id}} on {{date}}.",
+      "completed": "Request #{{id}} completed.",
+      "updated": "Request #{{id}} updated.",
       "error": "Error: the request could not be processed."
+    },
+    "request": {
+      "historyTitle": "Request history",
+      "requested": "Requested on",
+      "interviewScheduled": "Interview scheduled",
+      "reason": "Reason"
     }
   },
 

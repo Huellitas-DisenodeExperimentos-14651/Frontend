@@ -47,19 +47,32 @@ small[data-status="REJECTED"]  { background: #f44336; }
   position: fixed;
   inset: 0;
   background: rgba(0,0,0,.45);
-  backdrop-filter: blur(2px);
+  z-index: 2100; /* asegurarnos de que cubra el contenido principal */
 }
 
 .popup {
   position: fixed;
   inset: 50% auto auto 50%;
   transform: translate(-50%, -50%);
-  width: min(92%, 460px);
+  width: min(98%, 1400px) !important;
+  max-width: 1400px !important;
   border: none;
-  border-radius: 1rem;
-  padding: 2rem 2.25rem;
+  border-radius: 12px;
+  padding: 1.5rem 1.75rem;
   background: #fff;
   box-shadow: 0 12px 32px rgba(0,0,0,.25);
+  z-index: 2200; /* por encima del backdrop */
+  max-height: 80vh; /* no sobresalga en pantallas pequeñas */
+  overflow: auto;
+  box-sizing: border-box; /* incluir padding en el ancho */
+}
+
+/* Asegurar que los paneles de Angular Material (datepicker) queden por encima del popup: */
+.mat-datepicker-content,
+.mat-calendar,
+.mat-calendar-table,
+.mat-datepicker-popup {
+  z-index: 3000 !important;
 }
 
 button {
@@ -114,3 +127,350 @@ button:disabled {
 .badge[data-status="APPROVED"] { background: #4caf50; }
 .badge[data-status="REJECTED"] { background: #f44336; }
 
+.pet-detail {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.pet-photo {
+  width: 72px;
+  height: 72px;
+  object-fit: cover;
+  border-radius: .5rem;
+  flex: 0 0 72px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.pet-info {
+  display: flex;
+  flex-direction: column;
+  gap: .25rem;
+}
+
+/* Estilos para Angular Material datepicker más compactos */
+.mat-form-field {
+  width: 180px; /* tamaño razonable para el input de fecha */
+  --mat-form-field-outline-width: 1px;
+}
+.mat-form-field .mat-form-field-infix {
+  padding: 6px 8px;
+}
+.mat-form-field .mat-input-element {
+  height: 28px;
+  font-size: .95rem;
+}
+
+/* Mejorar disposición en pantallas pequeñas: que controles ocupen toda la fila si no caben */
+.popup footer .controls {
+  display: flex;
+  gap: .5rem;
+  align-items: center;
+  flex-wrap: wrap;
+  z-index: 2201; /* encima del popup background */
+}
+
+.popup .date-display {
+  font-size: .95rem;
+  color: #424242;
+  margin-right: .5rem;
+  min-width: 90px;
+}
+
+/* Ajustes visuales para que el popup no quede excesivamente blanco */
+.popup {
+  background: linear-gradient(180deg, #fbfbff, #f5f7fb); /* suavizado, no blanco puro */
+  border: 1px solid rgba(0,0,0,0.06);
+  box-shadow: 0 8px 20px rgba(20,30,40,0.12);
+  padding: 1.5rem 1.75rem;
+}
+
+/* Encabezado del solicitante */
+.applicant-header {
+  font-size: 1.05rem;
+  margin-bottom: 0.35rem;
+  color: #1f2937;
+}
+.applicant-contact, .applicant-bio {
+  font-size: .95rem;
+  color: #374151;
+  margin-bottom: 0.35rem;
+}
+
+/* Fila de programación: mejor separación y responsive */
+.schedule-row {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  width: 100%;
+  margin-top: 0.6rem;
+}
+
+.schedule-controls {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+}
+
+.date-field { flex: 1 1 auto; min-width: 200px; }
+.time-field { flex: 0 0 180px; }
+
+/* Alinea acciones a la derecha dentro de la fila */
+.schedule-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: flex-end;
+  flex: 0 0 auto;
+  margin-left: auto; /* empuja las acciones al borde derecho */
+}
+
+/* Ajustes visuales del mat-form-field cuando se usan aquí */
+.date-field .mat-form-field-infix, .time-field .mat-form-field-infix {
+  padding: 6px 8px;
+}
+
+/* Mejor separación del icono prefix */
+.mat-icon[matPrefix] { margin-right: 6px; color: rgba(0,0,0,0.6); }
+
+/* En móvil apilar controles: fecha, hora, indicador y botones */
+@media (max-width: 560px) {
+  .schedule-row { flex-direction: column; align-items: stretch; gap: 0.5rem; }
+  .schedule-controls { flex-direction: row; gap: 0.5rem; justify-content: space-between; }
+  .date-field, .time-field { width: 48%; }
+  .schedule-actions { width: 100%; justify-content: space-between; }
+  .date-display { order: 3; width: auto; }
+  .schedule-actions button.primary { order: 4; flex: 1; }
+}
+
+@media (max-width: 480px) {
+  .mat-form-field { width: 100% !important; }
+  .time-input { width: 100%; }
+  .schedule-row { gap: .4rem; }
+  .date-display { order: 3; width: 100%; }
+  .schedule-row button.primary { order: 4; width: 100%; }
+}
+
+@media (max-width: 1400px) {
+  .content-row { grid-template-columns: 1fr minmax(320px, 560px); }
+}
+
+@media (max-width: 1000px) {
+  .content-row { grid-template-columns: 1fr; }
+  .calendar-wrapper { width: 100%; max-width: none; }
+  .time-parts { width: 100%; }
+  .schedule-controls { flex-direction: column; gap: 0.6rem; }
+  .schedule-actions { justify-content: space-between; }
+}
+
+@media (max-width: 900px) {
+  .content-row { grid-template-columns: 1fr 380px; }
+}
+
+@media (max-width: 760px) {
+  .content-row { grid-template-columns: 1fr; }
+}
+
+/* Layout principal: detalle a la izquierda, panel de agendar a la derecha */
+.content-row {
+  display: grid;
+  grid-template-columns: 1fr minmax(380px, 640px); /* detalle flexible + panel lateral más amplio */
+  gap: 1rem;
+  align-items: start;
+  margin-top: 0.8rem;
+}
+
+/* Panel lateral de agendar: tarjeta visual limpia */
+.schedule-column .shelter-actions {
+  background: linear-gradient(180deg,#ffffff,#fbfcff);
+  border: 1px solid rgba(15,23,42,0.04);
+  padding: 12px;
+  border-radius: 10px;
+  box-shadow: 0 6px 18px rgba(11,20,40,0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  position: relative; /* para posicionar acciones */
+}
+
+.shelter-actions .warn { align-self: flex-start; }
+
+/* Reorganizar las acciones de scheduling: acciones principales a la derecha y apiladas en móvil */
+.schedule-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: flex-end;
+  flex: 0 0 auto;
+  margin-left: auto; /* empuja las acciones al borde derecho */
+}
+
+/* Estilos claros y consistentes para los botones usados aquí */
+button.primary {
+  background: #ff9800; /* color primario de la app */
+  color: #ffffff;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  border: none;
+  box-shadow: 0 6px 18px rgba(255,152,0,0.12);
+}
+button.primary:hover:not(:disabled) {
+  background: #fb8c00;
+  box-shadow: 0 10px 26px rgba(255,140,0,0.14);
+}
+
+button.ghost {
+  background: transparent;
+  color: #374151;
+  padding: 0.5rem 0.85rem;
+  border-radius: 8px;
+  border: 1px solid rgba(15,23,42,0.06);
+}
+button.ghost:hover { background: rgba(15,23,42,0.04); }
+
+/* Hacer que "Limpiar" esté visualmente subordinado y junto al botón principal */
+.schedule-actions .ghost { opacity: 0.95; }
+
+/* En pantallas pequeñas apilar los botones y hacerlos anchos */
+@media (max-width: 560px) {
+  .schedule-actions { width: 100%; justify-content: space-between; }
+  .schedule-actions button.primary { flex: 1; margin-left: 0.5rem; }
+  .schedule-actions .ghost { flex: 1; margin-right: 0.5rem; }
+}
+
+/* Mejoras visuales del calendario: usar color primario y limpieza */
+.calendar-wrapper .mat-calendar {
+  width: 100%;
+  max-width: 420px; /* mantener un tope razonable */
+  box-shadow: 0 6px 18px rgba(20,30,40,0.06);
+  border-radius: 10px;
+  background: #ffffff; /* fondo blanco puro para claridad */
+  color: #222;
+  padding: 6px;
+}
+
+/* Cabecera del calendario con acentos */
+.calendar-wrapper .mat-calendar .mat-calendar-header {
+  background: transparent;
+  border-bottom: 1px solid rgba(15,23,42,0.04);
+  margin-bottom: 6px;
+}
+.calendar-wrapper .mat-calendar .mat-calendar-header button {
+  color: #ff9800; /* iconos y botones de navegación con color primario */
+}
+.calendar-wrapper .mat-calendar .mat-calendar-period-button {
+  color: #0f172a;
+  font-weight: 600;
+}
+
+/* Celdas: hover y seleccionado con color primario */
+.calendar-wrapper .mat-calendar .mat-calendar-body-cell:hover .mat-calendar-body-cell-content {
+  background: rgba(255,152,0,0.08) !important;
+  color: #0f172a !important;
+}
+.calendar-wrapper .mat-calendar .mat-calendar-body-selected .mat-calendar-body-cell-content,
+.calendar-wrapper .mat-calendar .mat-calendar-body-active .mat-calendar-body-cell-content {
+  background-color: #ff9800 !important;
+  color: #ffffff !important;
+  box-shadow: 0 6px 14px rgba(255,152,0,0.18) !important;
+}
+
+/* Día de hoy: borde sutil con color primario */
+.calendar-wrapper .mat-calendar .mat-calendar-body-today .mat-calendar-body-cell-content {
+  border: 1px solid rgba(255,152,0,0.22);
+}
+
+/* Ajustes tipográficos del calendario para más limpieza */
+.calendar-wrapper .mat-calendar .mat-calendar-body-label,
+.calendar-wrapper .mat-calendar .mat-calendar-body-cell-content {
+  font-weight: 600;
+}
+
+/* Selección de hora: hacer selects más legibles y con borde primario al foco */
+.time-selects select:focus {
+  outline: none;
+  box-shadow: 0 6px 18px rgba(255,152,0,0.08);
+  border-color: rgba(255,152,0,0.5);
+}
+
+/* Mostrar la fecha seleccionada con más contraste */
+.date-display { font-size: .95rem; color: #0f172a; font-weight: 700; }
+
+/* Mover indicadores y asegurar que las acciones no tapen el calendario */
+.schedule-row { align-items: flex-start; }
+
+/* Si el panel lateral es estrecho, hacer que las acciones se mantengan fijas al final del panel */
+.schedule-column .shelter-actions {
+  display: flex;
+  flex-direction: column;
+}
+.schedule-column .shelter-actions .schedule-row { width: 100%; }
+
+/* pequeña mejora: separar quick-buttons y controls visualmente */
+.quick-buttons { display: flex; gap: 0.4rem; }
+.quick-buttons .ghost { padding: 0.4rem 0.7rem; border-radius: 6px; }
+
+/* Posicionar acciones de scheduling en la esquina superior derecha del popup cuando corresponda */
+.popup.has-schedule {
+  /* reservar espacio superior para que las acciones no tapen contenido */
+  padding-top: 3.6rem; /* ajustable: deja espacio para los botones arriba */
+}
+
+.popup.has-schedule .schedule-actions {
+  position: absolute;
+  top: 12px;
+  right: 18px;
+  z-index: 2300; /* por encima del contenido del popup */
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+/* Hacer que la fecha compacta se muestre dentro del bloque de acciones si existe */
+.popup.has-schedule .schedule-actions .date-display { display: inline-block; margin-right: 0.5rem; }
+
+/* Evitar que el calendario o panel lateral se vean recortados por el nuevo padding */
+.popup.has-schedule .content-row { margin-top: 0.2rem; }
+
+/* En pantallas pequeñas (móvil/tablet pequeño) revertir a flujo normal para evitar solapamientos */
+@media (max-width: 760px) {
+  .popup.has-schedule { padding-top: 1.25rem; }
+  .popup.has-schedule .schedule-actions {
+    position: static;
+    width: 100%;
+    justify-content: space-between;
+    margin-top: 0.5rem;
+  }
+  .popup.has-schedule .schedule-actions .date-display { display: block; margin-right: 0; }
+}
+
+/* Indicador para entrevistas no vistas junto al nombre (pequeño círculo rojo con !) */
+.unseen-badge {
+  display: inline-block;
+  margin-left: 0.5rem;
+  background: #d32f2f; /* rojo */
+  color: #fff;
+  font-weight: 700;
+  width: 18px;
+  height: 18px;
+  line-height: 18px;
+  text-align: center;
+  border-radius: 50%;
+  font-size: 0.85rem;
+  vertical-align: middle;
+}
+
+/* Ajuste para el badge en el encabezado (sección de entrevistas) */
+.unseen-header {
+  display: inline-block;
+  margin-left: 0.5rem;
+  background: #d32f2f;
+  color: #fff;
+  font-weight: 800;
+  padding: 0 6px;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  vertical-align: middle;
+}

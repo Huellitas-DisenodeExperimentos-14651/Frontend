@@ -123,7 +123,10 @@
         "available": "Disponible",
         "adopted": "Adoptado",
         "pending": "Pendiente",
-        "interview": "En entrevistas"
+        "interview": "En entrevistas",
+        "approved": "Aprobada",
+        "rejected": "Rechazada",
+        "completed": "Concretado"
       },
       "loading": "Cargando mascotas...",
       "empty": "No se encontraron mascotas."
@@ -194,10 +197,13 @@
   },
   "common": {
     "cancel": "Cancelar",
-    "close": "Cerrar"
+    "close": "Cerrar",
+    "back": "← Volver"
   },
   "publications": {
     "title": "Publicaciones",
+    "all": "Todas las publicaciones",
+    "noResults": "No se encontraron publicaciones activas",
     "publish": "PUBLICAR",
     "delete": "BORRAR",
     "active": "ACTIVA",
@@ -220,7 +226,9 @@
     "description": "Descripción",
     "photoUrl": "URL de la imagen (opcional)",
     "create": "Crear",
-    "creating": "Creando..."
+    "creating": "Creando...",
+    "petRequired": "Debes seleccionar una mascota.",
+    "noPetsOwner": "No tienes mascotas registradas en tu refugio. Crea una mascota antes de publicar."
   },
   "dialog": {
     "title": "Información",
@@ -229,9 +237,19 @@
   "adoption": {
     "title": "Solicitudes de adopción",
     "pending": "Solicitudes pendientes",
+    "interview": "Solicitudes en entrevista",
     "history": "Historial de solicitudes",
+    "requestDate": "Fecha de solicitud",
+    "statusLabel": "Estado",
+    "actions": {
+      "approve": "Aceptar",
+      "reject": "Rechazar",
+      "schedule": "Agendar entrevista",
+      "completed": "Concretado"
+    },
     "empty": {
       "pending": "No hay solicitudes pendientes.",
+      "interview": "No hay solicitudes con entrevista agendada.",
       "history": "No hay solicitudes en el historial."
     },
     "hint": {
@@ -245,7 +263,16 @@
     "toast": {
       "approved": "Solicitud #{{id}} aceptada.",
       "rejected": "Solicitud #{{id}} rechazada.",
+      "interviewScheduled": "Entrevista agendada para solicitud #{{id}} el {{date}}.",
+      "completed": "Solicitud #{{id}} concretada.",
+      "updated": "Solicitud #{{id}} actualizada.",
       "error": "Error: no fue posible procesar la solicitud."
+    },
+    "request": {
+      "historyTitle": "Historial de la solicitud",
+      "requested": "Fecha de solicitud",
+      "interviewScheduled": "Entrevista programada",
+      "reason": "Motivo"
     }
   },
 
@@ -292,5 +319,21 @@
     "ADOPTED": "Adoptado",
     "PROCESSING": "En proceso",
     "INTERVIEW": "En entrevistas"
+  },
+
+  /* Backwards-compatible fallbacks para claves mal escritas */
+  "adoption_magment": {
+    "pets": {
+      "filter": {
+        "interview": "En entrevistas"
+      }
+    }
+  },
+  "adoption_management": {
+    "pets": {
+      "filter": {
+        "interview": "En entrevistas"
+      }
+    }
   }
 }

@@ -25,8 +25,9 @@ export class PetsService {
   }
 
   /** Obtener detalles por ID */
-  getById(id: number): Observable<Pet> {
-    return this.http.get<Pet>(`${this.apiUrl}/${id}`);
+  getById(id: string | number): Observable<Pet> {
+    const sid = encodeURIComponent(String(id));
+    return this.http.get<Pet>(`${this.apiUrl}/${sid}`);
   }
 
   /** Crear nueva mascota */
@@ -44,8 +45,13 @@ export class PetsService {
   }
 
   /** Actualizar una mascota existente */
-  update(id: number, pet: Partial<Pet>): Observable<Pet> {
-    return this.http.put<Pet>(`${this.apiUrl}/${id}`, pet);
+  // Aceptar id tanto numérico como alfanumérico (json-server usa strings en db.json)
+  update(id: string | number, pet: Partial<Pet>): Observable<Pet> {
+    // usar PATCH para actualizar parcialmente (no reemplazar todo el recurso)
+    const sid = encodeURIComponent(String(id));
+    return this.http.patch<Pet>(`${this.apiUrl}/${sid}`, pet).pipe(
+      tap(() => this.notifyChange())
+    );
   }
 
   /** Eliminar mascota */

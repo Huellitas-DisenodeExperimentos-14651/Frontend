@@ -1,15 +1,14 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Observable, map, of } from 'rxjs';
+import { BehaviorSubject, forkJoin } from 'rxjs';
 import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { ChangeDetectorRef } from '@angular/core';
-import { of as rxOf, forkJoin } from 'rxjs';
 
 import { PetsService } from '../../../pets/services/pets.service';
 import { Publication, PublicationsService } from '../../services/publications.service';
 import { PublicationCardComponent } from '../../components/publication-card/publication-card.component';
-import { InfoDialogComponent } from '../../../shared/components/info-dialog/info-dialog.component';
 import { CreatePublicationDialogComponent } from '../../components/create-publication-dialog/create-publication-dialog.component';
+import { InfoDialogComponent } from '../../../shared/components/info-dialog/info-dialog.component';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { MatButtonModule } from '@angular/material/button';
 
@@ -22,8 +21,6 @@ import { MatButtonModule } from '@angular/material/button';
     CommonModule,
     PublicationCardComponent,
     MatDialogModule,
-    InfoDialogComponent,
-    CreatePublicationDialogComponent,
     TranslatePipe,
     MatButtonModule
   ],
@@ -36,7 +33,9 @@ export class PublicationsDashboardComponent implements OnInit {
   private cdr = inject(ChangeDetectorRef);
   private translate = inject(TranslateService);
 
-  activePublications$!: Observable<Publication[]>;
+  // BehaviorSubject para permitir actualizar (preponer) la lista localmente
+  private activePublicationsSubject = new BehaviorSubject<Publication[]>([]);
+  activePublications$ = this.activePublicationsSubject.asObservable();
 
   ngOnInit(): void {
     this.refresh();
@@ -48,10 +47,24 @@ export class PublicationsDashboardComponent implements OnInit {
       maxWidth: '95vw'
     });
 
-    dialogRef.afterClosed().subscribe((created: boolean) => {
-      if (created) {
-        this.refresh();
-        this.cdr.markForCheck();
+    // Si el diálogo devuelve la publicación creada (obj), anteponerla a la lista
+    dialogRef.afterClosed().subscribe((createdPub: Publication | null | false) => {
+      if (createdPub && typeof createdPub === 'object') {
+        // obtener foto de la mascota y luego insertar en la lista
+        this.pets.getById(createdPub.petId).subscribe({
+          next: pet => {
+            const withPhoto = { ...createdPub, photo: createdPub.photo ?? pet?.photo ?? '', petName: pet?.name ?? '' } as Publication & { petName?: string };
+            const current = this.activePublicationsSubject.getValue() ?? [];
+            this.activePublicationsSubject.next([withPhoto, ...current]);
+            this.cdr.markForCheck();
+          },
+          error: () => {
+            const current = this.activePublicationsSubject.getValue() ?? [];
+            const withPhoto = { ...createdPub, photo: createdPub.photo ?? '', petName: '' } as Publication & { petName?: string };
+            this.activePublicationsSubject.next([withPhoto, ...current]);
+            this.cdr.markForCheck();
+          }
+        });
       }
     });
   }
@@ -75,18 +88,22 @@ export class PublicationsDashboardComponent implements OnInit {
 
     if (!ownerId) {
       // Si no hay ownerId, no mostramos publicaciones propias
-      this.activePublications$ = rxOf([]);
+      this.activePublicationsSubject.next([]);
     } else {
       forkJoin({
         publications: this.pubs.getByOwner(ownerId),
         pets: this.pets.getAll()
       }).subscribe(({ publications, pets }) => {
-        this.activePublications$ = of(
-            publications.map(pub => ({
-              ...pub,
-              photo: pets.find(p => String(p.id) === String(pub.petId))?.photo ?? pub.photo ?? ''
-            }))
-        );
+        const mapped = publications.map(pub => {
+          const pet = pets.find(p => String(p.id) === String(pub.petId));
+          return {
+            ...pub,
+            // priorizar la imagen ingresada en la publicación; si no existe, usar la de la mascota
+            photo: pub.photo ?? pet?.photo ?? '',
+            petName: pet?.name ?? ''
+          } as Publication & { petName?: string };
+        });
+        this.activePublicationsSubject.next(mapped);
       });
     }
   }

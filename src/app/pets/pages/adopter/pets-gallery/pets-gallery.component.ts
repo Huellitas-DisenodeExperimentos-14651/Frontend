@@ -25,7 +25,11 @@ import { Subscription } from 'rxjs';
 export class PetsGalleryComponent implements OnInit, OnDestroy {
   pets: Pet[] = [];
   isLoading = true;
-  statusFilter: string = 'all';
+  // Mostrar por defecto solo mascotas disponibles en la vista de adoptante
+  statusFilter: string = 'available';
+
+  // Nuevo: indicar si el usuario es refugio
+  isShelter: boolean = false;
 
   private profileId: string | null = null;
   private subs = new Subscription();
@@ -57,6 +61,10 @@ export class PetsGalleryComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.profileId = localStorage.getItem('profileId');
 
+    // Determinar rol del usuario para cambiar comportamiento de la vista
+    const role = localStorage.getItem('role');
+    this.isShelter = role === 'SHELTER';
+
     if (!this.profileId) {
       console.error('No se encontró el profileId en localStorage.');
       this.isLoading = false;
@@ -85,10 +93,11 @@ export class PetsGalleryComponent implements OnInit, OnDestroy {
   }
 
   get filteredPets(): Pet[] {
-    if (this.statusFilter === 'all') {
-      return this.pets;
-    }
-    return this.pets.filter(pet => pet.status === this.statusFilter);
+    // Si el usuario es un refugio, mostrar todas las mascotas relacionadas a su perfil
+    if (this.isShelter) return this.pets;
+
+    // En la vista de adoptante queremos mostrar solamente mascotas disponibles
+    return this.pets.filter(pet => pet.status === 'available');
   }
 
   // Método para navegar al crear mascota

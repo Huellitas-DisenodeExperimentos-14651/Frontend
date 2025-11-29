@@ -2,21 +2,9 @@
   <!-- Título descriptivo -->
   <h1 class="gallery-title">Listado de mascotas del refugio</h1>
 
-  <!-- Filtros -->
-  <div class="filter-container" aria-labelledby="filter-label">
-    <label id="filter-label" for="status-filter">Filtrar por estado:</label>
-    <div class="select-wrapper">
-      <select
-        id="status-filter"
-        class="status-filter"
-        [(ngModel)]="statusFilter"
-        aria-label="Filtrar mascotas por estado">
-        <option value="all">Todas</option>
-        <option value="available">Disponibles</option>
-        <option value="adopted">Adoptadas</option>
-        <option value="interview">En entrevistas</option>
-      </select>
-    </div>
+  <!-- Nota informativa: solo mascotas disponibles para adoptantes -->
+  <div class="filter-info" aria-live="polite" *ngIf="!isShelter">
+    Mostrando únicamente mascotas disponibles para adopción.
   </div>
 
   <!-- Estado de carga -->

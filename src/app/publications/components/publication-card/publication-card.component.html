@@ -6,6 +6,7 @@
 
   <div class="body">
     <h3 class="title">{{ publication.title }}</h3>
+    <div *ngIf="petName" class="pet-identifier"><small>{{ petName }}</small></div>
     <p class="desc">{{ publication.description }}</p>
     <small class="date">
       {{ 'publications.publishedAt' | translate }}:
@@ -15,7 +16,7 @@
 
   <footer class="card-footer">
     <div class="actions">
-      <button mat-raised-button color="warn" (click)="remove.emit()" [attr.aria-label]="'publications.delete' | translate">
+      <button *ngIf="canRemove" mat-raised-button color="warn" (click)="remove.emit()" [attr.aria-label]="'publications.delete' | translate">
         <mat-icon aria-hidden="true">delete</mat-icon>
         <span class="btn-label">{{ 'publications.delete' | translate }}</span>
       </button>

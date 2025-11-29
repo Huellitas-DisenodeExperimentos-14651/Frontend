@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
 
 import { AdoptionFilter } from '../../model/adoption-filter.model';
 import { AdoptionCardComponent } from '../../components/adoption-card/adoption-card.component';
@@ -11,7 +12,7 @@ import { PetNameFilterPipe } from '../../pipes/pet-name-filter.pipe';
 import { AdoptionsService } from '../../services/adoptions.service';
 import { AdoptionRequestService } from '../../../adoption-requests/services/adoption-request.service';
 import { Pet } from '../../../pets/model/pet.entity';
-import { AuthenticationService } from '../../../iam/services/authentication.service';
+import { PetsService } from '../../../pets/services/pets.service';
 
 @Component({
   standalone: true,
@@ -27,29 +28,52 @@ import { AuthenticationService } from '../../../iam/services/authentication.serv
     PetNameFilterPipe
   ]
 })
-export class AdoptionsListComponent implements OnInit {
+export class AdoptionsListComponent implements OnInit, OnDestroy {
   publications: Pet[] = [];
   publicationsOriginal: Pet[] = [];
   loading = true;
+  private subs = new Subscription();
   search: string = '';
   sortOption: string = '';
 
   constructor(
     private adoptionsService: AdoptionsService,
     private adoptionRequestService: AdoptionRequestService,
-    private authenticationService: AuthenticationService
+    private petsService: PetsService
   ) {}
 
   ngOnInit(): void {
     this.adoptionsService.getAllDirectPets().subscribe({
       next: (data) => {
-        this.publicationsOriginal = data;
-        this.publications = data;
+        // Mostrar únicamente mascotas disponibles para adoptantes
+        const available = (data || []).filter((p: Pet) => String(p.status || '').toLowerCase() === 'available');
+        this.publicationsOriginal = available;
+        this.publications = available;
         this.loading = false;
       },
       error: () => {
         this.loading = false;
       }
+    });
+
+    // recargar si cambian las mascotas (p. ej. se marcó 'interview')
+    this.subs.add(this.petsService.petsChanged.subscribe(() => {
+      this.reloadAvailable();
+    }));
+  }
+
+  ngOnDestroy(): void {
+    this.subs.unsubscribe();
+  }
+
+  private reloadAvailable(): void {
+    this.adoptionsService.getAllDirectPets().subscribe({
+      next: (data) => {
+        const available = (data || []).filter((p: Pet) => String(p.status || '').toLowerCase() === 'available');
+        this.publicationsOriginal = available;
+        this.publications = available;
+      },
+      error: () => {}
     });
   }
 
@@ -93,14 +117,21 @@ export class AdoptionsListComponent implements OnInit {
     }
     // Obtener datos del usuario actual
     const applicantId = localStorage.getItem('profileId');
+    if (!applicantId) {
+      alert('Debes iniciar sesión para solicitar la adopción.');
+      return;
+    }
     const applicantFullName = localStorage.getItem('username') || '';
+    const ownerId = (pet as any).profileId ?? (pet as any).ownerId ?? undefined;
     const request = {
-      publicationId: pet.id,
+      // Usamos petId ya que las publicaciones no representan las mascotas en este proyecto
+      petId: pet.id,
       applicantId: applicantId,
       applicantFullName: applicantFullName,
       reasonMessage: 'Quiero adoptar esta mascota.',
       status: 'PENDING',
-      requestDate: new Date().toISOString()
+      requestDate: new Date().toISOString(),
+      ownerId: ownerId
     };
     this.adoptionRequestService.create(request)
       .subscribe({

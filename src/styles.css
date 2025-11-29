@@ -61,8 +61,20 @@ router-outlet {
 /* Aumentar z-index del overlay para que quede por encima del contenido si hay solapamientos */
 .cdk-overlay-pane,
 .cdk-overlay-container {
-  z-index: 2000 !important;
+  z-index: 10000 !important;
+  position: relative;
 }
+
+/* Asegurar que los paneles de datepicker queden por encima de todo */
+.mat-datepicker-content,
+.mat-calendar,
+.mat-datepicker-popup {
+  z-index: 11000 !important;
+}
+
+/* Mantener backdrop y popup por debajo de los overlays */
+.backdrop { z-index: 2000; }
+.popup { z-index: 2100; }
 
 /* Opcional: asegurar que el panel no herede filtros del tema */
 .cdk-overlay-pane .mat-select-panel,
@@ -72,3 +84,30 @@ router-outlet {
 }
 
 /* fin de reglas globales para mat-select */
+
+/* When a modal is open we add `app-modal-open` to body. Estas reglas evitan que el contenido de fondo sea interactivo y lo atenúan mediante el backdrop. */
+.app-modal-open {
+  overflow: hidden !important;
+}
+
+.app-modal-open .page,
+.app-modal-open router-outlet,
+.app-modal-open app-root {
+  /* No atenuar por opacidad global: usar el backdrop para oscurecer el fondo y mantener popup nítido */
+  pointer-events: none; /* bloquea clicks en el fondo */
+  user-select: none;
+}
+
+/* Excluir el popup y los overlays — deben seguir siendo interactivos */
+.app-modal-open .popup,
+.app-modal-open .cdk-overlay-container,
+.app-modal-open .cdk-overlay-pane {
+  filter: none !important;
+  pointer-events: auto !important;
+  opacity: 1 !important; /* asegurar que popup y overlays se vean sin atenuación */
+}
+
+/* Aumentar la oscuridad del backdrop para mejor contraste */
+.backdrop {
+  background: rgba(0,0,0,0.6);
+}

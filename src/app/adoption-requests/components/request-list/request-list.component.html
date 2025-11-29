@@ -5,7 +5,19 @@
         [class.processed]="r.status !== 'PENDING'">
 
       <strong>#{{ r.id }}</strong>
-      <span>{{ r.applicantFullName }}</span>
+
+      <!-- Mostrar distinto para refugio y adoptante -->
+      <ng-container *ngIf="isShelter; else adopterLabel">
+        <span>{{ r.applicantFullName }}</span>
+      </ng-container>
+
+      <ng-template #adopterLabel>
+        <span>
+          {{ r.pet?.name || ('adoption.request.pet' | translate) + ' ' + (r.petId ?? r.publicationId ?? '') }}
+          <!-- Indicador de entrevista no vista para adoptante -->
+          <span class="unseen-badge" *ngIf="!isShelter && r.status === 'INTERVIEW' && isInterviewUnseen(r.id)">!</span>
+        </span>
+      </ng-template>
 
       <!-- hint traducido -->
       <small class="hint">{{ 'adoption.hint.moreInfo' | translate }}</small>
@@ -13,57 +25,116 @@
       <!-- badge traducido -->
       <small class="badge"
              [attr.data-status]="r.status">
-        {{ ('adoption.status.' + r.status) | translate }}
+        {{ ('ADOPTION_MANAGEMENT.pets.filter.' + (r.status || '').toLowerCase()) | translate }}
       </small>
     </li>
   </ul>
 </section>
 
 <div class="backdrop" *ngIf="open()" (click)="close()"></div>
-<dialog open *ngIf="open() as s" class="popup">
+<dialog open *ngIf="open() as s" class="popup" [class.has-schedule]="isShelter">
   <ng-container *ngIf="s.pet">
     <div class="pet-detail">
       <img *ngIf="s.pet.photo" [src]="s.pet.photo" alt="Mascota" class="pet-photo" />
       <div class="pet-info">
-        <div><strong>Nombre:</strong> {{ s.pet.name }}</div>
-        <div><strong>Raza:</strong> {{ s.pet.breed }}</div>
-        <div><strong>Edad:</strong> {{ s.pet.age }}</div>
+        <div><strong>{{ 'ADOPTION_CARD.NAME' | translate }}:</strong> {{ s.pet.name }}</div>
+        <div><strong>{{ 'DETAILS.BREED' | translate }}:</strong> {{ s.pet.breed }}</div>
+        <div><strong>{{ 'DETAILS.AGE' | translate }}:</strong> {{ s.pet.age }}</div>
       </div>
     </div>
   </ng-container>
 
   <div class="applicant-detail" *ngIf="s.applicantProfile">
-    <h3>Solicitante</h3>
-    <div><strong>Nombre:</strong> {{ s.applicantProfile.name || s.applicantFullName }}</div>
-    <div><strong>Email:</strong> {{ s.applicantProfile.email }}</div>
-    <div *ngIf="s.applicantProfile.bio"><strong>Bio:</strong> {{ s.applicantProfile.bio }}</div>
+    <!-- Mostrar solo el nombre del solicitante una vez -->
+    <div class="applicant-header">
+      <strong>{{ s.applicantProfile.name || s.applicantFullName }}</strong>
+    </div>
+    <div class="applicant-contact"><strong>{{ 'ADOPTION_MANAGEMENT.labels.phone' | translate }}:</strong> {{ s.applicantProfile.email }}</div>
+    <div *ngIf="s.applicantProfile.bio" class="applicant-bio"><strong>Bio:</strong> {{ s.applicantProfile.bio }}</div>
   </div>
 
-  <p><b>Fecha de solicitud:</b> {{ s.requestDate }}</p>
-  <p><b>Estado:</b> {{ s.status | uppercase }}</p>
+  <div class="content-row">
+    <div class="detail-column">
+      <p><b>{{ 'adoption.requestDate' | translate }}:</b> {{ formatDateToDDMMYYYY(s.requestDate) }}</p>
+      <p><b>{{ 'adoption.statusLabel' | translate }}:</b> {{ ('ADOPTION_MANAGEMENT.pets.filter.' + (s.status || '').toLowerCase()) | translate }}</p>
+    </div>
+
+    <div class="schedule-column" *ngIf="isShelter">
+      <!-- Rechazar solo si está pendiente -->
+      <div class="shelter-actions">
+        <button *ngIf="s.status === 'PENDING'" class="warn" (click)="reject(s)">{{ 'adoption.actions.reject' | translate }}</button>
+
+        <!-- Agendar entrevista: fecha + hora al costado -->
+        <div class="schedule-row">
+          <!-- Quick buttons: Hoy / Mañana / +3d -->
+          <div class="quick-buttons">
+            <button type="button" class="ghost" (click)="setQuickDate(0)">Hoy</button>
+            <button type="button" class="ghost" (click)="setQuickDate(1)">Mañana</button>
+            <button type="button" class="ghost" (click)="setQuickDate(3)">+3d</button>
+          </div>
+          <div class="schedule-controls">
+            <!-- Calendario inline (mat-calendar) para mejor usabilidad -->
+            <div class="calendar-wrapper">
+              <mat-calendar [selected]="selectedDate" (selectedChange)="onDateSelected($event)" [minDate]="minDate"></mat-calendar>
+            </div>
+
+            <!-- Controles de hora: selects para hora y minutos -->
+            <div class="time-parts">
+              <label class="time-label">Hora</label>
+              <div class="time-selects">
+                <select [(ngModel)]="selectedHour" (change)="onTimePartsChanged()" aria-label="Hora">
+                  <option [ngValue]="null">--</option>
+                  <option *ngFor="let h of hours" [value]="h">{{ h < 10 ? '0' + h : h }}</option>
+                </select>
+
+                <select [(ngModel)]="selectedMinute" (change)="onTimePartsChanged()" aria-label="Minutos">
+                  <option [ngValue]="null">--</option>
+                  <option *ngFor="let m of minutes" [value]="m">{{ m < 10 ? '0' + m : m }}</option>
+                </select>
+              </div>
+
+              <div class="date-display small">{{ formatSelectedDateTime() }}</div>
+            </div>
+          </div>
+
+          <div class="schedule-actions">
+            <div *ngIf="selectedDate || selectedTime" class="date-display">{{ formatSelectedDateTime() }}</div>
+
+            <button class="primary" (click)="scheduleInterview(s)" [disabled]="!selectedDate || !selectedTime">{{ 'adoption.actions.schedule' | translate }}</button>
+
+            <button class="ghost" type="button" (click)="clearSelection()">Limpiar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NUEVO: historial para adoptantes -->
+  <div class="request-history" *ngIf="!isShelter">
+    <h3>{{ 'adoption.request.historyTitle' | translate }}</h3>
+    <ul>
+      <li><strong>{{ 'adoption.requested' | translate }}:</strong> {{ formatDateToDDMMYYYY(s.requestDate) }}</li>
+      <li *ngIf="s.interviewDate"><strong>{{ 'adoption.request.interviewScheduled' | translate }}:</strong> {{ formatDateToDDMMYYYY(s.interviewDate) }} {{ s.interviewDate ? (s.interviewDate.substring(11,16)) : '' }}</li>
+      <li><strong>{{ 'adoption.statusLabel' | translate }}:</strong> {{ ('ADOPTION_MANAGEMENT.pets.filter.' + (s.status || '').toLowerCase()) | translate }}</li>
+      <li *ngIf="s.reasonMessage"><strong>{{ 'adoption.request.reason' | translate }}:</strong> {{ s.reasonMessage }}</li>
+    </ul>
+  </div>
 
   <!-- Controles disponibles solo para el refugio -->
   <footer *ngIf="isShelter">
-    <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
-      <!-- Aprobar / Rechazar solo si está pendiente -->
-      <button *ngIf="s.status === 'PENDING'" (click)="approve(s)">{{ 'adoption.actions.approve' | translate }}</button>
-      <button *ngIf="s.status === 'PENDING'" (click)="reject(s)">{{ 'adoption.actions.reject' | translate }}</button>
-
-      <!-- Agendar entrevista: input fecha + botón -->
-      <div *ngIf="s.status === 'PENDING' || s.status === 'INTERVIEW'" style="display:flex; gap:6px; align-items:center;">
-        <input type="date" [(ngModel)]="selectedDate" />
-        <button *ngIf="s.status !== 'INTERVIEW'" (click)="scheduleInterview(s)" [disabled]="!selectedDate">{{ 'adoption.actions.schedule' | translate }}</button>
-      </div>
-
+    <div class="controls">
       <!-- Botón concretado solo si ya está en INTERVIEW -->
-      <button *ngIf="s.status === 'INTERVIEW'" (click)="complete(s)">{{ 'adoption.actions.completed' | translate }}</button>
+      <button *ngIf="s.status === 'INTERVIEW'" class="primary" (click)="complete(s)">{{ 'adoption.actions.completed' | translate }}</button>
 
-      <button class="back" (click)="close()">{{ 'common.back' | translate }}</button>
+      <!-- Botón único para cerrar / volver -->
+      <div class="footer-actions">
+        <button class="ghost back" (click)="close()">{{ 'common.back' | translate }}</button>
+      </div>
     </div>
   </footer>
 
   <!-- Para usuarios normales solo volver -->
   <footer *ngIf="!isShelter">
-    <button class="back" (click)="close()">{{ 'common.back' | translate }}</button>
+    <button class="ghost back" (click)="close()">{{ 'common.back' | translate }}</button>
   </footer>
 </dialog>

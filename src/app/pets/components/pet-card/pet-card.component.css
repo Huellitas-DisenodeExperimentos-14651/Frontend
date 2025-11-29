@@ -43,6 +43,11 @@
   background-color: #ff9800;
 }
 
+/* Estado: en entrevista (mostrar badge similar a available/adopted) */
+.status-indicator.interview {
+  background-color: #3f51b5; /* azul índigo para diferenciar */
+}
+
 .pet-image {
   width: 100%;
   height: auto;

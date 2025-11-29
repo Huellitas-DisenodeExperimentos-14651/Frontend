@@ -19,13 +19,12 @@ import {FormsModule} from '@angular/forms';
 export class AdoptionDetailsComponent implements OnInit {
   pet!: Pet | undefined;
   loading = true;
-  publicationId!: number; // 🔹 nuevo
-  reasonMessage: string = ''; // 🔹 nuevo
+  reasonMessage: string = ''; // mensaje del solicitante
 
   constructor(
     private route: ActivatedRoute,
     private petsService: PetsService,
-    private adoptionRequestService: AdoptionRequestService // 🔹 nuevo
+    private adoptionRequestService: AdoptionRequestService
   ) {}
 
   ngOnInit(): void {
@@ -35,10 +34,6 @@ export class AdoptionDetailsComponent implements OnInit {
       next: (data) => {
         this.pet = data;
         this.loading = false;
-
-        // 👇 Aquí simulamos obtener el publicationId según petId.
-        // En producción, deberías tener un endpoint que retorne la publicación según el petId.
-        this.publicationId = 3; // TODO: Reemplazar por valor real
       },
       error: (err) => {
         console.error('Error al obtener la mascota:', err);
@@ -48,14 +43,31 @@ export class AdoptionDetailsComponent implements OnInit {
   }
 
   adopt(): void {
-    if (!this.publicationId || !this.reasonMessage) {
+    if (!this.pet) {
+      alert('Mascota no encontrada.');
+      return;
+    }
+    if (!this.reasonMessage) {
       alert('Debes ingresar un mensaje antes de enviar.');
       return;
     }
 
+    // Obtener datos del usuario actual
+    const applicantId = localStorage.getItem('profileId');
+    if (!applicantId) {
+      alert('Debes iniciar sesión para solicitar la adopción.');
+      return;
+    }
+    const applicantFullName = localStorage.getItem('username') || '';
+    const ownerId = (this.pet as any)?.profileId ?? (this.pet as any)?.ownerId ?? undefined;
+
     const payload = {
-      publicationId: this.publicationId,
-      reasonMessage: this.reasonMessage
+      petId: this.pet.id,
+      reasonMessage: this.reasonMessage,
+      applicantId: applicantId,
+      applicantFullName: applicantFullName,
+      ownerId: ownerId,
+      status: 'PENDING'
     };
 
     this.adoptionRequestService.create(payload).subscribe({

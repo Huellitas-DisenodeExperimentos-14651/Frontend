@@ -1,0 +1,15 @@
+.publications-list {
+  padding: 16px;
+}
+
+.publications-list .grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 16px;
+}
+
+.publications-list .empty {
+  color: #666;
+  padding: 24px 0;
+}
+

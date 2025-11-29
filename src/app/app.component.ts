@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { RouterOutlet, Router } from '@angular/router';
+import { RouterOutlet } from '@angular/router';
 import { MatSidenav } from '@angular/material/sidenav';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { TranslateService } from '@ngx-translate/core';
@@ -41,17 +41,12 @@ export class AppComponent implements OnInit {
 
   @ViewChild(MatSidenav, { static: true }) sidenav!: MatSidenav;
 
-  mainOptions = [
-    { path: '/authentication', titleKey: 'HEADER.authentication' }
-  ];
-
   secondaryOptions: any[] = []; // ← se define vacío, lo llenaremos dinámicamente
 
   constructor(
     private translate: TranslateService,
     private observer: BreakpointObserver,
-    private authenticationService: AuthenticationService,
-    private router: Router
+    private authenticationService: AuthenticationService
   ) {
     // Inicializa el idioma predeterminado
     this.translate.setDefaultLang('en');
@@ -63,14 +58,15 @@ export class AppComponent implements OnInit {
       this.isSignedIn = isSignedIn;
       const currentUser = this.authenticationService.getCurrentUser();
       if (isSignedIn && currentUser) {
-        if (currentUser.role === 'ADOPTER') {
+        if ((currentUser.role || '').toString().toUpperCase() === 'ADOPTER') {
           this.secondaryOptions = [
             { icon: 'https://cdn-icons-png.flaticon.com/512/5308/5308557.png', path: '/adoptions', titleKey: 'HEADER.adoptions' },
+            { icon: 'https://cdn-icons-png.flaticon.com/512/2680/2680900.png', path: '/publications/all', titleKey: 'HEADER.publications' },
             { icon: 'https://cdn-icons-png.flaticon.com/512/11008/11008379.png', path: '/donations', titleKey: 'HEADER.donations' },
             { icon: 'https://cdn-icons-png.flaticon.com/512/3177/3177440.png', path: '/profile', titleKey: 'HEADER.profile' },
             { icon: 'https://cdn-icons-png.flaticon.com/512/3842/3842536.png', path: '/adoption-requests', titleKey: 'HEADER.adoption_requests' }
           ];
-        } else if (currentUser.role === 'SHELTER') {
+        } else if ((currentUser.role || '').toString().toUpperCase() === 'SHELTER') {
           this.secondaryOptions = [
             { icon: 'https://cdn-icons-png.flaticon.com/512/616/616408.png', path: '/pets', titleKey: 'HEADER.pets' },
             { icon: 'https://cdn-icons-png.flaticon.com/512/2680/2680900.png', path: '/publications', titleKey: 'HEADER.publications' },

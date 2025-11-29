@@ -10,7 +10,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { PetsService } from '../../../pets/services/pets.service';
-import { combineLatest, Observable } from 'rxjs';
+import { combineLatest, Observable, of } from 'rxjs';
 import { startWith, map } from 'rxjs/operators';
 
 @Component({
@@ -38,6 +38,7 @@ export class CreatePublicationDialogComponent {
   private data = inject(MAT_DIALOG_DATA, { optional: true }) as { petId?: any } | null;
 
   pets$!: Observable<any[]>;
+  hasPets$!: Observable<boolean>;
   selectedPet$!: Observable<any | null>;
 
   form = this.fb.group({
@@ -51,7 +52,16 @@ export class CreatePublicationDialogComponent {
 
   constructor() {
     // cargar lista de mascotas (para selección en el dialog)
-    this.pets$ = this.petsService.getAll();
+    const ownerProfileId = localStorage.getItem('profileId');
+
+    // Si tenemos profileId, pedir sólo las mascotas asociadas a ese perfil (refugio)
+    // en caso contrario, exponer lista vacía y mostrar mensaje en la plantilla
+    this.pets$ = ownerProfileId
+      ? this.petsService.getByProfileId(ownerProfileId)
+      : of([]);
+
+    // observable booleano para indicar si hay mascotas (evita evaluación undefined en plantilla)
+    this.hasPets$ = this.pets$.pipe(map(pets => (pets?.length ?? 0) > 0));
 
     // Exponer la mascota seleccionada como observable (sin imágenes, sólo nombre)
     this.selectedPet$ = combineLatest([
@@ -67,6 +77,15 @@ export class CreatePublicationDialogComponent {
     }
   }
 
+  selectPet(pet: any): void {
+    this.form.patchValue({ petId: pet.id });
+  }
+
+  isSelected(pet: any): boolean {
+    const current = this.form.get('petId')?.value;
+    return String(current) === String(pet?.id);
+  }
+
   submit(): void {
     if (this.form.invalid) return;
     this.submitting = true;
@@ -76,10 +95,8 @@ export class CreatePublicationDialogComponent {
 
     // coercionar tipos seguros (petId viene del mat-select)
     const petIdRaw = raw.petId;
-    const petIdNum = typeof petIdRaw === 'number' ? petIdRaw : Number(petIdRaw);
-
-    // si petId no es un número válido, marcar el control como inválido y abortar
-    if (Number.isNaN(petIdNum)) {
+    // validar presencia del petId (aceptar string o number). Si está vacío => error
+    if (petIdRaw === null || petIdRaw === undefined || petIdRaw === '') {
       const ctrl = this.form.get('petId');
       ctrl?.setErrors({ invalidPetId: true });
       this.submitting = false;
@@ -91,7 +108,8 @@ export class CreatePublicationDialogComponent {
     const photoRaw = raw.photo;
 
     const payload: CreatePublicationPayload = {
-      petId: petIdNum,
+      // petId puede ser string o number; mantener el valor provisto por el selector
+      petId: petIdRaw,
       title: (titleRaw ?? '') as string,
       description: (descriptionRaw ?? '') as string,
       photo: photoRaw ? String(photoRaw) : undefined,
@@ -103,13 +121,14 @@ export class CreatePublicationDialogComponent {
     };
 
     this.pubs.create(payload).subscribe({
-      next: () => {
+      next: (createdPub) => {
         this.submitting = false;
-        this.dialogRef.close(true);
+        // devolver el objeto creado para que el dashboard pueda mostrarlo inmediatamente
+        this.dialogRef.close(createdPub);
       },
       error: () => {
         this.submitting = false;
-        this.dialogRef.close(false);
+        this.dialogRef.close(null);
       }
     });
   }

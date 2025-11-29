@@ -1,0 +1,20 @@
+<div class="publications-list">
+  <h2>{{ 'publications.all' | translate }}</h2>
+
+  <div *ngIf="loading" class="loading">Loading...</div>
+  <div *ngIf="error" class="error">Error: {{ error }}</div>
+
+  <!-- Panel de debug temporal -->
+  <div *ngIf="debug" class="debug">
+    <p>Publications length: {{ publications.length }}</p>
+    <pre>{{ publications | json }}</pre>
+  </div>
+
+  <div *ngIf="publications.length === 0 && !loading" class="empty">
+    {{ 'publications.noResults' | translate }}
+  </div>
+
+  <div class="grid">
+    <app-publication-card *ngFor="let pub of publications" [publication]="pub" [canRemove]="false"></app-publication-card>
+  </div>
+</div>

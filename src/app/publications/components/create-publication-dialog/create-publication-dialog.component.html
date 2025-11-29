@@ -2,14 +2,23 @@
 
 <form [formGroup]="form" (ngSubmit)="submit()" class="create-form" novalidate>
 
-  <!-- Selector simple de mascota usando mat-select -->
-  <mat-form-field appearance="fill" class="full-width">
-    <mat-label>{{ 'publications.selectPet' | translate }}</mat-label>
-    <mat-select formControlName="petId" [attr.aria-label]="'publications.selectPet' | translate">
-      <mat-option *ngFor="let p of (pets$ | async)" [value]="p.id">{{ p.name }}</mat-option>
-    </mat-select>
-    <mat-error *ngIf="form.get('petId')?.invalid">{{ 'publications.petRequired' | translate }}</mat-error>
-  </mat-form-field>
+  <!-- Mostrar lista de mascotas del refugio (si las hay) -->
+  <ng-container *ngIf="(pets$ | async) as pets">
+    <div *ngIf="pets.length === 0" class="no-pets">
+      <p>{{ 'publications.noPetsOwner' | translate }}</p>
+    </div>
+
+    <div class="pet-chooser" *ngIf="pets.length > 0">
+      <div class="chooser-label">{{ 'publications.selectPet' | translate }}</div>
+      <div class="pet-list" role="list">
+        <div *ngFor="let p of pets" role="listitem" tabindex="0" class="pet-item" [class.selected]="isSelected(p)" (click)="selectPet(p)" (keydown.enter)="selectPet(p)">
+          <img *ngIf="p.photo" [src]="p.photo" alt="{{ p.name }}">
+          <div class="pet-name">{{ p.name }}</div>
+        </div>
+      </div>
+      <mat-error *ngIf="form.get('petId')?.invalid">{{ 'publications.petRequired' | translate }}</mat-error>
+    </div>
+  </ng-container>
 
   <div class="selected-pet" *ngIf="selectedPet$ | async as sel">
     <strong>{{ 'publications.selectedPetLabel' | translate }}</strong>
@@ -34,7 +43,7 @@
 
   <div class="actions">
     <button mat-button type="button" (click)="cancel()">{{ 'common.cancel' | translate }}</button>
-    <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid || submitting">
+    <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid || submitting || !(hasPets$ | async)">
       <span *ngIf="!submitting">{{ 'publications.create' | translate }}</span>
       <span *ngIf="submitting">{{ 'publications.creating' | translate }}</span>
     </button>

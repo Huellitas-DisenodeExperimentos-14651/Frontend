@@ -3,40 +3,71 @@
     {
       "id": "4b6e",
       "publicationId": "1",
+      "petId": "1",
       "applicantId": "98cd",
       "applicantFullName": "Christian",
       "reasonMessage": "Quiero adoptar esta mascota.",
-      "status": "PENDING",
+      "status": "COMPLETED",
       "requestDate": "2025-11-14T23:28:31.278Z",
-      "date": "2025-11-14T23:28:31.279Z"
+      "date": "2025-11-14T23:28:31.279Z",
+      "interviewDate": "2025-12-11T05:00:00.000Z"
     },
     {
       "id": "1a43",
       "publicationId": "3",
+      "petId": "3",
       "applicantId": "98cd",
       "applicantFullName": "Christian",
       "reasonMessage": "Quiero adoptar esta mascota.",
-      "status": "PENDING",
+      "status": "REJECTED",
       "requestDate": "2025-11-15T23:08:22.272Z",
       "date": "2025-11-15T23:08:22.284Z"
     },
     {
       "id": "0774",
       "publicationId": "f841",
+      "petId": "f841",
       "applicantId": "98cd",
       "applicantFullName": "Christian",
       "reasonMessage": "Quiero adoptar esta mascota.",
-      "status": "PENDING",
-      "requestDate": "2025-11-29T17:12:17.525Z"
+      "status": "INTERVIEW",
+      "requestDate": "2025-11-29T17:12:17.525Z",
+      "ownerId": "8e66",
+      "interviewDate": "2025-12-05T21:30:00.000Z"
     },
     {
       "id": "ffa7",
       "publicationId": "6f49",
+      "petId": "6f49",
+      "applicantId": "98cd",
+      "applicantFullName": "Christian",
+      "reasonMessage": "Quiero adoptar esta mascota.",
+      "status": "INTERVIEW",
+      "requestDate": "2025-11-29T17:12:46.274Z",
+      "ownerId": "8e66",
+      "interviewDate": "2025-11-30T15:00:00.000Z"
+    },
+    {
+      "id": "480e",
+      "publicationId": "6f49",
+      "petId": "6f49",
+      "applicantId": "98cd",
+      "applicantFullName": "Christian",
+      "reasonMessage": "Quiero adoptar esta mascota.",
+      "status": "INTERVIEW",
+      "requestDate": "2025-11-29T17:21:27.978Z",
+      "ownerId": "8e66",
+      "interviewDate": "2025-11-30T15:00:00.000Z"
+    },
+    {
+      "id": "bdfd",
+      "petId": "6f49",
       "applicantId": "98cd",
       "applicantFullName": "Christian",
       "reasonMessage": "Quiero adoptar esta mascota.",
       "status": "PENDING",
-      "requestDate": "2025-11-29T17:12:46.274Z"
+      "requestDate": "2025-11-29T18:12:21.003Z",
+      "ownerId": "8e66"
     }
   ],
   "pets": [
@@ -47,7 +78,7 @@
       "photo": "https://images.unsplash.com/photo-1561037404-61cd46aa615b",
       "breed": "Labrador Retriever",
       "size": "large",
-      "status": "available",
+      "status": "adopted",
       "description": "Max es un perro juguetón y energético que adora los paseos largos y nadar en el lago.",
       "healthStatus": "Excelente",
       "vaccinationStatus": "Completo",
@@ -89,7 +120,7 @@
       "healthStatus": "Alvaro",
       "vaccinationStatus": "Alvaro",
       "specialNeeds": "Alvaro",
-      "profileId": 8e+66
+      "profileId": "8e66"
     },
     {
       "id": "f841",
@@ -102,7 +133,7 @@
       "healthStatus": "Alvaro",
       "vaccinationStatus": "Alvaro",
       "specialNeeds": "Alvaro",
-      "profileId": 8e+66,
+      "profileId": "8e66",
       "status": "available"
     },
     {
@@ -117,7 +148,7 @@
       "vaccinationStatus": "Alvaro",
       "specialNeeds": "Alvaro",
       "profileId": "8e66",
-      "status": "available"
+      "status": "interview"
     }
   ],
   "users": [
@@ -243,5 +274,42 @@
       "previousExperience": ""
     }
   ],
-  "publications": []
+  "publications": [
+    {
+      "id": "704b",
+      "petId": "f841",
+      "title": "ALVARO ",
+      "description": "ALVARO ",
+      "photo": "https://i.pinimg.com/736x/25/b6/52/25b6520db2915a593cc10f3f0cf184e4.jpg",
+      "ownerId": "8e66",
+      "publishedAt": "2025-11-29T20:36:49.085Z",
+      "isActive": true,
+      "contactInfo": "Alvaro",
+      "location": "Sede"
+    },
+    {
+      "id": "558f",
+      "petId": "2",
+      "title": "https://i.pinimg.com/736x/25/b6/52/25b6520db2915a593cc10f3f0cf184e4.jpg",
+      "description": "https://i.pinimg.com/736x/25/b6/52/25b6520db2915a593cc10f3f0cf184e4.jpg",
+      "photo": "https://i.pinimg.com/736x/25/b6/52/25b6520db2915a593cc10f3f0cf184e4.jpg",
+      "ownerId": "8e66",
+      "publishedAt": "2025-11-29T20:37:23.611Z",
+      "isActive": true,
+      "contactInfo": "Alvaro",
+      "location": "Sede"
+    },
+    {
+      "id": "4fa7",
+      "petId": "f841",
+      "title": "ALVARO ",
+      "description": "HOAL ALAVRO COMOT E VA ",
+      "photo": "https://www.apdayc.org.pe/uploads/shares/talentos/alvaro-rod-2.jpg",
+      "ownerId": "8e66",
+      "publishedAt": "2025-11-29T20:41:54.889Z",
+      "isActive": true,
+      "contactInfo": "Alvaro",
+      "location": "Sede"
+    }
+  ]
 }
