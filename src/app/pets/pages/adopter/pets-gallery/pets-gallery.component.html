@@ -14,6 +14,7 @@
         <option value="all">Todas</option>
         <option value="available">Disponibles</option>
         <option value="adopted">Adoptadas</option>
+        <option value="interview">En entrevistas</option>
       </select>
     </div>
   </div>
@@ -30,7 +31,7 @@
       *ngFor="let pet of filteredPets"
       [pet]="pet"
       class="pet-card-item"
-      aria-role="article"
+      role="article"
       (petDeleted)="removePetFromList($event)"
     ></app-pet-card>
   </div>

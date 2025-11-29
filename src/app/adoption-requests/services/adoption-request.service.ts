@@ -13,13 +13,18 @@ export class AdoptionRequestService {
     return this.http.get<AdoptionRequest[]>(this.baseUrl);
   }
 
+  // Actualiza parcialmente un request (status, interviewDate, etc.)
+  patch(id: number, patch: Partial<AdoptionRequest>): Observable<AdoptionRequest> {
+    return this.http.patch<AdoptionRequest>(`${this.baseUrl}/${id}`, patch);
+  }
+
   approve(id: number): Observable<AdoptionRequest> {
-    // ⬇ cambio de post → put
-    return this.http.put<AdoptionRequest>(`${this.baseUrl}/${id}/approve`, null);
+    // Mantener para compatibilidad: marca como APPROVED
+    return this.patch(id, { status: 'APPROVED' });
   }
 
   reject(id: number): Observable<AdoptionRequest> {
-    return this.http.put<AdoptionRequest>(`${this.baseUrl}/${id}/reject`, null);
+    return this.patch(id, { status: 'REJECTED' });
   }
 
   create(payload: any): Observable<AdoptionRequest> {
@@ -27,8 +32,8 @@ export class AdoptionRequestService {
     const now = new Date().toISOString();
     const request = {
       ...payload,
-      date: now,
-      status: payload.status || 'pendiente'
+      requestDate: now,
+      status: payload.status || 'PENDING'
     };
     return this.http.post<AdoptionRequest>(this.baseUrl, request);
   }

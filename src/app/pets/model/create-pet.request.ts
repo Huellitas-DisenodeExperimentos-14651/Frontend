@@ -8,4 +8,6 @@ export interface CreatePetRequest {
   healthStatus: string;
   vaccinationStatus: string;
   specialNeeds: string;
+  profileId?: string | number; // id del refugio/owner
+  status?: 'available' | 'adopted' | 'fostered' | 'interview';
 }

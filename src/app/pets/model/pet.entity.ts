@@ -1,6 +1,6 @@
 // pets/model/pet.entity.ts
 
-export type PetStatus = 'available' | 'adopted' | 'fostered';
+export type PetStatus = 'available' | 'adopted' | 'fostered' | 'interview';
 export type PetSize = 'small' | 'medium' | 'large';
 
 export class Pet {

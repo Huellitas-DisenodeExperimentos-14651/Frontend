@@ -122,7 +122,8 @@
         "all": "Todos",
         "available": "Disponible",
         "adopted": "Adoptado",
-        "pending": "Pendiente"
+        "pending": "Pendiente",
+        "interview": "En entrevistas"
       },
       "loading": "Cargando mascotas...",
       "empty": "No se encontraron mascotas."
@@ -214,7 +215,6 @@
     "createNew": "Crear publicación",
     "selectPet": "Seleccionar mascota",
     "selectedPetLabel": "Mascota seleccionada:",
-    "petRequired": "Debes seleccionar una mascota.",
     "titleLabel": "Título",
     "titleRequired": "El título es obligatorio.",
     "description": "Descripción",
@@ -290,6 +290,7 @@
   "PET_STATUS": {
     "AVAILABLE": "Disponible",
     "ADOPTED": "Adoptado",
-    "PROCESSING": "En proceso"
+    "PROCESSING": "En proceso",
+    "INTERVIEW": "En entrevistas"
   }
 }

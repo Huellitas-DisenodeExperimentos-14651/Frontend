@@ -19,7 +19,7 @@
   </ul>
 </section>
 
-<div class="backdrop" *ngIf="open() as s" (click)="close()"></div>
+<div class="backdrop" *ngIf="open()" (click)="close()"></div>
 <dialog open *ngIf="open() as s" class="popup">
   <ng-container *ngIf="s.pet">
     <div class="pet-detail">
@@ -31,9 +31,39 @@
       </div>
     </div>
   </ng-container>
+
+  <div class="applicant-detail" *ngIf="s.applicantProfile">
+    <h3>Solicitante</h3>
+    <div><strong>Nombre:</strong> {{ s.applicantProfile.name || s.applicantFullName }}</div>
+    <div><strong>Email:</strong> {{ s.applicantProfile.email }}</div>
+    <div *ngIf="s.applicantProfile.bio"><strong>Bio:</strong> {{ s.applicantProfile.bio }}</div>
+  </div>
+
   <p><b>Fecha de solicitud:</b> {{ s.requestDate }}</p>
   <p><b>Estado:</b> {{ s.status | uppercase }}</p>
-  <footer>
-    <button (click)="close()">VOLVER</button>
+
+  <!-- Controles disponibles solo para el refugio -->
+  <footer *ngIf="isShelter">
+    <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+      <!-- Aprobar / Rechazar solo si está pendiente -->
+      <button *ngIf="s.status === 'PENDING'" (click)="approve(s)">{{ 'adoption.actions.approve' | translate }}</button>
+      <button *ngIf="s.status === 'PENDING'" (click)="reject(s)">{{ 'adoption.actions.reject' | translate }}</button>
+
+      <!-- Agendar entrevista: input fecha + botón -->
+      <div *ngIf="s.status === 'PENDING' || s.status === 'INTERVIEW'" style="display:flex; gap:6px; align-items:center;">
+        <input type="date" [(ngModel)]="selectedDate" />
+        <button *ngIf="s.status !== 'INTERVIEW'" (click)="scheduleInterview(s)" [disabled]="!selectedDate">{{ 'adoption.actions.schedule' | translate }}</button>
+      </div>
+
+      <!-- Botón concretado solo si ya está en INTERVIEW -->
+      <button *ngIf="s.status === 'INTERVIEW'" (click)="complete(s)">{{ 'adoption.actions.completed' | translate }}</button>
+
+      <button class="back" (click)="close()">{{ 'common.back' | translate }}</button>
+    </div>
+  </footer>
+
+  <!-- Para usuarios normales solo volver -->
+  <footer *ngIf="!isShelter">
+    <button class="back" (click)="close()">{{ 'common.back' | translate }}</button>
   </footer>
 </dialog>

@@ -1,11 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Pet } from '../../../model/pet.entity';
 import { PetsService } from '../../../services/pets.service';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { PetCardComponent } from '../../../components/pet-card/pet-card.component';
 import { CommonModule } from '@angular/common';
-import { Router, RouterModule } from '@angular/router';  // <-- Importar Router y RouterModule
+import { Router, RouterModule, NavigationEnd } from '@angular/router';  // <-- Importar Router y RouterModule
+import { filter } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-pets-gallery',
@@ -17,29 +19,58 @@ import { Router, RouterModule } from '@angular/router';  // <-- Importar Router 
     TranslateModule,
     PetCardComponent,
     FormsModule,
-    RouterModule   // <-- Añadir RouterModule aquí
+    RouterModule
   ]
 })
-export class PetsGalleryComponent implements OnInit {
+export class PetsGalleryComponent implements OnInit, OnDestroy {
   pets: Pet[] = [];
   isLoading = true;
   statusFilter: string = 'all';
 
-  constructor(private service: PetsService, private router: Router) {}  // <-- Inyectar Router
+  private profileId: string | null = null;
+  private subs = new Subscription();
+
+  constructor(private service: PetsService, private router: Router) {
+    // Si la ruta se reutiliza, recargar al volver
+    this.subs.add(
+      this.router.events.pipe(filter(e => e instanceof NavigationEnd)).subscribe(() => {
+        const pid = localStorage.getItem('profileId');
+        if (pid && pid !== this.profileId) {
+          this.profileId = pid;
+          this.loadPets(pid);
+        } else if (pid) {
+          // recarga aunque sea el mismo id (por si se agregó una mascota)
+          this.loadPets(pid);
+        }
+      })
+    );
+
+    // Suscribirse a cambios globales de mascotas
+    this.subs.add(
+      this.service.petsChanged.subscribe(() => {
+        const pid = localStorage.getItem('profileId');
+        if (pid) this.loadPets(pid);
+      })
+    );
+  }
 
   ngOnInit(): void {
-    const profileId = Number(localStorage.getItem('profileId'));
+    this.profileId = localStorage.getItem('profileId');
 
-    if (!profileId) {
+    if (!this.profileId) {
       console.error('No se encontró el profileId en localStorage.');
       this.isLoading = false;
       return;
     }
 
-    this.loadPets(profileId);
+    this.loadPets(this.profileId);
   }
 
-  loadPets(profileId: number): void {
+  ngOnDestroy(): void {
+    this.subs.unsubscribe();
+  }
+
+  loadPets(profileId: string): void {
     this.isLoading = true;
     this.service.getByProfileId(profileId).subscribe({
       next: (data) => {

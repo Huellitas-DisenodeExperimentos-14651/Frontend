@@ -2,7 +2,8 @@
 
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
+import { tap } from 'rxjs/operators';
 import { Pet } from '../model/pet.entity';
 import { CreatePetRequest } from '../model/create-pet.request';
 import { environment } from '../../../environments/environment';
@@ -12,6 +13,9 @@ import { environment } from '../../../environments/environment';
 })
 export class PetsService {
   private apiUrl = `${environment.serverBasePath}/pets`;
+
+  // subject para notificar cambios en las mascotas (creación/actualización/eliminación)
+  readonly petsChanged = new Subject<void>();
 
   constructor(private http: HttpClient) {}
 
@@ -27,7 +31,16 @@ export class PetsService {
 
   /** Crear nueva mascota */
   create(pet: CreatePetRequest): Observable<Pet> {
-    return this.http.post<Pet>(this.apiUrl, pet);
+    // asegurar estado por defecto
+    const payload = { ...pet, status: pet.status ?? 'available' };
+    return this.http.post<Pet>(this.apiUrl, payload).pipe(
+      tap(() => this.notifyChange())
+    );
+  }
+
+  /** Notificar a los subscriptores que hubo cambios (crear/editar/eliminar) */
+  notifyChange() {
+    this.petsChanged.next();
   }
 
   /** Actualizar una mascota existente */
@@ -41,8 +54,9 @@ export class PetsService {
   }
 
   /** Mostrar solo las mascotas del refugio autenticado */
-  getByProfileId(profileId: number): Observable<Pet[]> {
-    return this.http.get<Pet[]>(`${this.apiUrl}/profile/${profileId}`);
+  getByProfileId(profileId: string | number): Observable<Pet[]> {
+    // Usar query param para compatibilidad con json-server: /pets?profileId=...
+    return this.http.get<Pet[]>(`${this.apiUrl}?profileId=${encodeURIComponent(String(profileId))}`);
   }
 
   /** Obtener mascotas activas (públicas para adopción) */

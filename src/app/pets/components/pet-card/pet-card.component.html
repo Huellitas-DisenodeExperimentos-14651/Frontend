@@ -8,9 +8,9 @@
   <div class="pet-info">
     <h3>{{ pet.name }}</h3>
     <p>{{ pet.breed }} • {{ pet.age }} {{ 'ADOPTION_MANAGEMENT.pet.yearsOld' | translate }}</p>
-    <p><strong>{{ 'DETAILS.SIZE' | translate }}:</strong> {{ ('PET_SIZE.' + pet.size) | translate }}</p>
+    <p><strong>{{ 'DETAILS.SIZE' | translate }}:</strong> {{ getSizeLabel() }}</p>
     <p><strong>{{ 'DETAILS.HEALTH' | translate }}:</strong> {{ pet.healthStatus }}</p>
-    <p><strong>{{ 'DETAILS.VACCINATION_TITLE' | translate }}:</strong> {{ pet.vaccinationStatus }}</p>
+    <p><strong>{{ getVaccinationLabel() }}:</strong> {{ pet.vaccinationStatus }}</p>
   </div>
 
   <button (click)="openDetails()" [disabled]="isProcessing">
@@ -24,9 +24,9 @@
       <img [src]="pet.photo" [alt]="pet.name" class="pet-modal-image" />
       <p><strong>{{ 'DETAILS.BREED' | translate }}:</strong> {{ pet.breed }}</p>
       <p><strong>{{ 'DETAILS.AGE' | translate }}:</strong> {{ pet.age }} {{ 'DETAILS.YEARS' | translate }}</p>
-      <p><strong>{{ 'DETAILS.SIZE' | translate }}:</strong> {{ ('PET_SIZE.' + pet.size) | translate }}</p>
+      <p><strong>{{ 'DETAILS.SIZE' | translate }}:</strong> {{ getSizeLabel() }}</p>
       <p><strong>{{ 'DETAILS.HEALTH' | translate }}:</strong> {{ pet.healthStatus }}</p>
-      <p><strong>{{ 'DETAILS.VACCINATION_TITLE' | translate }}:</strong> {{ pet.vaccinationStatus }}</p>
+      <p><strong>{{ getVaccinationLabel() }}:</strong> {{ pet.vaccinationStatus }}</p>
       <p><strong>{{ 'DETAILS.DESCRIPTION' | translate }}:</strong> {{ pet.description || ('ADOPTION_MANAGEMENT.pet.descriptionEmpty' | translate) }}</p>
       <p><strong>{{ 'DETAILS.RESCUE_STORY' | translate }}:</strong> {{ pet.specialNeeds }}</p>
 

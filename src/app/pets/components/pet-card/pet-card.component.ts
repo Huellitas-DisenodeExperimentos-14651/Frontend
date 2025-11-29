@@ -2,8 +2,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Pet } from '../../model/pet.entity';
 import { PetsService } from '../../services/pets.service';
-import { TranslateModule } from '@ngx-translate/core';
-import { finalize } from 'rxjs/operators';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import {RouterLink} from '@angular/router';
 
 @Component({
@@ -25,10 +24,9 @@ export class PetCardComponent {
 
   showModal = false;
   modalAnimation = '';
-  showConfirmation = false;
   isProcessing = false;
 
-  constructor(private petsService: PetsService) {}
+  constructor(private petsService: PetsService, private translate: TranslateService) {}
 
   // Métodos de modal (sin cambios)
   openDetails(): void {
@@ -49,6 +47,29 @@ export class PetCardComponent {
 
   getStatusBadgeClass(): string {
     return `status-badge ${this.pet.status}`;
+  }
+
+  // Helpers de traducción con fallback
+  getSizeLabel(): string {
+    try {
+      let raw = String(this.pet.size || '');
+      // si viene como 'PET_SIZE.small' o similar, extraer la última parte
+      if (raw.includes('.')) raw = raw.split('.').pop() || raw;
+      if (raw.includes('_')) raw = raw.split('_').pop() || raw;
+      const key = `PET_SIZE.${raw.toUpperCase()}`;
+      const translated = this.translate.instant(key);
+      return translated && translated !== key ? translated : raw;
+    } catch {
+      return String(this.pet.size || '');
+    }
+  }
+
+  getVaccinationLabel(): string {
+    try {
+      return this.translate.instant('DETAILS.VACCINATION') || 'Vacunas';
+    } catch {
+      return 'Vacunas';
+    }
   }
 
   onDeletePet(): void {

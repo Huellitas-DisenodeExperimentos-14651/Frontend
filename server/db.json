@@ -19,6 +19,24 @@
       "status": "PENDING",
       "requestDate": "2025-11-15T23:08:22.272Z",
       "date": "2025-11-15T23:08:22.284Z"
+    },
+    {
+      "id": "0774",
+      "publicationId": "f841",
+      "applicantId": "98cd",
+      "applicantFullName": "Christian",
+      "reasonMessage": "Quiero adoptar esta mascota.",
+      "status": "PENDING",
+      "requestDate": "2025-11-29T17:12:17.525Z"
+    },
+    {
+      "id": "ffa7",
+      "publicationId": "6f49",
+      "applicantId": "98cd",
+      "applicantFullName": "Christian",
+      "reasonMessage": "Quiero adoptar esta mascota.",
+      "status": "PENDING",
+      "requestDate": "2025-11-29T17:12:46.274Z"
     }
   ],
   "pets": [
@@ -59,6 +77,47 @@
       "description": "Rocky es tranquilo y le encanta estar en compañía. Perfecto para departamentos pequeños.",
       "healthStatus": "Excelente",
       "vaccinationStatus": "Completo"
+    },
+    {
+      "id": "4acb",
+      "name": "Alvaro",
+      "age": 2,
+      "photo": "Alvaro",
+      "breed": "Alvaro",
+      "size": "small",
+      "description": "Alvaro",
+      "healthStatus": "Alvaro",
+      "vaccinationStatus": "Alvaro",
+      "specialNeeds": "Alvaro",
+      "profileId": 8e+66
+    },
+    {
+      "id": "f841",
+      "name": "Alvaro",
+      "age": 20,
+      "photo": "https://img.uefa.com/imgml/TP/players/1/2026/324x324/250153945.jpg",
+      "breed": "Alvaro",
+      "size": "medium",
+      "description": "Alvaro",
+      "healthStatus": "Alvaro",
+      "vaccinationStatus": "Alvaro",
+      "specialNeeds": "Alvaro",
+      "profileId": 8e+66,
+      "status": "available"
+    },
+    {
+      "id": "6f49",
+      "name": "Alvaro",
+      "age": 2,
+      "photo": "https://img.uefa.com/imgml/TP/players/1/2026/324x324/250153945.jpg",
+      "breed": "Alvaro",
+      "size": "small",
+      "description": "Alvaro",
+      "healthStatus": "Alvaro",
+      "vaccinationStatus": "Alvaro",
+      "specialNeeds": "Alvaro",
+      "profileId": "8e66",
+      "status": "available"
     }
   ],
   "users": [

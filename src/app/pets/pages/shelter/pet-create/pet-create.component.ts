@@ -37,11 +37,13 @@ export class PetCreateComponent {
   onCreatePet(): void {
     if (this.form.invalid) return;
 
-    const profileId = Number(localStorage.getItem('profileId'));
-    const request = { ...this.form.value, profileId };
+    const profileId = localStorage.getItem('profileId') ?? undefined;
+    const request = { ...this.form.value, profileId, status: 'available' } as CreatePetRequest;
 
     this.petsService.create(request).subscribe({
-      next: () => this.router.navigate(['/pets']),
+      next: () => {
+        this.router.navigate(['/pets']);
+      },
       error: (err) => console.error('Error al registrar mascota:', err),
     });
   }

@@ -8,6 +8,7 @@
     <ng-container *ngIf="pending().length; else noPending">
       <app-request-list
         [requests]="pending()"
+        [isShelter]="isShelter()"
         (select)="onDecision($event)">
       </app-request-list>
     </ng-container>
@@ -23,6 +24,7 @@
     <ng-container *ngIf="history().length; else noHistory">
       <app-request-list
         [requests]="history()"
+        [isShelter]="isShelter()"
         (select)="onDecision($event)">
       </app-request-list>
     </ng-container>
