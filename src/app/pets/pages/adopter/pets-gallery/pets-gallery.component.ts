@@ -80,8 +80,10 @@ export class PetsGalleryComponent implements OnInit, OnDestroy {
 
   loadPets(profileId: string): void {
     this.isLoading = true;
+    console.log('[PetsGallery] loadPets -> profileId:', profileId);
     this.service.getByProfileId(profileId).subscribe({
       next: (data) => {
+        console.log('[PetsGallery] getByProfileId returned count:', Array.isArray(data) ? data.length : 'not-array', data && data.length > 0 ? data[0] : null);
         this.pets = data;
         this.isLoading = false;
       },

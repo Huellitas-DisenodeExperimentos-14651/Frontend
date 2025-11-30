@@ -62,8 +62,25 @@ export class PetsService {
 
   /** Mostrar solo las mascotas del refugio autenticado (filtrado cliente) */
   getByProfileId(profileId: string | number): Observable<Pet[]> {
+    const pid = String(profileId);
     return this.netlifyDb.getCollection('pets').pipe(
-      map((list: any[]) => (list || []).filter(p => String(p.profileId) === String(profileId)))
+      map((list: any[]) =>
+        (list || []).filter(p => {
+          if (!p) return false;
+          // Normalizar y comprobar distintas posibles propiedades donde el owner/refugio podría estar guardado
+          const candidates = [
+            p.profileId,
+            p.ownerId,
+            p.owner && p.owner.id,
+            p.owner && p.owner.profileId,
+            p.rescued_by,
+            p.rescuedBy,
+            p.rescueOwner,
+            p.ownerIdString
+          ];
+          return candidates.some(c => c !== undefined && c !== null && String(c) === pid);
+        })
+      )
     ) as Observable<Pet[]>;
   }
 
