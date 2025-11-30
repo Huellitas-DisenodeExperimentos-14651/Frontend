@@ -4,7 +4,7 @@ export type PetStatus = 'available' | 'adopted' | 'fostered' | 'interview';
 export type PetSize = 'small' | 'medium' | 'large';
 
 export class Pet {
-  id: number;
+  id: string | number;
   name: string;
   age: number;
   photo: string;

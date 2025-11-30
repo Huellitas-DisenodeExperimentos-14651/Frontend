@@ -1,4 +1,5 @@
 export interface CreatePetRequest {
+  id?: string | number; // opcional: permitir que el cliente proponga un id
   name: string;
   age: number;
   photo: string; // Puede ser URL o base64, según tu backend
