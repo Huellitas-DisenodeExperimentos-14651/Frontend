@@ -1,24 +1,20 @@
 // pets.service.ts
 
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Observable, Subject, map } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { Pet } from '../model/pet.entity';
 import { CreatePetRequest } from '../model/create-pet.request';
-import { environment } from '../../../environments/environment';
 import { NetlifyDbService } from '../../shared/services/netlify-db.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PetsService {
-  private apiUrl = `${environment.serverBasePath}/pets`;
-
   // subject para notificar cambios en las mascotas (creación/actualización/eliminación)
   readonly petsChanged = new Subject<void>();
 
-  constructor(private http: HttpClient, private netlifyDb: NetlifyDbService) {}
+  constructor(private netlifyDb: NetlifyDbService) {}
 
   /** Obtener todas las mascotas (desde Netlify/Neon) */
   getAll(): Observable<Pet[]> {

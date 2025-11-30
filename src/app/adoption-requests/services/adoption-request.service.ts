@@ -1,16 +1,11 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
-import { environment } from '../../../environments/environment';
 import { AdoptionRequest } from '../model/adoption-request.model';
 import { tap, map } from 'rxjs/operators';
 import { NetlifyDbService } from '../../shared/services/netlify-db.service';
 
 @Injectable({ providedIn: 'root' })
 export class AdoptionRequestService {
-  private readonly http = inject(HttpClient);
-  private readonly baseUrl = `${environment.serverBasePath}/adoption-requests`;
-
   // Subject para notificar cambios en las solicitudes
   readonly requestsChanged = new Subject<void>();
 

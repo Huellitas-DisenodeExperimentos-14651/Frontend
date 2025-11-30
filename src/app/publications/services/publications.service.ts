@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../../environments/environment';
 import { map } from 'rxjs/operators';
 import { NetlifyDbService } from '../../shared/services/netlify-db.service';
 
@@ -34,9 +32,7 @@ export interface CreatePublicationPayload {
 
 @Injectable({ providedIn: 'root' })
 export class PublicationsService {
-  private readonly api = `${environment.serverBasePath}/publications`;
-
-  constructor(private http: HttpClient, private netlifyDb: NetlifyDbService) {}
+  constructor(private netlifyDb: NetlifyDbService) {}
 
   getActive(): Observable<Publication[]> {
     // Ahora obtenemos las publicaciones desde Neon vía Netlify Function
