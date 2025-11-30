@@ -34,15 +34,58 @@ export interface CreatePublicationPayload {
 export class PublicationsService {
   constructor(private netlifyDb: NetlifyDbService) {}
 
+  // Helper para normalizar distintos nombres y tipos que puedan venir desde Neon/Netlify
+  private normalizePublication(raw: any): Publication {
+    if (!raw) return raw;
+    // owner id variants
+    const ownerIdRaw = raw.ownerId ?? raw.ownerid ?? raw.owner_id ?? raw.owner?.id ?? raw.owner?.profileId ?? raw.owner?.profile_id ?? raw.owner?.ownerId;
+
+    // pet id variants
+    const petIdRaw = raw.petId ?? raw.pet_id ?? raw.petid ?? raw.pet?.id ?? raw.pet?.petId;
+
+    // isActive variants and coercion to boolean
+    const isActiveRaw = raw.isActive ?? raw.is_active ?? raw.isactive ?? raw.active ?? raw.enabled;
+    let isActive = true;
+    if (isActiveRaw !== undefined && isActiveRaw !== null) {
+      if (typeof isActiveRaw === 'boolean') {
+        isActive = isActiveRaw;
+      } else {
+        const s = String(isActiveRaw).toLowerCase();
+        isActive = ['true', 't', '1', 'yes'].includes(s);
+      }
+    }
+
+    const normalized: Publication = {
+      id: raw.id,
+      petId: petIdRaw !== undefined && petIdRaw !== null ? String(petIdRaw) : (raw.petId ?? raw.pet_id ?? raw.petid ?? raw.pet ?? ''),
+      title: raw.title,
+      description: raw.description,
+      contactInfo: raw.contactInfo ?? raw.contact_info ?? raw.contact ?? '',
+      location: raw.location ?? raw.loc ?? '',
+      publishedAt: raw.publishedAt ?? raw.published_at ?? raw.createdAt ?? raw.created_at ?? '',
+      isActive,
+      photo: raw.photo ?? raw.image ?? undefined,
+      ownerId: ownerIdRaw !== undefined && ownerIdRaw !== null ? String(ownerIdRaw) : undefined,
+      petName: raw.petName ?? raw.pet_name ?? undefined
+    } as Publication;
+
+    return normalized;
+  }
+
   getActive(): Observable<Publication[]> {
-    // Ahora obtenemos las publicaciones desde Neon vía Netlify Function
-    return this.netlifyDb.getCollection('publications') as Observable<Publication[]>;
+    // Obtener publicaciones desde Neon vía Netlify Function y devolver sólo las activas (normalizadas)
+    return this.netlifyDb.getCollection('publications').pipe(
+      map((list: any[]) => (list || []).map(r => this.normalizePublication((r && r.data) ? r.data : r)).filter(p => p && p.isActive))
+    ) as Observable<Publication[]>;
   }
 
   // Obtener publicaciones por ownerId (filtrado cliente sobre los resultados de Neon)
   getByOwner(ownerId: string): Observable<Publication[]> {
     return this.netlifyDb.getCollection('publications').pipe(
-      map((list: any[]) => (list || []).filter(p => String(p.ownerId) === String(ownerId) && (p.isActive === undefined ? true : p.isActive)))
+      map((list: any[]) => (list || [])
+        .map(r => this.normalizePublication((r && r.data) ? r.data : r))
+        .filter(p => p && p.ownerId !== undefined && String(p.ownerId) === String(ownerId) && (p.isActive === undefined ? true : p.isActive))
+      )
     ) as Observable<Publication[]>;
   }
 
