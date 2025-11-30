@@ -1,2 +1,5 @@
-{}
-
+"scripts": {
+"start": "ng serve",
+"build": "ng build",
+"json-server": "json-server --watch server/db.json --port 3000"
+}
