@@ -1,0 +1,14 @@
+[build]
+  command = "npm run build"
+  publish = "dist/HuellitasConectadas"
+  functions = "netlify/functions"
+
+[dev]
+  command = "npm run start"
+  port = 4200
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
