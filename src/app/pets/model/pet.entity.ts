@@ -29,6 +29,7 @@ export class Pet {
     this.healthStatus = data.healthStatus;
     this.vaccinationStatus = data.vaccinationStatus;
     this.specialNeeds = data.specialNeeds;
-    this.profileId = data.profileId ?? data.ownerId ?? undefined;
+    // Normalizar distintas convenciones que puede retornar Neon/Postgres (profileId, profileid, profile_id, ownerId...)
+    this.profileId = data.profileId ?? data.profileid ?? data.profile_id ?? data.ownerId ?? data.ownerid ?? data.owner_id ?? undefined;
   }
 }

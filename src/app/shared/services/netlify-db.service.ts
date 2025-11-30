@@ -16,7 +16,15 @@ export class NetlifyDbService {
     // intentar llamar a la función Netlify; si devuelve 404 hacemos fallback al serverBasePath (json-server local o API)
     return this.http.get<any[]>(url).pipe(
       retryWhen(errors => errors.pipe(delay(300), take(2))),
-      map((rows: any[]) => (rows || []).map(r => (r && r.data) ? r.data : r)),
+      map((rows: any[]) => {
+        // LOG: mostrar número de filas y ejemplo para depuración en navegador
+        try {
+          console.debug(`[NetlifyDbService] GET ${url} -> rows:`, Array.isArray(rows) ? rows.length : typeof rows, Array.isArray(rows) && rows.length > 0 ? rows[0] : rows);
+        } catch (e) {
+          // swallow logging errors
+        }
+        return (rows || []).map(r => (r && r.data) ? r.data : r);
+      }),
       catchError(err => {
         console.warn(`Netlify function ${url} failed:`, err?.status || err);
         // En desarrollo, intentar fallback al API local; en producción propagar error
@@ -24,7 +32,10 @@ export class NetlifyDbService {
           const fallbackUrl = `${environment.serverBasePath}/${collection.replace(/_/g, '-')}`;
           console.info(`(dev) Falling back to ${fallbackUrl} due to function error`);
           return this.http.get<any[]>(fallbackUrl).pipe(
-            map((rows: any[]) => rows || []),
+            map((rows: any[]) => {
+              console.debug(`[NetlifyDbService] FALLBACK GET ${fallbackUrl} -> rows:`, Array.isArray(rows) ? rows.length : typeof rows, Array.isArray(rows) && rows.length > 0 ? rows[0] : rows);
+              return rows || [];
+            }),
             catchError(fallbackErr => {
               console.error('Fallback API also failed:', fallbackErr);
               return throwError(() => fallbackErr || err);

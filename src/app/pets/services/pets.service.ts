@@ -1,7 +1,7 @@
 // pets.service.ts
 
 import { Injectable } from '@angular/core';
-import { Observable, Subject, map } from 'rxjs';
+import { Observable, Subject, map, forkJoin } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { Pet } from '../model/pet.entity';
 import { CreatePetRequest } from '../model/create-pet.request';
@@ -63,24 +63,43 @@ export class PetsService {
   /** Mostrar solo las mascotas del refugio autenticado (filtrado cliente) */
   getByProfileId(profileId: string | number): Observable<Pet[]> {
     const pid = String(profileId);
-    return this.netlifyDb.getCollection('pets').pipe(
-      map((list: any[]) =>
-        (list || []).filter(p => {
+    // Obtener tanto pets como publicaciones para poder incluir mascotas que no tienen profileId
+    // pero sí tienen una publication cuyo ownerId coincide con el refugio.
+    return forkJoin({
+      pets: this.netlifyDb.getCollection('pets'),
+      publications: this.netlifyDb.getCollection('publications')
+    }).pipe(
+      map(({ pets, publications }) => {
+        const petList: any[] = pets || [];
+        const pubs: any[] = publications || [];
+
+        // petIds de publicaciones cuyo ownerId coincide con el profileId
+        const ownedPetIds = new Set<string>(
+          pubs
+            .filter(pub => pub && (pub.ownerId !== undefined && pub.ownerId !== null) && String(pub.ownerId) === pid)
+            .map(pub => String(pub.petId))
+        );
+
+        return petList.filter(p => {
           if (!p) return false;
-          // Normalizar y comprobar distintas posibles propiedades donde el owner/refugio podría estar guardado
+          // Coincidencia directa en pet.profileId / ownerId
+          if ((p.profileId !== undefined && p.profileId !== null && String(p.profileId) === pid) ||
+              (p.ownerId !== undefined && p.ownerId !== null && String(p.ownerId) === pid)) {
+            return true;
+          }
+
+          // Coincide porque existe una publicación del refugio que referencia a esta mascota
+          if (ownedPetIds.has(String(p.id))) return true;
+
+          // Fallback: comprobar varias propiedades y anidados
           const candidates = [
-            p.profileId,
-            p.ownerId,
-            p.owner && p.owner.id,
-            p.owner && p.owner.profileId,
-            p.rescued_by,
-            p.rescuedBy,
-            p.rescueOwner,
-            p.ownerIdString
+            p.profileId, p.profileid, p.profile_id,
+            p.ownerId, p.ownerid, p.owner_id,
+            p.owner && (p.owner.id ?? p.owner.profileId), p.rescued_by, p.rescuedBy, p.rescueOwner
           ];
           return candidates.some(c => c !== undefined && c !== null && String(c) === pid);
-        })
-      )
+        });
+      })
     ) as Observable<Pet[]>;
   }
 
