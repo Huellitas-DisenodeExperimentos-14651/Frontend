@@ -174,7 +174,7 @@ export class ProfileComponent implements OnInit {
               this.isLoading = false;
               this.showSuccess('Perfil actualizado correctamente');
 
-              const currentUsername = this.user!.name; // asegurar no-null cuando ya se actualizó
+              const currentUsername = this.user!.name ?? '';
               this.authService.setSignedInState(true, this.user!.id, currentUsername);
             },
             error: (err) => {
