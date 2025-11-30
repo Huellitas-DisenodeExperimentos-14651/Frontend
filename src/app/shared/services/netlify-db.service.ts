@@ -1,13 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, map, catchError, of, throwError, retryWhen, delay, take } from 'rxjs';
+import { Observable, map, catchError, throwError, retryWhen, delay, take } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class NetlifyDbService {
   private fnBase = '/.netlify/functions/query-neon';
   private mutateBase = '/.netlify/functions/mutate-neon';
-  private jsonHeaders = { headers: new HttpHeaders({ 'Content-Type': 'application/json' }) };
 
   constructor(private http: HttpClient) {}
 
@@ -20,16 +19,19 @@ export class NetlifyDbService {
       map((rows: any[]) => (rows || []).map(r => (r && r.data) ? r.data : r)),
       catchError(err => {
         console.warn(`Netlify function ${url} failed:`, err?.status || err);
-        // Fallback a la API original para cualquier error en la función (404, 500, timeouts)
-        const fallbackUrl = `${environment.serverBasePath}/${collection.replace(/_/g, '-')}`;
-        console.info(`Falling back to ${fallbackUrl} due to function error`);
-        return this.http.get<any[]>(fallbackUrl).pipe(
-          map((rows: any[]) => rows || []),
-          catchError(fallbackErr => {
-            console.error('Fallback API also failed:', fallbackErr);
-            return throwError(() => fallbackErr || err);
-          })
-        );
+        // En desarrollo, intentar fallback al API local; en producción propagar error
+        if (!environment.production) {
+          const fallbackUrl = `${environment.serverBasePath}/${collection.replace(/_/g, '-')}`;
+          console.info(`(dev) Falling back to ${fallbackUrl} due to function error`);
+          return this.http.get<any[]>(fallbackUrl).pipe(
+            map((rows: any[]) => rows || []),
+            catchError(fallbackErr => {
+              console.error('Fallback API also failed:', fallbackErr);
+              return throwError(() => fallbackErr || err);
+            })
+          );
+        }
+        console.error('Function error in production, not falling back:', err);
         return throwError(() => err);
       })
     );

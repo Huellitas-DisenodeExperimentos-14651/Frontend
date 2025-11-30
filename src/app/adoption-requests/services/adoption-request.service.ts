@@ -17,14 +17,15 @@ export class AdoptionRequestService {
   constructor(private netlifyDb: NetlifyDbService) {}
 
   getAll(): Observable<AdoptionRequest[]> {
-    return this.netlifyDb.getCollection('adoption_requests') as Observable<AdoptionRequest[]>;
+    // Usar el nombre con guion para alinear con db.json y rutas fallback
+    return this.netlifyDb.getCollection('adoption-requests') as Observable<AdoptionRequest[]>;
   }
 
   // Actualiza parcialmente un request (status, interviewDate, etc.)
   patch(id: string | number, patch: Partial<AdoptionRequest>): Observable<AdoptionRequest> {
     const uid = String(id);
     const item = { ...(patch as any), id: uid };
-    return this.netlifyDb.mutate('update', 'adoption_requests', item, uid).pipe(
+    return this.netlifyDb.mutate('update', 'adoption-requests', item, uid).pipe(
       map(() => item as AdoptionRequest),
       tap(() => this.requestsChanged.next())
     );
@@ -48,7 +49,7 @@ export class AdoptionRequestService {
       requestDate: now,
       status: payload.status || 'PENDING'
     };
-    return this.netlifyDb.mutate('create', 'adoption_requests', request).pipe(
+    return this.netlifyDb.mutate('create', 'adoption-requests', request).pipe(
       map(() => request as AdoptionRequest),
       tap(() => this.requestsChanged.next())
     );
