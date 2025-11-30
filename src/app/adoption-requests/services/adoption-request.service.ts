@@ -3,7 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { AdoptionRequest } from '../model/adoption-request.model';
-import { tap } from 'rxjs/operators';
+import { tap, map } from 'rxjs/operators';
 import { NetlifyDbService } from '../../shared/services/netlify-db.service';
 
 @Injectable({ providedIn: 'root' })
@@ -22,30 +22,34 @@ export class AdoptionRequestService {
 
   // Actualiza parcialmente un request (status, interviewDate, etc.)
   patch(id: string | number, patch: Partial<AdoptionRequest>): Observable<AdoptionRequest> {
-    const sid = encodeURIComponent(String(id));
-    return this.http.patch<AdoptionRequest>(`${this.baseUrl}/${sid}`, patch).pipe(
+    const uid = String(id);
+    const item = { ...(patch as any), id: uid };
+    return this.netlifyDb.mutate('update', 'adoption_requests', item, uid).pipe(
+      map(() => item as AdoptionRequest),
       tap(() => this.requestsChanged.next())
     );
   }
 
   approve(id: string | number): Observable<AdoptionRequest> {
-    // Mantener para compatibilidad: marca como APPROVED
-    return this.patch(id, { status: 'APPROVED' });
+    return this.patch(id, { status: 'APPROVED' } as Partial<AdoptionRequest>);
   }
 
   reject(id: string | number): Observable<AdoptionRequest> {
-    return this.patch(id, { status: 'REJECTED' });
+    return this.patch(id, { status: 'REJECTED' } as Partial<AdoptionRequest>);
   }
 
   create(payload: any): Observable<AdoptionRequest> {
     // Agregar fecha y estado automáticamente
     const now = new Date().toISOString();
+    const id = payload.id ? String(payload.id) : `req_${Date.now()}`;
     const request = {
       ...payload,
+      id,
       requestDate: now,
       status: payload.status || 'PENDING'
     };
-    return this.http.post<AdoptionRequest>(this.baseUrl, request).pipe(
+    return this.netlifyDb.mutate('create', 'adoption_requests', request).pipe(
+      map(() => request as AdoptionRequest),
       tap(() => this.requestsChanged.next())
     );
   }

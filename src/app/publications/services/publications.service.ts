@@ -16,6 +16,7 @@ export interface Publication {
   isActive: boolean;
   photo?: string;
   ownerId?: string; // id del usuario/refugio que creó la publicación
+  petName?: string; // propiedad opcional añadida para UI
 }
 
 // Payload al crear: más flexible para permitir publishedAt/isActive/ownerId desde el cliente
@@ -50,10 +51,14 @@ export class PublicationsService {
   }
 
   create(payload: CreatePublicationPayload): Observable<Publication> {
-    return this.http.post<Publication>(this.api, payload);
+    // Ensure id
+    const id = (payload as any).id ? String((payload as any).id) : `pub_${Date.now()}`;
+    const item = { ...payload, id };
+    return this.netlifyDb.mutate('create', 'publications', item).pipe(map(() => item as Publication));
   }
 
-  delete(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.api}/${id}`);
+  delete(id: string | number): Observable<void> {
+    const uid = String(id);
+    return this.netlifyDb.mutate('delete', 'publications', undefined, uid).pipe(map(() => undefined));
   }
 }

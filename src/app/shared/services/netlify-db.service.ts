@@ -1,11 +1,12 @@
-// ...existing code...
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class NetlifyDbService {
   private fnBase = '/.netlify/functions/query-neon';
+  private mutateBase = '/.netlify/functions/mutate-neon';
+  private jsonHeaders = { headers: new HttpHeaders({ 'Content-Type': 'application/json' }) };
 
   constructor(private http: HttpClient) {}
 
@@ -26,5 +27,17 @@ export class NetlifyDbService {
       })
     );
   }
-}
 
+  /** Mutar una colección en Neon mediante la función mutate-neon */
+  mutate(action: 'create' | 'update' | 'delete', collection: string, payload?: any, id?: string | number): Observable<any> {
+    const body: any = { action, collection };
+    if (payload !== undefined) body.item = payload;
+    if (id !== undefined) body.id = id;
+    // construir headers dinámicos (incluye Authorization si existe)
+    const token = typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null;
+    const headersObj: any = { 'Content-Type': 'application/json' };
+    if (token) headersObj['Authorization'] = `Bearer ${token}`;
+    const options = { headers: new HttpHeaders(headersObj) };
+    return this.http.post<any>(this.mutateBase, body, options);
+  }
+}

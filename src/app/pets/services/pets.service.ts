@@ -32,9 +32,11 @@ export class PetsService {
 
   /** Crear nueva mascota */
   create(pet: CreatePetRequest): Observable<Pet> {
-    // Crear sigue apuntando al backend original (escritura).
-    const payload = { ...pet, status: pet.status ?? 'available' };
-    return this.http.post<Pet>(this.apiUrl, payload).pipe(
+    // Crear en Neon vía mutate; asegurar id
+    const id = pet.id ? String(pet.id) : `pet_${Date.now()}`;
+    const item = { ...pet, id };
+    return this.netlifyDb.mutate('create', 'pets', item).pipe(
+      map(() => item as Pet),
       tap(() => this.notifyChange())
     );
   }
@@ -46,15 +48,20 @@ export class PetsService {
 
   /** Actualizar una mascota existente */
   update(id: string | number, pet: Partial<Pet>): Observable<Pet> {
-    const sid = encodeURIComponent(String(id));
-    return this.http.patch<Pet>(`${this.apiUrl}/${sid}`, pet).pipe(
+    const uid = String(id);
+    const item = { ...(pet as any), id: uid };
+    return this.netlifyDb.mutate('update', 'pets', item, uid).pipe(
+      map(() => item as Pet),
       tap(() => this.notifyChange())
     );
   }
 
   /** Eliminar mascota */
-  delete(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  delete(id: string | number): Observable<void> {
+    const uid = String(id);
+    return this.netlifyDb.mutate('delete', 'pets', undefined, uid).pipe(
+      map(() => undefined)
+    );
   }
 
   /** Mostrar solo las mascotas del refugio autenticado (filtrado cliente) */

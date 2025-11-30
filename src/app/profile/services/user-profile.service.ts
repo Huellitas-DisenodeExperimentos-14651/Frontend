@@ -4,6 +4,7 @@ import { environment } from '../../../environments/environment';
 import { Observable } from 'rxjs';
 import { User } from '../model/user.entity';
 import { NetlifyDbService } from '../../shared/services/netlify-db.service';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -25,15 +26,20 @@ export class UserProfileService {
   }
 
   createProfile(user: User): Observable<User> {
-    return this.http.post<User>(`${this.basePath}/users`, user, this.httpOptions);
+    const id = user.id ? String((user as any).id) : `user_${Date.now()}`;
+    const item = { ...user, id };
+    return this.netlifyDb.mutate('create', 'users', item).pipe(map(() => item as User));
   }
 
   updateProfile(profileId: string | number, user: User): Observable<User> {
-    return this.http.put<User>(`${this.basePath}/users/${profileId}`, user, this.httpOptions);
+    const uid = String(profileId);
+    const item = { ...user, id: uid };
+    return this.netlifyDb.mutate('update', 'users', item, uid).pipe(map(() => item as User));
   }
 
   deleteProfile(profileId: string | number): Observable<void> {
-    return this.http.delete<void>(`${this.basePath}/users/${profileId}`, this.httpOptions);
+    const uid = String(profileId);
+    return this.netlifyDb.mutate('delete', 'users', undefined, uid).pipe(map(() => undefined));
   }
 
   getProfiles(): Observable<User[]> {
