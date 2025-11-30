@@ -13,7 +13,8 @@ import { PetsService } from '../../../pets/services/pets.service';
 export class AdoptionRequestsListComponent implements OnInit {
   requests: any[] = [];
   loading = true;
-  userId = '98cd'; // Aquí puedes obtener el id dinámicamente si tienes autenticación
+  // Obtener userId desde localStorage si existe, fallback a valor hardcodeado para pruebas
+  userId = localStorage.getItem('profileId') || '98cd';
 
   constructor(
     private adoptionRequestService: AdoptionRequestService,
@@ -24,13 +25,18 @@ export class AdoptionRequestsListComponent implements OnInit {
     this.adoptionRequestService.getAll().subscribe({
       next: (data) => {
         // Filtrar solo las solicitudes del usuario actual
-        const userRequests = data.filter((req: any) => req.applicantId === this.userId);
+        const userRequests = data.filter((req: any) => {
+          // Normalizar y comparar como strings para evitar false negatives por tipo
+          const applicantId = req?.applicantId ?? req?.applicant_id ?? req?.applicant ?? req?.requesterId;
+          return String(applicantId ?? '') === String(this.userId ?? '');
+        });
         // Obtener los datos de las mascotas asociadas
         this.petsService.getAll().subscribe({
           next: (pets: any[]) => {
             this.requests = userRequests.map((req: any) => ({
               ...req,
-              pet: pets.find(p => p.id == req.publicationId)
+              // buscar por petId primero (normalizado por el servicio), luego por publicationId
+              pet: pets.find(p => String(p.id) === String(req.petId ?? req.publicationId ?? ''))
             }));
             this.loading = false;
           },
