@@ -45,6 +45,7 @@
     "AGE": "Age",
     "YEARS": "years",
     "SIZE": "Size",
+    "DESCRIPTION": "Description",
     "LOCATION": "Location",
     "ADOPT_BUTTON": "Request adoption"
   },
