@@ -1,79 +1,83 @@
-# HuellitasConectadas
+# Instrucciones de deploy para HuellitasConectadas
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.9.
+Resumen rápido: la app frontend es estática y en producción necesita saber la URL del backend. Para producción generamos `src/environments/environment.prod.ts` en el momento del build usando la variable de entorno `BACKEND_URL`.
 
-## Development server
+Checklist de lo que hay en el repo (ya aplicado):
+- `scripts/generate-env.js` — genera `environment.prod.ts` desde `BACKEND_URL` (se ejecuta como `prebuild`).
+- `server/index.js` + `server/package.json` — wrapper para `json-server` que escucha `process.env.PORT` (útil para Render/Railway) y permite correr tu `db.json` localmente.
+- `public/_redirects` — regla para Netlify (SPA routing).
 
-To start a local development server, run:
+Opciones para que la app desplegada use tu DB local en http://localhost:3001
 
-```bash
-ng serve
+Opción A — Prueba rápida (temporal) con ngrok
+1. En tu máquina local, arranca el backend (en la carpeta del repo):
 
+```cmd
+cd /d C:\Users\chris\Documents\Avatar\Frontend\server
+npm install   # solo la primera vez
+npm start     # arranca el json-server wrapper en el puerto 3001
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+2. Abre otro terminal y crea un túnel público con ngrok (instala ngrok previamente):
 
-## Step #4 - Start the JSON Server
-
-Start up the [JSON Server](https://github.com/typicode/json-server) to simulate a backend by running the following command in your terminal:
-
-```bash
-json-server --watch db.json
+```cmd
+ngrok http 3001
 ```
 
-This will start the server and watch the db.json file for changes. By default, it will be accessible at:
-http://localhost:3000
+3. Ngrok te dará una URL pública como `https://abcd-12-34-56.ngrok.io`. Copia esa URL.
+4. En Netlify (o cuando hagas el build localmente), establece la variable de entorno `BACKEND_URL` con esa URL. En Netlify: Site settings -> Build & deploy -> Environment -> Add variable `BACKEND_URL` = `https://abcd-...ngrok.io`.
+5. Despliega (o dispara un nuevo deploy). El `prebuild` generará `environment.prod.ts` usando `BACKEND_URL` y la app apuntará a tu `db.json` expuesto por ngrok. IMPORTANTE: ngrok debe estar corriendo mientras Netlify hace el build y mientras quieras que el site use ese backend.
 
-✅ Note: Make sure db.json exists in your project root and contains valid JSON data.
+Opción B — Desplegar el backend (recomendado para producción)
+- Servicios sencillos: Render, Railway, Fly.io.
+- Recomendación (Render):
+  1. Crea un nuevo servicio tipo "Web Service" en Render y conecta tu repo.
+  2. Ruta a la carpeta del backend: `server/` (o al root si vas a mantener todo junto).
+  3. Comando de start: `npm start` (server usa `process.env.PORT`).
+  4. Render detectará `package.json` y desplegará. Después tendrás una URL pública como `https://patita-solidaria-backend.onrender.com`.
+  5. En Netlify, crea la variable de entorno `BACKEND_URL` con la URL pública y redepliega.
 
-💡 Tip: If you haven't installed JSON Server yet, you can do so globally with:
+Notas para Railway/Render: asegúrate de que la carpeta `server/` se despliegue y que `npm install` y `npm start` estén configurados; el `db.json` se servirá tal cual (json-server), así que es ideal para prototipos.
 
-```bash
-npm install -g json-server
+Configuración de Netlify (resumen)
+- Build command: `npm run build`
+- Publish directory: `dist/HuellitasConectadas`
+- Environment variable: `BACKEND_URL` = (la URL pública de tu backend, o la de ngrok si pruebas localmente)
+- El `prebuild` en `package.json` ejecuta `node scripts/generate-env.js` y genera `src/environments/environment.prod.ts` antes del build, usando `BACKEND_URL`.
+
+Comandos útiles (Windows / cmd.exe)
+- Ejecutar backend local:
+
+```cmd
+cd /d C:\Users\chris\Documents\Avatar\Frontend\server
+npm install
+npm start
 ```
 
-## Code scaffolding
+- Probar que responde (desde la raíz del repo):
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
+```cmd
+curl -I http://localhost:3001/pets
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+- Generar `environment.prod.ts` manualmente (útil para debug):
 
-```bash
-ng generate --help
+```cmd
+set BACKEND_URL=https://mi-backend-publico.com && node scripts\generate-env.js
 ```
 
-## Building
+- Build local (genera `dist/` usando la variable):
 
-To build the project run:
-
-```bash
-ng build
+```cmd
+set BACKEND_URL=https://mi-backend-publico.com && npm run build
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+Recomendaciones finales
+- Si solo estás probando: usa ngrok y configura `BACKEND_URL` en Netlify con la URL de ngrok antes de ejecutar el deploy. Ten en cuenta que Netlify ejecutará el build en la nube; la URL de ngrok debe ser accesible desde internet (normalmente lo es) y ngrok debe estar corriendo.
+- Para producción estable, despliega el `server/` en Render o Railway y apunta `BACKEND_URL` a esa URL.
 
-## Running unit tests
+Si quieres, puedo:
+- configurar un flujo de GitHub Actions/Netlify que automáticamente despliegue el backend en un servicio y luego la web (más trabajo), o
+- ayudarte ahora mismo a crear el deploy de Render paso a paso con los archivos del repo.
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
 
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
