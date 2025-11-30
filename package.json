@@ -6,7 +6,8 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "import-to-neon": "node scripts/import-to-neon.js"
   },
   "private": true,
   "dependencies": {
@@ -25,7 +26,8 @@
     "igniteui-angular": "^19.2.6",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
-    "zone.js": "~0.15.0"
+    "zone.js": "~0.15.0",
+    "pg": "^8.11.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^19.2.9",
@@ -41,4 +43,3 @@
     "typescript": "~5.7.2"
   }
 }
-

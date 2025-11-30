@@ -1,79 +1,99 @@
-# HuellitasConectadas
+# HuellitasConectadas — Integración con Neon (Netlify)
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.9.
+Este README explica paso a paso cómo conectar tu proyecto a la base de datos Neon que creó Netlify, cómo poblarla con los datos de `server/db.json` y cómo probar la Netlify Function que lee los datos.
 
-## Development server
+Resumen rápido
+- El proyecto incluye:
+  - `scripts/import-to-neon.js`: script Node que importa `server/db.json` a Neon creando tablas simples (id TEXT, data JSONB).
+  - `netlify/functions/query-neon.js`: Netlify Function que devuelve registros de tablas (pets, users, publications, adoption_requests).
+- Variables de entorno necesarias: `NETLIFY_DATABASE_URL` y opcionalmente `NETLIFY_DATABASE_URL_UNPOOLED`.
 
-To start a local development server, run:
+Requisitos
+- Node.js (>=16 recomendado)
+- npm
+- Acceso a la URL de conexión PostgreSQL provista por Neon/Netlify
 
-```bash
-ng serve
-
-```
-
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Step #4 - Start the JSON Server
-
-Start up the [JSON Server](https://github.com/typicode/json-server) to simulate a backend by running the following command in your terminal:
-
-```bash
-json-server --watch db.json
-```
-
-This will start the server and watch the db.json file for changes. By default, it will be accessible at:
-http://localhost:3000
-
-✅ Note: Make sure db.json exists in your project root and contains valid JSON data.
-
-💡 Tip: If you haven't installed JSON Server yet, you can do so globally with:
+Instalación de dependencias
+En la raíz del proyecto ejecuta:
 
 ```bash
-npm install -g json-server
+npm install
 ```
 
-## Code scaffolding
+Configurar la variable de entorno (local)
+- No incluyas la cadena de conexión en git. Usa variables de entorno.
+- En Windows (cmd.exe) establece la variable temporalmente y ejecuta el import:
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+```cmd
+set "NETLIFY_DATABASE_URL=postgresql://USUARIO:PASS@HOST:PORT/DBNAME?sslmode=require" && npm run import-to-neon
+```
+
+- En macOS / Linux (bash/zsh):
 
 ```bash
-ng generate component component-name
+export NETLIFY_DATABASE_URL="postgresql://USUARIO:PASS@HOST:PORT/DBNAME?sslmode=require"
+npm run import-to-neon
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Notas sobre la URL de Neon
+- Netlify/Neon a menudo expone dos URLs:
+  - `NETLIFY_DATABASE_URL` (pooled) — válida para uso general.
+  - `NETLIFY_DATABASE_URL_UNPOOLED` (unpooled) — recomendada para funciones serverless porque evita uso de pools compartidos que pueden agotar conexiones.
+- En la función `query-neon.js` se intenta usar primero `NETLIFY_DATABASE_URL_UNPOOLED` y luego `NETLIFY_DATABASE_URL`.
+
+Qué hace el script `import-to-neon.js`
+- Lee `server/db.json`.
+- Para cada colección (clave top-level) que sea un arreglo crea una tabla con nombre saneado (guiones -> guion_bajo).
+  - Ejemplo: `adoption-requests` -> `adoption_requests`.
+- Cada fila contiene: `id TEXT PRIMARY KEY` y `data JSONB` (donde `data` es el objeto completo).
+- Realiza upsert por `id`.
+
+Probar localmente la función (opcional)
+- Si quieres probar funciones localmente instala `netlify-cli` globalmente o usa `npx netlify dev`.
+- Establece la variable y ejecuta:
+
+Windows (cmd.exe):
+```cmd
+set "NETLIFY_DATABASE_URL=postgresql://..." && npx netlify dev
+```
+
+Linux/macOS:
+```bash
+export NETLIFY_DATABASE_URL="postgresql://..."
+npx netlify dev
+```
+
+Probar la función desplegada
+- Una vez desplegado en Netlify (y con las env vars configuradas en el panel), prueba con curl:
 
 ```bash
-ng generate --help
+curl "https://<tu-sitio>.netlify.app/.netlify/functions/query-neon?collection=pets"
 ```
 
-## Building
+La función acepta estas colecciones (whitelist): `pets`, `users`, `publications`, `adoption_requests`.
 
-To build the project run:
+Respuesta esperada
+- La función devuelve un array JSON con los objetos importados (contenido de la columna `data`).
 
-```bash
-ng build
-```
+Seguridad y SSL
+- El script y la función configuran `ssl: { rejectUnauthorized: false }` para evitar problemas de certificado en ambientes serverless. Esto es práctico para desarrollo y prototipado. Si en producción tienes un CA o certificado propio, configura la verificación correctamente.
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+Problemas comunes
+- ETARGET al hacer `npm install`: ocurrió si se referenciaba `@netlify/neon` (se eliminó); ahora se usa `pg`.
+- Error de conexión: verifica que la base no esté caducada/reclamada y que la URL sea correcta.
+- Tablas vacías: ejecuta `npm run import-to-neon` localmente con la env var establecida para poblar la BD.
 
-## Running unit tests
+Sugerencias futuras
+- Si necesitas consultas por campos (ej. buscar mascotas por nombre), crea columnas y/o índices GIN en `data` o normaliza la estructura en tablas separadas.
+- Añadir endpoints para crear/actualizar/eliminar (POST/PUT/DELETE) en `netlify/functions` para manipular los datos desde la app.
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+Contacto / seguimiento
+- Si quieres que genere un endpoint para crear publicaciones o que integre las llamadas desde los servicios Angular al endpoint Netlify, dime cuál prefieres y lo añado.
 
-```bash
-ng test
-```
+---
+Archivo clave:
+- `scripts/import-to-neon.js` — script de importación
+- `netlify/functions/query-neon.js` — función para consultar
 
-## Running end-to-end tests
+Fecha: 2025-11-29
 
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
