@@ -2,6 +2,6 @@
 export const environment = {
   production: true,
   apiUrl: 'https://patita-solidaria-backend.onrender.com',
-  serverBasePath: 'http://localhost:3000',
+  serverBasePath: 'http://localhost:3001',
   mockAuth: false
 };
