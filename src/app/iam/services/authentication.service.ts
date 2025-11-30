@@ -9,6 +9,7 @@ import { SignUpResponse } from "../model/sign-up.response";
 import { of } from "rxjs";
 import { map, catchError } from 'rxjs/operators';
 import { Observable } from 'rxjs';
+import { NetlifyDbService } from '../../shared/services/netlify-db.service';
 
 
 @Injectable({
@@ -23,7 +24,7 @@ export class AuthenticationService {
   private signedInUserId: BehaviorSubject<string | number | null> = new BehaviorSubject<string | number | null>(null);
   private signedInUsername: BehaviorSubject<string> = new BehaviorSubject<string>('');
 
-  constructor(private router: Router, private http: HttpClient) { }
+  constructor(private router: Router, private http: HttpClient, private netlifyDb: NetlifyDbService) { }
 
   get isSignedIn() {
     return this.signedIn.asObservable();
@@ -38,24 +39,24 @@ export class AuthenticationService {
   }
 
   /**
-   * Sign up a new user en la colección 'users' de db.json
+   * Sign up a new user in Neon via Netlify function (mutate)
    */
-  signUp(signUpRequest: SignUpRequest) {
-    // Se asume que signUpRequest tiene username, email y password
-    return this.http.post<SignUpResponse>(
-      `${this.basePath}/users`,
-      signUpRequest,
-      this.httpOptions
-    );
+  signUp(signUpRequest: SignUpRequest): Observable<any> {
+    // create id if not provided
+    const id = (signUpRequest as any).id ? String((signUpRequest as any).id) : `user_${Date.now()}`;
+    const item = { ...signUpRequest, id };
+    return this.netlifyDb.mutate('create', 'users', item).pipe(map(() => item));
   }
 
   /**
-   * Sign in buscando usuario en la colección 'users' de db.json
+   * Sign in searching user in Neon via Netlify function
+   * Returns Observable<any[]> to keep compatibility with existing callers
    */
-  signIn(signInRequest: SignInRequest) {
-    // Buscar por username y password (o email y password)
-    const query = `?username=${encodeURIComponent(signInRequest.username)}&password=${encodeURIComponent(signInRequest.password)}`;
-    return this.http.get<any[]>(`${this.basePath}/users${query}`, this.httpOptions);
+  signIn(signInRequest: SignInRequest): Observable<any[]> {
+    // fetch users collection and filter locally (Neon doesn't support arbitrary queries here)
+    return this.netlifyDb.getCollection('users').pipe(
+      map((users: any[]) => (users || []).filter(u => (u.username === signInRequest.username || u.email === signInRequest.username) && u.password === signInRequest.password))
+    );
   }
 
   /**
@@ -64,16 +65,13 @@ export class AuthenticationService {
    */
   public usernameExists(username: string): Observable<boolean> {
     if (!username) return of(false);
-    const query = `?username=${encodeURIComponent(username)}`;
-    return this.http.get<any[]>(`${this.basePath}/users${query}`, this.httpOptions)
-      .pipe(
-        map(users => Array.isArray(users) && users.length > 0),
-        catchError(err => {
-          console.error('usernameExists error:', err);
-          // En caso de error, asumimos que no existe para no bloquear al usuario
-          return of(false);
-        })
-      );
+    return this.netlifyDb.getCollection('users').pipe(
+      map((users: any[]) => Array.isArray(users) && users.some(u => String(u.username) === String(username))),
+      catchError(err => {
+        console.error('usernameExists error:', err);
+        return of(false);
+      })
+    );
   }
 
   /**
@@ -82,16 +80,13 @@ export class AuthenticationService {
    */
   public emailExists(email: string): Observable<boolean> {
     if (!email) return of(false);
-    const query = `?email=${encodeURIComponent(email)}`;
-    return this.http.get<any[]>(`${this.basePath}/users${query}`, this.httpOptions)
-      .pipe(
-        map(users => Array.isArray(users) && users.length > 0),
-        catchError(err => {
-          console.error('emailExists error:', err);
-          // En caso de error, asumimos que no existe para no bloquear al usuario
-          return of(false);
-        })
-      );
+    return this.netlifyDb.getCollection('users').pipe(
+      map((users: any[]) => Array.isArray(users) && users.some(u => String(u.email) === String(email))),
+      catchError(err => {
+        console.error('emailExists error:', err);
+        return of(false);
+      })
+    );
   }
 
   /**
@@ -102,6 +97,7 @@ export class AuthenticationService {
     this.signedInUserId.next(null);
     this.signedInUsername.next('');
     localStorage.removeItem('token');
+    localStorage.removeItem('profileId');
     this.router.navigate(['/sign-in']).catch((error) => console.error('Navigation error:', error));
   }
 

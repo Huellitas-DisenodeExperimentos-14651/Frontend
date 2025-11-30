@@ -20,18 +20,16 @@ export class NetlifyDbService {
       map((rows: any[]) => (rows || []).map(r => (r && r.data) ? r.data : r)),
       catchError(err => {
         console.warn(`Netlify function ${url} failed:`, err?.status || err);
-        if (err && err.status === 404) {
-          // fallback: intentar la API original
-          const fallbackUrl = `${environment.serverBasePath}/${collection.replace(/_/g, '-')}`;
-          console.info(`Falling back to ${fallbackUrl}`);
-          return this.http.get<any[]>(fallbackUrl).pipe(
-            map((rows: any[]) => rows || []),
-            catchError(fallbackErr => {
-              console.error('Fallback API also failed:', fallbackErr);
-              return throwError(() => fallbackErr || err);
-            })
-          );
-        }
+        // Fallback a la API original para cualquier error en la función (404, 500, timeouts)
+        const fallbackUrl = `${environment.serverBasePath}/${collection.replace(/_/g, '-')}`;
+        console.info(`Falling back to ${fallbackUrl} due to function error`);
+        return this.http.get<any[]>(fallbackUrl).pipe(
+          map((rows: any[]) => rows || []),
+          catchError(fallbackErr => {
+            console.error('Fallback API also failed:', fallbackErr);
+            return throwError(() => fallbackErr || err);
+          })
+        );
         return throwError(() => err);
       })
     );
