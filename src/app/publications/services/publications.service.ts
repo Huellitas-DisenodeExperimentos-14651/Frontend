@@ -3,9 +3,10 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { map } from 'rxjs/operators';
+import { NetlifyDbService } from '../../shared/services/netlify-db.service';
 
 export interface Publication {
-  id: number;
+  id: number | string;
   petId: string | number;
   title: string;
   description: string;
@@ -34,22 +35,18 @@ export interface CreatePublicationPayload {
 export class PublicationsService {
   private readonly api = `${environment.serverBasePath}/publications`;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private netlifyDb: NetlifyDbService) {}
 
   getActive(): Observable<Publication[]> {
-    // Cambiado: por petición del usuario, devolvemos TODAS las publicaciones
-    // sin filtrar por `isActive`. Es decir, esta función seguirá llamándose
-    // `getActive()` pero ahora devuelve todas las publicaciones del servidor.
-    // Si en algún momento quieres volver a filtrar, reemplaza la URL por
-    // `${this.api}?isActive=true` o aplica el filtro aquí.
-    return this.http.get<Publication[]>(this.api).pipe(
-      map(list => (list || []))
-    );
+    // Ahora obtenemos las publicaciones desde Neon vía Netlify Function
+    return this.netlifyDb.getCollection('publications') as Observable<Publication[]>;
   }
 
-  // Obtener publicaciones por ownerId (json-server permite query simple: ?ownerId=...)
+  // Obtener publicaciones por ownerId (filtrado cliente sobre los resultados de Neon)
   getByOwner(ownerId: string): Observable<Publication[]> {
-    return this.http.get<Publication[]>(`${this.api}?ownerId=${ownerId}&isActive=true`);
+    return this.netlifyDb.getCollection('publications').pipe(
+      map((list: any[]) => (list || []).filter(p => String(p.ownerId) === String(ownerId) && (p.isActive === undefined ? true : p.isActive)))
+    ) as Observable<Publication[]>;
   }
 
   create(payload: CreatePublicationPayload): Observable<Publication> {

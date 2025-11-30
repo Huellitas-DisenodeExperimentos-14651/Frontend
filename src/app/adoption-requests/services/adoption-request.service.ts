@@ -4,6 +4,7 @@ import { Observable, Subject } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { AdoptionRequest } from '../model/adoption-request.model';
 import { tap } from 'rxjs/operators';
+import { NetlifyDbService } from '../../shared/services/netlify-db.service';
 
 @Injectable({ providedIn: 'root' })
 export class AdoptionRequestService {
@@ -13,8 +14,10 @@ export class AdoptionRequestService {
   // Subject para notificar cambios en las solicitudes
   readonly requestsChanged = new Subject<void>();
 
+  constructor(private netlifyDb: NetlifyDbService) {}
+
   getAll(): Observable<AdoptionRequest[]> {
-    return this.http.get<AdoptionRequest[]>(this.baseUrl);
+    return this.netlifyDb.getCollection('adoption_requests') as Observable<AdoptionRequest[]>;
   }
 
   // Actualiza parcialmente un request (status, interviewDate, etc.)

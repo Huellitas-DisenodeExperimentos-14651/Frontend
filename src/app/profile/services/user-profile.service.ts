@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { Observable } from 'rxjs';
 import { User } from '../model/user.entity';
+import { NetlifyDbService } from '../../shared/services/netlify-db.service';
 
 @Injectable({
   providedIn: 'root'
@@ -16,10 +17,11 @@ export class UserProfileService {
     })
   };
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private netlifyDb: NetlifyDbService) {}
 
   getProfile(profileId: string | number): Observable<User> {
-    return this.http.get<User>(`${this.basePath}/users/${profileId}`, this.httpOptions);
+    // Lectura desde Netlify/Neon
+    return this.netlifyDb.getById('users', profileId) as Observable<User>;
   }
 
   createProfile(user: User): Observable<User> {
@@ -35,6 +37,6 @@ export class UserProfileService {
   }
 
   getProfiles(): Observable<User[]> {
-    return this.http.get<User[]>(`${this.basePath}/users`, this.httpOptions);
+    return this.netlifyDb.getCollection('users') as Observable<User[]>;
   }
 }
