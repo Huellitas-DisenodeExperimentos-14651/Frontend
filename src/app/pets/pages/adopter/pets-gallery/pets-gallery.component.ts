@@ -105,7 +105,7 @@ export class PetsGalleryComponent implements OnInit, OnDestroy {
     this.router.navigate(['pets/create']);
   }
 
-  removePetFromList(id: number): void {
-    this.pets = this.pets.filter(p => p.id !== id);
+  removePetFromList(id: string | number): void {
+    this.pets = this.pets.filter(p => String(p.id) !== String(id));
   }
 }

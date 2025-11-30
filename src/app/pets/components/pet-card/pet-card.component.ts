@@ -18,8 +18,8 @@ import {RouterLink} from '@angular/router';
 })
 export class PetCardComponent {
   @Input() pet!: Pet;
-  @Output() adoptionConfirmed = new EventEmitter<number>();
-  @Output() petDeleted = new EventEmitter<number>();
+  @Output() adoptionConfirmed = new EventEmitter<string | number>();
+  @Output() petDeleted = new EventEmitter<string | number>();
 
 
   showModal = false;
@@ -80,7 +80,8 @@ export class PetCardComponent {
           this.isProcessing = false;
           alert('Mascota eliminada exitosamente');
           this.closeDetails();
-          this.petDeleted.emit(this.pet.id); // ✅ avisamos al padre
+          // Emitir el id tal como viene (string | number)
+          this.petDeleted.emit(this.pet.id);
         },
         error: (err) => {
           this.isProcessing = false;

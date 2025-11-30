@@ -20,7 +20,7 @@ export class AuthenticationService {
   httpOptions = { headers: new HttpHeaders({'Content-type': 'application/json'}) };
 
   private signedIn: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-  private signedInUserId: BehaviorSubject<number> = new BehaviorSubject<number>(0);
+  private signedInUserId: BehaviorSubject<string | number | null> = new BehaviorSubject<string | number | null>(null);
   private signedInUsername: BehaviorSubject<string> = new BehaviorSubject<string>('');
 
   constructor(private router: Router, private http: HttpClient) { }
@@ -99,7 +99,7 @@ export class AuthenticationService {
    */
   signOut() {
     this.signedIn.next(false);
-    this.signedInUserId.next(0);
+    this.signedInUserId.next(null);
     this.signedInUsername.next('');
     localStorage.removeItem('token');
     this.router.navigate(['/sign-in']).catch((error) => console.error('Navigation error:', error));
@@ -108,7 +108,7 @@ export class AuthenticationService {
   /**
    * Get the current authenticated user info from JWT token.
    */
-  getCurrentUser(): { username: string; role: string; profileId: number } | null {
+  getCurrentUser(): { username: string; role: string; profileId: string | number } | null {
     const token = localStorage.getItem('token');
     // Si el token es falso, leer los datos directamente de localStorage
     if (token === 'fake-token') {
@@ -119,7 +119,7 @@ export class AuthenticationService {
         return {
           username,
           role,
-          profileId: Number(profileId)
+          profileId: isNaN(Number(profileId)) ? profileId : Number(profileId)
         };
       }
       return null;
@@ -142,19 +142,19 @@ export class AuthenticationService {
   /**
    * Establece el estado de sesión manualmente.
    */
-  setSignedInState(isSignedIn: boolean, userId: number, username: string): void {
+  setSignedInState(isSignedIn: boolean, userId: string | number | null, username: string): void {
     this.signedIn.next(isSignedIn);
     this.signedInUserId.next(userId);
     this.signedInUsername.next(username);
   }
 
-  getCurrentUserId(): number | null {
+  getCurrentUserId(): string | number | null {
     const token = localStorage.getItem('token');
     if (!token) return null;
 
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
-      return payload.userId;
+      return isNaN(Number(payload.userId)) ? payload.userId : Number(payload.userId);
     } catch (error) {
       console.error('Error decoding token:', error);
       return null;
