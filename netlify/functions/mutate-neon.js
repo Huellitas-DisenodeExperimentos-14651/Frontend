@@ -36,9 +36,39 @@ exports.handler = async function(event, context) {
 
   let body;
   try {
-    body = JSON.parse(event.body || '{}');
+    // Si event.body ya es un objeto (algunas plataformas o middlewares lo hacen), úsalo directamente
+    if (typeof event.body === 'object' && event.body !== null) {
+      body = event.body;
+    } else {
+      let raw = event.body || '';
+      // Si Netlify envía el body en base64 (serverless), decodificarlo
+      if (event.isBase64Encoded) {
+        try {
+          raw = Buffer.from(raw, 'base64').toString('utf8');
+        } catch (e) {
+          console.log('mutate-neon: failed to base64-decode body', { isBase64Encoded: event.isBase64Encoded, rawLength: (event.body || '').length });
+        }
+      }
+      // quitar BOM y trim
+      try { raw = raw.replace(/^\uFEFF/, '').trim(); } catch (e) {}
+      // Log breve del body para debugging (no imprimir datos sensibles completos)
+      console.log('mutate-neon: raw body info', { len: raw ? raw.length : 0, isBase64Encoded: !!event.isBase64Encoded });
+      // Intentar parsear
+      try {
+        body = JSON.parse(raw || '{}');
+      } catch (e) {
+        // Reintentar si el body viene doblemente stringified ("{\"a\":1}") -> eliminar comillas exteriores
+        if (typeof raw === 'string' && raw.length > 1 && ((raw.startsWith('"') && raw.endsWith('"')) || (raw.startsWith("'") && raw.endsWith("'")))) {
+          const inner = raw.slice(1, -1).replace(/\\"/g, '"');
+          body = JSON.parse(inner || '{}');
+        } else {
+          throw e;
+        }
+      }
+    }
   } catch (err) {
-    return { statusCode: 400, headers: DEFAULT_HEADERS, body: JSON.stringify({ error: 'Invalid JSON body' }) };
+    console.error('mutate-neon: invalid JSON body error', { err: err && err.message ? err.message : String(err), rawSample: (event.body || '').slice ? (event.body || '').slice(0, 200) : undefined, isBase64Encoded: !!event.isBase64Encoded });
+    return { statusCode: 400, headers: DEFAULT_HEADERS, body: JSON.stringify({ error: 'Invalid JSON body', detail: { len: (event.body || '').length || 0, isBase64Encoded: !!event.isBase64Encoded } }) };
   }
 
   const { action, collection, item, id } = body;
@@ -75,6 +105,8 @@ exports.handler = async function(event, context) {
       if (!item || !item.id) return { statusCode: 400, headers: DEFAULT_HEADERS, body: JSON.stringify({ error: 'Item with id required for create' }) };
       const insertSql = `INSERT INTO ${table} (id, data) VALUES ($1, $2) ON CONFLICT (id) DO UPDATE SET data = EXCLUDED.data`;
       const dataValue = prepareData(item);
+      console.debug('mutate-neon: create', { table, sql: insertSql, params: [String(item.id), dataValue], itemPreview: { id: item.id, username: item.username, email: item.email } });
+      console.log('mutate-neon: create', { table, sql: insertSql, params: [String(item.id), dataValue], itemPreview: { id: item.id, username: item.username, email: item.email } });
       await client.query(insertSql, [String(item.id), dataValue]);
       return { statusCode: 200, headers: DEFAULT_HEADERS, body: JSON.stringify({ ok: true, id: item.id }) };
     }
@@ -84,6 +116,8 @@ exports.handler = async function(event, context) {
       const uid = item && item.id ? String(item.id) : String(id);
       const updateSql = `INSERT INTO ${table} (id, data) VALUES ($1, $2) ON CONFLICT (id) DO UPDATE SET data = EXCLUDED.data`;
       const dataValue = prepareData(item);
+      console.debug('mutate-neon: update', { table, sql: updateSql, params: [uid, dataValue], uid, itemExists: !!item });
+      console.log('mutate-neon: update', { table, sql: updateSql, params: [uid, dataValue], uid, itemExists: !!item });
       await client.query(updateSql, [uid, dataValue]);
       return { statusCode: 200, headers: DEFAULT_HEADERS, body: JSON.stringify({ ok: true, id: uid }) };
     }
@@ -92,6 +126,8 @@ exports.handler = async function(event, context) {
       const uid = id ? String(id) : (item && item.id ? String(item.id) : null);
       if (!uid) return { statusCode: 400, headers: DEFAULT_HEADERS, body: JSON.stringify({ error: 'id required for delete' }) };
       const delSql = `DELETE FROM ${table} WHERE id = $1`;
+      console.debug('mutate-neon: delete', { table, sql: delSql, params: [uid], uid });
+      console.log('mutate-neon: delete', { table, sql: delSql, params: [uid], uid });
       await client.query(delSql, [uid]);
       return { statusCode: 200, headers: DEFAULT_HEADERS, body: JSON.stringify({ ok: true, id: uid }) };
     }
