@@ -338,6 +338,30 @@
       "animalsAvailable": 3,
       "homeType": "",
       "previousExperience": ""
+    },
+    {
+      "id": "u2007",
+      "username": "alvaro33",
+      "password": "Alvaro123!!",
+      "name": "Alvaro Alvaro",
+      "email": "alvaro33@example.com",
+      "address": "Alvaro",
+      "role": "SHELTER",
+      "paymentMethods": [
+        {
+          "type": "OTRO",
+          "label": "OTRO • Alvaro",
+          "data": { "identifier": "Alvaro" }
+        }
+      ],
+      "preferences": ["Alvaro"],
+      "paymentConfigured": true,
+      "profilePic": "https://images.unsplash.com/photo-1526336024174-e58f5cdd8e13",
+      "bio": "Alvaro",
+      "capacity": 4,
+      "animalsAvailable": 3,
+      "homeType": "",
+      "previousExperience": ""
     }
   ],
   "publications": [

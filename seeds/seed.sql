@@ -1,19 +1,116 @@
 -- seeds/seed.sql
 -- Sentencias INSERT para poblar la base de datos (adaptadas y coherentes)
 
--- INSERTS en users (upsert)
-INSERT INTO users (id, username, email, password, role, name, address, paymentMethods, preferences, profilePic, bio, capacity, animalsAvailable, homeType, previousExperience, preferencesString, paymentMethodsString, paymentConfigured) VALUES
-('1', 'admin', 'admin@example.com', 'admin123', 'admin', NULL, NULL, '[]'::jsonb, '[]'::jsonb, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-('2', 'usuario', 'usuario@example.com', 'usuario123', 'user', NULL, NULL, '[]'::jsonb, '[]'::jsonb, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-('98cd', 'christian', 'christian@gmail.com', 'Christian123', 'ADOPTER', 'Christian Renato', 'Av Alameda del Corregidor', '[]'::jsonb, '["Perros"]'::jsonb, 's', 'Mi nombre es Christian', 1, 0, 'Departamento', 'No cuento con experiencia previa', 'Perros', 'Yape', TRUE),
-('ba8b', 'jose', 'jose@gmail.com', 'Jose123', 'SHELTER', 'Jose', 'Los Angamos 234', '["Yape"]'::jsonb, '["Perros"]'::jsonb, '' , 'Hola Soy Jose', 1, 0, 'Casa', 'Jose', NULL, NULL, NULL),
-('7c70', 'refugiodsd', 'refugio@example.com', 'Hola123!', 'SHELTER', 'Refugio DSD', 'adsdas', '[]'::jsonb, '[]'::jsonb, '', 'dasddasdsa', 5, 2, NULL, NULL, NULL, NULL, TRUE),
-('cc0e', 'hola', 'hola@gal.c', 'Hola123!', 'ADOPTER', 'asdads', 'dsadsa', '[]'::jsonb, '[]'::jsonb, 'https://unsplash.com/es/fotos/una-mujer-tomando-una-foto-de-la-puesta-de-sol-sobre-un-cuerpo-de-agua-a5LSIj59-4g', 'dsadas', 1, 0, 'dsdsa', 'asddas', NULL, NULL, TRUE),
-('8e66', 'alvaro', 'alvaro@ejemplo.com', 'Alvaro123!!', 'SHELTER', 'Alvaro Alvaro', 'Alvaro', '[{"type":"OTRO","label":"OTRO • Alvaro","data":{"identifier":"Alvaro"}}]'::jsonb, '["Alvaro"]'::jsonb, 'https://images.unsplash.com/photo-1526336024174-e58f5cdd8e13', 'Alvaro', 4, 3, NULL, NULL, NULL, NULL, TRUE)
+-- INSERTS en users (individual upserts, nuevos ids para evitar colisiones)
+-- Cada fila sigue la forma que genera `signUp` en el frontend (SignUpRequest + id)
+
+INSERT INTO users (id, username, email, password, role, name, address, paymentMethods, preferences, profilePic, bio, capacity, animalsAvailable, homeType, previousExperience, preferencesString, paymentMethodsString, paymentConfigured)
+VALUES ('u2001','admin','admin@example.com','admin123','admin', NULL, NULL, '[]'::jsonb, '[]'::jsonb, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)
 ON CONFLICT (id) DO UPDATE SET
   username = EXCLUDED.username,
   email = EXCLUDED.email,
-  /* password intentionally left out to avoid overwriting existing hashed passwords */
+  password = EXCLUDED.password,
+  role = EXCLUDED.role;
+
+INSERT INTO users (id, username, email, password, role, name, address, paymentMethods, preferences, profilePic, bio, capacity, animalsAvailable, homeType, previousExperience, preferencesString, paymentMethodsString, paymentConfigured)
+VALUES ('u2002','usuario','usuario@example.com','usuario123','user', NULL, NULL, '[]'::jsonb, '[]'::jsonb, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)
+ON CONFLICT (id) DO UPDATE SET
+  username = EXCLUDED.username,
+  email = EXCLUDED.email,
+  password = EXCLUDED.password,
+  role = EXCLUDED.role;
+
+INSERT INTO users (id, username, email, password, role, name, address, paymentMethods, preferences, profilePic, bio, capacity, animalsAvailable, homeType, previousExperience, preferencesString, paymentMethodsString, paymentConfigured)
+VALUES ('u2003','christian','christian@gmail.com','Christian123','ADOPTER','Christian Renato','Av Alameda del Corregidor','[]'::jsonb,'["Perros"]'::jsonb,'s','Mi nombre es Christian',1,0,'Departamento','No cuento con experiencia previa','Perros','Yape',TRUE)
+ON CONFLICT (id) DO UPDATE SET
+  username = EXCLUDED.username,
+  email = EXCLUDED.email,
+  password = EXCLUDED.password,
+  role = EXCLUDED.role,
+  name = EXCLUDED.name,
+  address = EXCLUDED.address,
+  paymentMethods = EXCLUDED.paymentMethods,
+  preferences = EXCLUDED.preferences,
+  profilePic = EXCLUDED.profilePic,
+  bio = EXCLUDED.bio,
+  capacity = EXCLUDED.capacity,
+  animalsAvailable = EXCLUDED.animalsAvailable,
+  homeType = EXCLUDED.homeType,
+  previousExperience = EXCLUDED.previousExperience,
+  preferencesString = EXCLUDED.preferencesString,
+  paymentMethodsString = EXCLUDED.paymentMethodsString,
+  paymentConfigured = EXCLUDED.paymentConfigured;
+
+INSERT INTO users (id, username, email, password, role, name, address, paymentMethods, preferences, profilePic, bio, capacity, animalsAvailable, homeType, previousExperience, preferencesString, paymentMethodsString, paymentConfigured)
+VALUES ('u2004','jose','jose@gmail.com','Jose123','SHELTER','Jose','Los Angamos 234','["Yape"]'::jsonb,'["Perros"]'::jsonb,'','Hola Soy Jose',1,0,'Casa','Jose',NULL,NULL,NULL)
+ON CONFLICT (id) DO UPDATE SET
+  username = EXCLUDED.username,
+  email = EXCLUDED.email,
+  password = EXCLUDED.password,
+  role = EXCLUDED.role,
+  name = EXCLUDED.name,
+  address = EXCLUDED.address,
+  paymentMethods = EXCLUDED.paymentMethods,
+  preferences = EXCLUDED.preferences,
+  profilePic = EXCLUDED.profilePic,
+  bio = EXCLUDED.bio,
+  capacity = EXCLUDED.capacity,
+  animalsAvailable = EXCLUDED.animalsAvailable,
+  homeType = EXCLUDED.homeType,
+  previousExperience = EXCLUDED.previousExperience,
+  preferencesString = EXCLUDED.preferencesString,
+  paymentMethodsString = EXCLUDED.paymentMethodsString,
+  paymentConfigured = EXCLUDED.paymentConfigured;
+
+INSERT INTO users (id, username, email, password, role, name, address, paymentMethods, preferences, profilePic, bio, capacity, animalsAvailable, homeType, previousExperience, preferencesString, paymentMethodsString, paymentConfigured)
+VALUES ('u2005','refugiodsd','refugio@example.com','Hola123!','SHELTER','Refugio DSD','adsdas','[]'::jsonb,'[]'::jsonb,'','dasddasdsa',5,2,NULL,NULL,NULL,NULL,TRUE)
+ON CONFLICT (id) DO UPDATE SET
+  username = EXCLUDED.username,
+  email = EXCLUDED.email,
+  password = EXCLUDED.password,
+  role = EXCLUDED.role,
+  name = EXCLUDED.name,
+  address = EXCLUDED.address,
+  paymentMethods = EXCLUDED.paymentMethods,
+  preferences = EXCLUDED.preferences,
+  profilePic = EXCLUDED.profilePic,
+  bio = EXCLUDED.bio,
+  capacity = EXCLUDED.capacity,
+  animalsAvailable = EXCLUDED.animalsAvailable,
+  homeType = EXCLUDED.homeType,
+  previousExperience = EXCLUDED.previousExperience,
+  preferencesString = EXCLUDED.preferencesString,
+  paymentMethodsString = EXCLUDED.paymentMethodsString,
+  paymentConfigured = EXCLUDED.paymentConfigured;
+
+INSERT INTO users (id, username, email, password, role, name, address, paymentMethods, preferences, profilePic, bio, capacity, animalsAvailable, homeType, previousExperience, preferencesString, paymentMethodsString, paymentConfigured)
+VALUES ('u2006','hola','hola@gal.c','Hola123!','ADOPTER','asdads','dsadsa','[]'::jsonb,'[]'::jsonb,'https://unsplash.com/es/fotos/una-mujer-tomando-una-foto-de-la-puesta-de-sol-sobre-un-cuerpo-de-agua-a5LSIj59-4g','dsadas',1,0,'dsdsa','asddas',NULL,NULL,TRUE)
+ON CONFLICT (id) DO UPDATE SET
+  username = EXCLUDED.username,
+  email = EXCLUDED.email,
+  password = EXCLUDED.password,
+  role = EXCLUDED.role,
+  name = EXCLUDED.name,
+  address = EXCLUDED.address,
+  paymentMethods = EXCLUDED.paymentMethods,
+  preferences = EXCLUDED.preferences,
+  profilePic = EXCLUDED.profilePic,
+  bio = EXCLUDED.bio,
+  capacity = EXCLUDED.capacity,
+  animalsAvailable = EXCLUDED.animalsAvailable,
+  homeType = EXCLUDED.homeType,
+  previousExperience = EXCLUDED.previousExperience,
+  preferencesString = EXCLUDED.preferencesString,
+  paymentMethodsString = EXCLUDED.paymentMethodsString,
+  paymentConfigured = EXCLUDED.paymentConfigured;
+
+-- usuario que funcionó en signup/login: alvaro33 (nuevo id y username)
+INSERT INTO users (id, username, email, password, role, name, address, paymentMethods, preferences, profilePic, bio, capacity, animalsAvailable, homeType, previousExperience, preferencesString, paymentMethodsString, paymentConfigured)
+VALUES ('u2007','alvaro33','alvaro33@example.com','Alvaro123!!','SHELTER','Alvaro Alvaro','Alvaro','[{"type":"OTRO","label":"OTRO • Alvaro","data":{"identifier":"Alvaro"}}]'::jsonb,'["Alvaro"]'::jsonb,'https://images.unsplash.com/photo-1526336024174-e58f5cdd8e13','Alvaro',4,3,NULL,NULL,NULL,NULL,TRUE)
+ON CONFLICT (id) DO UPDATE SET
+  username = EXCLUDED.username,
+  email = EXCLUDED.email,
+  password = EXCLUDED.password,
   role = EXCLUDED.role,
   name = EXCLUDED.name,
   address = EXCLUDED.address,
