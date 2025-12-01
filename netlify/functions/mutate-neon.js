@@ -114,9 +114,20 @@ exports.handler = async function(event, context) {
         // If failure due to missing column `data` or undefined_column (Postgres 42703), try inserting into columns derived from item
         const fallbackErrMsg = (errInsert && errInsert.message) ? String(errInsert.message).toLowerCase() : '';
         if (fallbackErrMsg.includes('column "data" does not exist') || (errInsert && errInsert.code === '42703') || fallbackErrMsg.includes('column not found')) {
-          // Build dynamic columns from item (excluding id)
-          const itemFields = Object.keys(item).filter(k => k !== 'id');
-          if (itemFields.length === 0) throw errInsert;
+          // Try to add the `data` jsonb column and re-attempt the simple insert once
+          try {
+            console.log('mutate-neon: attempting to add data JSONB column to table', { table });
+            await client.query(`ALTER TABLE ${table} ADD COLUMN IF NOT EXISTS data JSONB`);
+            console.log('mutate-neon: data column ensured, retrying insert into (id,data)');
+            await client.query(insertSql, [String(item.id), dataValue]);
+            return { statusCode: 200, headers: DEFAULT_HEADERS, body: JSON.stringify({ ok: true, id: item.id, note: 'data column created and item inserted' }) };
+          } catch (errAlter) {
+            console.log('mutate-neon: creating data column or retry insert failed, will fallback to per-column insert', { err: errAlter && errAlter.message ? errAlter.message : String(errAlter) });
+            // continue to per-column fallback
+          }
+           // Build dynamic columns from item (excluding id)
+           const itemFields = Object.keys(item).filter(k => k !== 'id');
+           if (itemFields.length === 0) throw errInsert;
 
           // Fetch actual columns and their data types for the table
           let tableCols = [];
@@ -144,43 +155,48 @@ exports.handler = async function(event, context) {
 
           const cols = selected.map(s => s.col);
           const colList = ['id', ...cols].join(', ');
-          const placeholders = ['$1', ...cols.map((_, i) => `$${i + 2}`)].join(', ');
-          const values = [String(item.id)];
-          // prepare values according to column type
-          for (const s of selected) {
-            const dtype = colTypeByName[s.col] || '';
-            const v = item[s.orig];
-            if (v === null || v === undefined) {
-              values.push(null);
-              continue;
-            }
-            if (dtype.includes('json')) {
-              // pass object/array as-is so pg driver encodes it as JSON
-              if (typeof v === 'object') values.push(v); else {
-                try { values.push(JSON.parse(String(v))); } catch (e) { values.push(String(v)); }
-              }
-              continue;
-            }
-            if (dtype.includes('char') || dtype.includes('text')) {
-              // for text columns stringify objects/arrays
-              if (typeof v === 'object') {
-                try { values.push(JSON.stringify(v)); } catch (e) { values.push(String(v)); }
-              } else values.push(String(v));
-              continue;
-            }
-            if (dtype.includes('int') || dtype.includes('numeric') || dtype.includes('double') || dtype.includes('real') || dtype.includes('decimal')) {
-              // try to convert to number
-              const num = Number(v);
-              values.push(isNaN(num) ? null : num);
-              continue;
-            }
-            if (dtype.includes('bool')) {
-              values.push(Boolean(v));
-              continue;
-            }
-            // fallback: pass as string
-            values.push(typeof v === 'object' ? JSON.stringify(v) : String(v));
-          }
+          // Build placeholders with explicit casting for json columns
+          const placeholdersParts = cols.map((c, i) => {
+            const idx = i + 2;
+            const dtype = colTypeByName[c] || '';
+            if (dtype.includes('json')) return `$${idx}::jsonb`;
+            return `$${idx}`;
+          });
+          const placeholders = ['$1', ...placeholdersParts].join(', ');
+           const values = [String(item.id)];
+           // prepare values according to column type
+           for (const s of selected) {
+             const dtype = colTypeByName[s.col] || '';
+             const v = item[s.orig];
+             if (v === null || v === undefined) {
+               values.push(null);
+               continue;
+             }
+             // Normalize complex values to JSON text to avoid pg sending array literals
+             const normalized = (typeof v === 'object') ? JSON.stringify(v) : v;
+             if (dtype.includes('json')) {
+               // For JSON/JSONB columns pass a JSON string (JSON.stringify) so Postgres parses it correctly
+               values.push(normalized);
+               continue;
+             }
+             if (dtype.includes('char') || dtype.includes('text')) {
+               // for text columns stringify objects/arrays
+               values.push(typeof v === 'object' ? normalized : String(v));
+               continue;
+             }
+             if (dtype.includes('int') || dtype.includes('numeric') || dtype.includes('double') || dtype.includes('real') || dtype.includes('decimal')) {
+               // try to convert to number
+               const num = Number(v);
+               values.push(isNaN(num) ? null : num);
+               continue;
+             }
+             if (dtype.includes('bool')) {
+               values.push(Boolean(v));
+               continue;
+             }
+             // fallback: pass as string
+             values.push(typeof v === 'object' ? normalized : String(v));
+           }
            // Build ON CONFLICT update clause mapping each col to EXCLUDED.col
            const updateSet = cols.map(c => `${c} = EXCLUDED.${c}`).join(', ');
            const dynSql = `INSERT INTO ${table} (${colList}) VALUES (${placeholders}) ON CONFLICT (id) DO UPDATE SET ${updateSet}`;
@@ -190,7 +206,7 @@ exports.handler = async function(event, context) {
            throw errInsert;
          }
        }
-        return { statusCode: 200, headers: DEFAULT_HEADERS, body: JSON.stringify({ ok: true, id: item.id }) };
+       return { statusCode: 200, headers: DEFAULT_HEADERS, body: JSON.stringify({ ok: true, id: item.id }) };
      }
 
      if (action === 'update') {
@@ -206,18 +222,58 @@ exports.handler = async function(event, context) {
          console.log('mutate-neon: update - insert into (id,data) failed, trying column fallback', { err: errUpdate && errUpdate.message ? errUpdate.message : String(errUpdate) });
          const fallbackErrMsg = (errUpdate && errUpdate.message) ? String(errUpdate.message).toLowerCase() : '';
          if (fallbackErrMsg.includes('column "data" does not exist') || (errUpdate && errUpdate.code === '42703') || fallbackErrMsg.includes('column not found')) {
+           // Try to add the `data` jsonb column and re-attempt the simple insert once
+           try {
+             console.log('mutate-neon: attempting to add data JSONB column to table (update)', { table });
+             await client.query(`ALTER TABLE ${table} ADD COLUMN IF NOT EXISTS data JSONB`);
+             console.log('mutate-neon: data column ensured (update), retrying insert into (id,data)');
+             await client.query(updateSql, [uid, dataValue]);
+             return { statusCode: 200, headers: DEFAULT_HEADERS, body: JSON.stringify({ ok: true, id: uid, note: 'data column created and item upserted' }) };
+           } catch (errAlter) {
+             console.log('mutate-neon: creating data column or retry insert failed (update), will fallback to per-column insert', { err: errAlter && errAlter.message ? errAlter.message : String(errAlter) });
+             // continue to per-column fallback
+           }
+           // Use the same robust mapping as in CREATE fallback: detect table columns and map by type
            const itemFields = Object.keys(item).filter(k => k !== 'id');
            if (itemFields.length === 0) throw errUpdate;
+           let tableCols = [];
+           try {
+             const colsRes = await client.query(`SELECT column_name, data_type FROM information_schema.columns WHERE table_name = $1`, [table]);
+             tableCols = (colsRes && colsRes.rows) ? colsRes.rows : [];
+             console.log('mutate-neon: table columns (update)', { table, count: tableCols.length, sample: tableCols.slice(0,10) });
+           } catch (e) {
+             console.log('mutate-neon: failed to read table columns (update), will fallback to naive mapping', { err: e && e.message ? e.message : String(e) });
+           }
            const toSnake = (s) => String(s).replace(/([A-Z])/g, '_$1').replace(/[^a-zA-Z0-9_]/g, '_').toLowerCase().replace(/^_+/, '');
-           const cols = itemFields.map(toSnake);
+           const colTypeByName = {};
+           for (const c of tableCols) {
+             colTypeByName[String(c.column_name).toLowerCase()] = String(c.data_type).toLowerCase();
+           }
+           const selected = itemFields.map(f => ({ orig: f, col: toSnake(f) })).filter(x => colTypeByName[x.col]);
+           if (selected.length === 0) throw errUpdate;
+           const cols = selected.map(s => s.col);
            const colList = ['id', ...cols].join(', ');
-           const placeholders = ['$1', ...cols.map((_, i) => `$${i + 2}`)].join(', ');
-           const values = [String(uid), ...itemFields.map(f => {
-             const v = item[f];
-             if (v === null || v === undefined) return null;
-             if (typeof v === 'object') return v;
-             return v;
-           })];
+           // Build placeholders with explicit casting for json columns
+           const placeholdersParts = cols.map((c, i) => {
+             const idx = i + 2;
+             const dtype = colTypeByName[c] || '';
+             if (dtype.includes('json')) return `$${idx}::jsonb`;
+             return `$${idx}`;
+           });
+           const placeholders = ['$1', ...placeholdersParts].join(', ');
+           const values = [String(uid)];
+           for (const s of selected) {
+             const dtype = colTypeByName[s.col] || '';
+             const v = item[s.orig];
+             if (v === null || v === undefined) { values.push(null); continue; }
+             // Normalize complex values to JSON text to avoid pg sending array literals
+             const normalized = (typeof v === 'object') ? JSON.stringify(v) : v;
+             if (dtype.includes('json')) { values.push(normalized); continue; }
+             if (dtype.includes('char') || dtype.includes('text')) { values.push(typeof v === 'object' ? normalized : String(v)); continue; }
+             if (dtype.includes('int') || dtype.includes('numeric') || dtype.includes('double') || dtype.includes('real') || dtype.includes('decimal')) { const num = Number(v); values.push(isNaN(num) ? null : num); continue; }
+             if (dtype.includes('bool')) { values.push(Boolean(v)); continue; }
+             values.push(typeof v === 'object' ? JSON.stringify(v) : String(v));
+           }
            const updateSet = cols.map(c => `${c} = EXCLUDED.${c}`).join(', ');
            const dynSql = `INSERT INTO ${table} (${colList}) VALUES (${placeholders}) ON CONFLICT (id) DO UPDATE SET ${updateSet}`;
            console.log('mutate-neon: update fallback sql', { dynSql, valuesPreview: values.slice(0, 10) });
