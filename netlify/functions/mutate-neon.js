@@ -117,22 +117,80 @@ exports.handler = async function(event, context) {
           // Build dynamic columns from item (excluding id)
           const itemFields = Object.keys(item).filter(k => k !== 'id');
           if (itemFields.length === 0) throw errInsert;
-          // sanitize column names to safe identifiers (letters, numbers, underscore)
-          const sanitizeCol = (c) => String(c).replace(/[^a-zA-Z0-9_]/g, '_').toLowerCase();
-          const cols = itemFields.map(sanitizeCol);
+
+          // Fetch actual columns and their data types for the table
+          let tableCols = [];
+          try {
+            const colsRes = await client.query(`SELECT column_name, data_type FROM information_schema.columns WHERE table_name = $1`, [table]);
+            tableCols = (colsRes && colsRes.rows) ? colsRes.rows : [];
+            console.log('mutate-neon: table columns', { table, count: tableCols.length, sample: tableCols.slice(0,10) });
+          } catch (e) {
+            console.log('mutate-neon: failed to read table columns, will fallback to naive mapping', { err: e && e.message ? e.message : String(e) });
+          }
+
+          // Helper to find column data_type by sanitized name
+          const toSnake = (s) => String(s).replace(/([A-Z])/g, '_$1').replace(/[^a-zA-Z0-9_]/g, '_').toLowerCase().replace(/^_+/, '');
+          const colTypeByName = {};
+          for (const c of tableCols) {
+            colTypeByName[String(c.column_name).toLowerCase()] = String(c.data_type).toLowerCase();
+          }
+
+          // Build lists using only columns that exist in the table (sanitized)
+          const selected = itemFields.map(f => ({ orig: f, col: toSnake(f) })).filter(x => colTypeByName[x.col]);
+          if (selected.length === 0) {
+            // no mapped columns -> throw original insert error
+            throw errInsert;
+          }
+
+          const cols = selected.map(s => s.col);
           const colList = ['id', ...cols].join(', ');
           const placeholders = ['$1', ...cols.map((_, i) => `$${i + 2}`)].join(', ');
-          const values = [String(item.id), ...itemFields.map(f => item[f])];
-          // Build ON CONFLICT update clause mapping each col to EXCLUDED.col
-          const updateSet = cols.map(c => `${c} = EXCLUDED.${c}`).join(', ');
-          const dynSql = `INSERT INTO ${table} (${colList}) VALUES (${placeholders}) ON CONFLICT (id) DO UPDATE SET ${updateSet}`;
-          console.log('mutate-neon: create fallback sql', { dynSql, valuesPreview: values.slice(0, 10) });
-          await client.query(dynSql, values);
-        } else {
-          throw errInsert;
-        }
-      }
-       return { statusCode: 200, headers: DEFAULT_HEADERS, body: JSON.stringify({ ok: true, id: item.id }) };
+          const values = [String(item.id)];
+          // prepare values according to column type
+          for (const s of selected) {
+            const dtype = colTypeByName[s.col] || '';
+            const v = item[s.orig];
+            if (v === null || v === undefined) {
+              values.push(null);
+              continue;
+            }
+            if (dtype.includes('json')) {
+              // pass object/array as-is so pg driver encodes it as JSON
+              if (typeof v === 'object') values.push(v); else {
+                try { values.push(JSON.parse(String(v))); } catch (e) { values.push(String(v)); }
+              }
+              continue;
+            }
+            if (dtype.includes('char') || dtype.includes('text')) {
+              // for text columns stringify objects/arrays
+              if (typeof v === 'object') {
+                try { values.push(JSON.stringify(v)); } catch (e) { values.push(String(v)); }
+              } else values.push(String(v));
+              continue;
+            }
+            if (dtype.includes('int') || dtype.includes('numeric') || dtype.includes('double') || dtype.includes('real') || dtype.includes('decimal')) {
+              // try to convert to number
+              const num = Number(v);
+              values.push(isNaN(num) ? null : num);
+              continue;
+            }
+            if (dtype.includes('bool')) {
+              values.push(Boolean(v));
+              continue;
+            }
+            // fallback: pass as string
+            values.push(typeof v === 'object' ? JSON.stringify(v) : String(v));
+          }
+           // Build ON CONFLICT update clause mapping each col to EXCLUDED.col
+           const updateSet = cols.map(c => `${c} = EXCLUDED.${c}`).join(', ');
+           const dynSql = `INSERT INTO ${table} (${colList}) VALUES (${placeholders}) ON CONFLICT (id) DO UPDATE SET ${updateSet}`;
+           console.log('mutate-neon: create fallback sql', { dynSql, valuesPreview: values.slice(0, 10) });
+           await client.query(dynSql, values);
+         } else {
+           throw errInsert;
+         }
+       }
+        return { statusCode: 200, headers: DEFAULT_HEADERS, body: JSON.stringify({ ok: true, id: item.id }) };
      }
 
      if (action === 'update') {
@@ -150,11 +208,16 @@ exports.handler = async function(event, context) {
          if (fallbackErrMsg.includes('column "data" does not exist') || (errUpdate && errUpdate.code === '42703') || fallbackErrMsg.includes('column not found')) {
            const itemFields = Object.keys(item).filter(k => k !== 'id');
            if (itemFields.length === 0) throw errUpdate;
-           const sanitizeCol = (c) => String(c).replace(/[^a-zA-Z0-9_]/g, '_').toLowerCase();
-           const cols = itemFields.map(sanitizeCol);
+           const toSnake = (s) => String(s).replace(/([A-Z])/g, '_$1').replace(/[^a-zA-Z0-9_]/g, '_').toLowerCase().replace(/^_+/, '');
+           const cols = itemFields.map(toSnake);
            const colList = ['id', ...cols].join(', ');
            const placeholders = ['$1', ...cols.map((_, i) => `$${i + 2}`)].join(', ');
-           const values = [String(uid), ...itemFields.map(f => item[f])];
+           const values = [String(uid), ...itemFields.map(f => {
+             const v = item[f];
+             if (v === null || v === undefined) return null;
+             if (typeof v === 'object') return v;
+             return v;
+           })];
            const updateSet = cols.map(c => `${c} = EXCLUDED.${c}`).join(', ');
            const dynSql = `INSERT INTO ${table} (${colList}) VALUES (${placeholders}) ON CONFLICT (id) DO UPDATE SET ${updateSet}`;
            console.log('mutate-neon: update fallback sql', { dynSql, valuesPreview: values.slice(0, 10) });
