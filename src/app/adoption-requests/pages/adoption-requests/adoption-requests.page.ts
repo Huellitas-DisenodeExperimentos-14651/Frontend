@@ -219,31 +219,32 @@ export class AdoptionRequestsPage implements OnInit, OnDestroy {
         const petStatus = updated.status === 'INTERVIEW' ? 'interview' :
                           updated.status === 'COMPLETED' ? 'adopted' : undefined;
 
+        // Actualización optimista: reflejar el nuevo estado de la solicitud (y de la mascota, si aplica)
+        this.requests.update(list =>
+          list.map(r => r.id === updated.id
+            ? ({ ...r, status: updated.status, interviewDate: updated.interviewDate, ...(petStatus && r.pet ? { pet: { ...r.pet!, status: petStatus } } : {}) } as AdoptionRequest)
+            : r
+          )
+        );
+
         if (petStatus && petId != null) {
           // actualizar pet en backend para que aparezca en el filtro correspondiente
           // petsSvc.update acepta id string|number; usar petId tal cual (evita NaN para ids alfanuméricos)
           this.petsSvc.update(petId, { status: petStatus } as any).subscribe({
              next: () => {
-               // actualizar listado local si la mascota está presente
-               this.requests.update(list =>
-                 list.map(r => r.id === updated.id ? { ...r, status: updated.status, interviewDate: updated.interviewDate, pet: { ...r.pet!, status: petStatus } } as AdoptionRequest : r)
-               );
-               // notificar cambio global en pets (aunque petsSvc.update ya notifica, lo reforzamos)
+               // ya aplicamos la actualización optimista; reforzar notificación global
                try { this.petsSvc.notifyChange(); } catch {}
              },
              error: () => {
-               // ignorar fallo en actualizar pet, actualizar solicitud localmente y notificar
+               // si falla la actualización de la mascota, revertir el estado de la mascota local si existía
                this.requests.update(list =>
-                 list.map(r => r.id === updated.id ? { ...r, status: updated.status, interviewDate: updated.interviewDate } as AdoptionRequest : r)
+                 list.map(r => r.id === updated.id ? ({ ...r, ...(r.pet ? { pet: { ...r.pet!, status: r.pet!.status } } : {}) } as AdoptionRequest) : r)
                );
                try { this.petsSvc.notifyChange(); } catch {}
              }
            });
          } else {
-           // solo actualizar estado de la solicitud en la lista
-           this.requests.update(list =>
-             list.map(r => r.id === updated.id ? { ...r, status: updated.status, interviewDate: updated.interviewDate } as AdoptionRequest : r)
-           );
+           // ya aplicamos la actualización optimista arriba
          }
 
         const key = updated.status === 'APPROVED'

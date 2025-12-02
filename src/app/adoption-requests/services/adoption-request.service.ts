@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { AdoptionRequest } from '../model/adoption-request.model';
-import { tap, map } from 'rxjs/operators';
+import { tap, map, switchMap } from 'rxjs/operators';
 import { NetlifyDbService } from '../../shared/services/netlify-db.service';
 
 @Injectable({ providedIn: 'root' })
@@ -58,9 +58,12 @@ export class AdoptionRequestService {
   // Actualiza parcialmente un request (status, interviewDate, etc.)
   patch(id: string | number, patch: Partial<AdoptionRequest>): Observable<AdoptionRequest> {
     const uid = String(id);
-    const item = { ...(patch as any), id: uid };
-    return this.netlifyDb.mutate('update', 'adoption-requests', item, uid).pipe(
-      map(() => item as AdoptionRequest),
+    // Obtener el registro existente y fusionarlo con el patch para evitar perder campos importantes
+    return (this.netlifyDb.getById('adoption-requests', uid) as Observable<any>).pipe(
+      map(existing => ({ ...(existing || {}), ...(patch as any), id: uid })),
+      switchMap((merged: any) => this.netlifyDb.mutate('update', 'adoption-requests', merged, uid).pipe(
+        map(() => merged as AdoptionRequest)
+      )),
       tap(() => this.requestsChanged.next())
     );
   }
