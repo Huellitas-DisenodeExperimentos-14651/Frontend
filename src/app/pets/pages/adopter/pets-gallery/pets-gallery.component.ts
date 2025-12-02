@@ -62,8 +62,9 @@ export class PetsGalleryComponent implements OnInit, OnDestroy {
     this.profileId = localStorage.getItem('profileId');
 
     // Determinar rol del usuario para cambiar comportamiento de la vista
-    const role = localStorage.getItem('role');
-    this.isShelter = role === 'SHELTER';
+    const role = (localStorage.getItem('role') ?? '').toString();
+    this.isShelter = role.toUpperCase() === 'SHELTER';
+    console.debug('[PetsGallery] ngOnInit role=', role, 'isShelter=', this.isShelter);
 
     if (!this.profileId) {
       console.error('No se encontró el profileId en localStorage.');

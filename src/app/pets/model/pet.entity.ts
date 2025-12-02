@@ -24,7 +24,13 @@ export class Pet {
     this.photo = data.photo;
     this.breed = data.breed;
     this.size = data.size;
-    this.status = data.status;
+    // Normalizar status a minúsculas y fallback a 'available'
+    try {
+      const rawStatus = data.status ?? 'available';
+      this.status = String(rawStatus).toLowerCase() as PetStatus;
+    } catch {
+      this.status = 'available';
+    }
     this.description = data.description;
     this.healthStatus = data.healthStatus;
     this.vaccinationStatus = data.vaccinationStatus;

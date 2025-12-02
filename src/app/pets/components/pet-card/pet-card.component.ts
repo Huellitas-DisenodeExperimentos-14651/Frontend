@@ -46,7 +46,8 @@ export class PetCardComponent {
   }
 
   getStatusBadgeClass(): string {
-    return `status-badge ${this.pet.status}`;
+    const st = (this.pet && this.pet.status) ? String(this.pet.status).toLowerCase() : 'available';
+    return `status-badge ${st}`;
   }
 
   // Helpers de traducción con fallback

@@ -53,9 +53,9 @@ export class AdoptionRequestsPage implements OnInit, OnDestroy {
   private currentProfileId: string | null = null;
 
   ngOnInit(): void {
-    const role = localStorage.getItem('role');
+    const role = (localStorage.getItem('role') ?? '').toString();
     const profileId = localStorage.getItem('profileId');
-    const asShelter = role === 'SHELTER';
+    const asShelter = role.toUpperCase() === 'SHELTER';
     this.isShelter.set(asShelter);
     this.currentProfileId = profileId;
 
@@ -216,26 +216,33 @@ export class AdoptionRequestsPage implements OnInit, OnDestroy {
         const petIdRaw = petCandidate.pet?.id ?? (petCandidate.petId ?? petCandidate.publicationId) ?? (local?.pet?.id ?? local?.petId ?? local?.publicationId);
         const petId = petIdRaw != null ? petIdRaw : undefined;
 
-        const petStatus = updated.status === 'INTERVIEW' ? 'interview' :
-                          updated.status === 'COMPLETED' ? 'adopted' : undefined;
+        // Normalizar status para comparaciones (acepta 'INTERVIEW' o 'interview', etc.)
+        const upStatus = String(updated.status ?? '').toUpperCase();
+        const petStatus = upStatus === 'INTERVIEW' ? 'interview' :
+                          upStatus === 'COMPLETED' ? 'adopted' : undefined;
 
         // Actualización optimista: reflejar el nuevo estado de la solicitud (y de la mascota, si aplica)
         this.requests.update(list =>
           list.map(r => r.id === updated.id
-            ? ({ ...r, status: updated.status, interviewDate: updated.interviewDate, ...(petStatus && r.pet ? { pet: { ...r.pet!, status: petStatus } } : {}) } as AdoptionRequest)
+            ? ({ ...r, status: upStatus, interviewDate: updated.interviewDate, ...(petStatus && r.pet ? { pet: { ...r.pet!, status: petStatus } } : {}) } as AdoptionRequest)
             : r
           )
         );
 
-        if (petStatus && petId != null) {
-          // actualizar pet en backend para que aparezca en el filtro correspondiente
-          // petsSvc.update acepta id string|number; usar petId tal cual (evita NaN para ids alfanuméricos)
-          this.petsSvc.update(petId, { status: petStatus } as any).subscribe({
-             next: () => {
+        console.debug('[AdoptionRequests] onDecision updated request:', updated.id, 'petId=', petId, 'petStatus=', petStatus);
+
+         if (petStatus && petId != null) {
+           // actualizar pet en backend para que aparezca en el filtro correspondiente
+           // petsSvc.update acepta id string|number; usar petId tal cual (evita NaN para ids alfanuméricos)
+           console.debug('[AdoptionRequests] updating pet via PetsService.update', { petId, status: petStatus });
+           this.petsSvc.update(petId, { status: petStatus } as any).subscribe({
+             next: (res) => {
+               console.debug('[AdoptionRequests] pet update success', res);
                // ya aplicamos la actualización optimista; reforzar notificación global
                try { this.petsSvc.notifyChange(); } catch {}
              },
-             error: () => {
+             error: (err) => {
+               console.error('[AdoptionRequests] pet update failed', err);
                // si falla la actualización de la mascota, revertir el estado de la mascota local si existía
                this.requests.update(list =>
                  list.map(r => r.id === updated.id ? ({ ...r, ...(r.pet ? { pet: { ...r.pet!, status: r.pet!.status } } : {}) } as AdoptionRequest) : r)
@@ -247,13 +254,13 @@ export class AdoptionRequestsPage implements OnInit, OnDestroy {
            // ya aplicamos la actualización optimista arriba
          }
 
-        const key = updated.status === 'APPROVED'
+        const key = upStatus === 'APPROVED'
           ? 'adoption.toast.approved'
-          : updated.status === 'REJECTED'
+          : upStatus === 'REJECTED'
             ? 'adoption.toast.rejected'
-            : updated.status === 'INTERVIEW'
+            : upStatus === 'INTERVIEW'
               ? 'adoption.toast.interviewScheduled'
-              : updated.status === 'COMPLETED'
+              : upStatus === 'COMPLETED'
                 ? 'adoption.toast.completed'
                 : 'adoption.toast.updated';
 

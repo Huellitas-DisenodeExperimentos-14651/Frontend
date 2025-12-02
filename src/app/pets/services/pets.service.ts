@@ -2,7 +2,7 @@
 
 import { Injectable } from '@angular/core';
 import { Observable, Subject, map, forkJoin } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { tap, switchMap } from 'rxjs/operators';
 import { Pet } from '../model/pet.entity';
 import { CreatePetRequest } from '../model/create-pet.request';
 import { NetlifyDbService } from '../../shared/services/netlify-db.service';
@@ -45,9 +45,12 @@ export class PetsService {
   /** Actualizar una mascota existente */
   update(id: string | number, pet: Partial<Pet>): Observable<Pet> {
     const uid = String(id);
-    const item = { ...(pet as any), id: uid };
-    return this.netlifyDb.mutate('update', 'pets', item, uid).pipe(
-      map(() => item as Pet),
+    // Obtener el registro existente y fusionarlo con el parche para no borrar campos
+    return (this.netlifyDb.getById('pets', uid) as Observable<any>).pipe(
+      map(existing => ({ ...(existing || {}), ...(pet as any), id: uid })),
+      switchMap((merged: any) => this.netlifyDb.mutate('update', 'pets', merged, uid).pipe(
+        map(() => merged as Pet)
+      )),
       tap(() => this.notifyChange())
     );
   }
