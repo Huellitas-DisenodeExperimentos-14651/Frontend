@@ -120,3 +120,32 @@ app-pet-card {
 .create-pet-button:hover {
   background-color: #1565c0;
 }
+
+/* 🔹 Leyenda de estados (visible para refugio) */
+.status-legend {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+  color: #444;
+}
+
+.status-legend .legend-item {
+  display: inline-flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.legend-badge {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  display: inline-block;
+  border: 1px solid rgba(0,0,0,0.06);
+}
+
+.legend-badge.available { background-color: #4caf50; }
+.legend-badge.interview  { background-color: #3f51b5; }
+.legend-badge.adopted    { background-color: #f44336; }

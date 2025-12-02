@@ -7,6 +7,13 @@
     Mostrando únicamente mascotas disponibles para adopción.
   </div>
 
+  <!-- Leyenda de estados (solo para refugio) -->
+  <div class="status-legend" *ngIf="isShelter" aria-live="polite">
+    <span class="legend-item"><span class="legend-badge available"></span> Disponible</span>
+    <span class="legend-item"><span class="legend-badge interview"></span> En entrevista</span>
+    <span class="legend-item"><span class="legend-badge adopted"></span> Adoptado</span>
+  </div>
+
   <!-- Estado de carga -->
   <div *ngIf="isLoading" class="loading-state" aria-live="polite">
     <span class="spinner"></span>
